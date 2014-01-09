@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Main-Class: matrixstudio.ui.MatrixStudio
+Class-Path: basics.jar jdom.jar jocl.jar swt.jar basics-ui.jar basics-ui-cocoa.jar

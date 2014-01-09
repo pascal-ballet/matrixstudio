@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="model"
+    nsURI="http://www.matrixstudio.org/model//2013" nsPrefix="m">
+  <eClassifiers xsi:type="ecore:EClass" name="Named" abstract="true" interface="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral=""/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Model">
+    <eAnnotations source="http://Basics/EcoreAnnotations">
+      <details key="changeHandlerContainer" value="true"/>
+    </eAnnotations>
+    <eOperations name="swapMatrices">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="Matrix tmp = getMatrix(i0);&#xA;setMatrix(i0, getMatrix(i1));&#xA;setMatrix(i1, tmp);&#xA;"/>
+      </eAnnotations>
+      <eParameters name="i0" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="i1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eOperations>
+    <eOperations name="swapCode">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="Code tmp = getCode(i0);&#xA;setCode(i0, getCode(i1));&#xA;setCode(i1, tmp);&#xA;"/>
+      </eAnnotations>
+      <eParameters name="i0" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="i1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eOperations>
+    <eOperations name="getKernelList" upperBound="-1" eType="#//Kernel">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="final List&lt;Kernel> result = new ArrayList&lt;Kernel>();&#xA;for  (Code code : getCodeList() ) {&#xA;&#x9;if (code instanceof Kernel) {&#xA;&#x9;&#x9;result.add((Kernel) code);&#xA;&#x9;}&#xA;}&#xA;return result;"/>
+        <details key="import" value="java.util.List&#xA;java.util.ArrayList&#xA;"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getLibraryList" upperBound="-1" eType="#//Library">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="final List&lt;Library> result = new ArrayList&lt;Library>();&#xA;for  (Code code : getCodeList() ) {&#xA;&#x9;if (code instanceof Library) {&#xA;&#x9;&#x9;result.add((Library) code);&#xA;&#x9;}&#xA;}&#xA;return result;"/>
+        <details key="import" value="java.util.List&#xA;java.util.ArrayList&#xA;"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="upLibrary">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="int index = codeList.indexOf(library);&#xA;if ( index &lt;= 0 ) return;&#xA;&#xA;// searches for a library before&#xA;for (int i=index-1; i>=0; i--) {&#xA;&#x9;if ( getCode(i) instanceof Library ) {&#xA;&#x9;&#x9;// swaps i and index&#xA;&#x9;&#x9;setCode(index, getCode(i));&#xA;&#x9;&#x9;setCode(i, library);&#xA;&#x9;&#x9;return;&#xA;&#x9;}&#xA;}&#xA;&#xA;// no library to swap with found"/>
+      </eAnnotations>
+      <eParameters name="library" eType="#//Library"/>
+    </eOperations>
+    <eOperations name="downLibrary">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="int index = codeList.indexOf(library);&#xA;if ( index &lt; 0 || index >= codeList.size() -1 ) return;&#xA;&#xA;// searches for a library before&#xA;for (int i=index+1; i &lt; codeList.size(); i++) {&#xA;&#x9;if ( getCode(i) instanceof Library ) {&#xA;&#x9;&#x9;// swaps i and index&#xA;&#x9;&#x9;setCode(index, getCode(i));&#xA;&#x9;&#x9;setCode(i, library);&#xA;&#x9;&#x9;return;&#xA;&#x9;}&#xA;}&#xA;&#xA;// no library to swap with found"/>
+      </eAnnotations>
+      <eParameters name="library" eType="#//Library"/>
+    </eOperations>
+    <eOperations name="upKernel">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="int index = codeList.indexOf(kernel);&#xA;if ( index &lt;= 0 ) return;&#xA;&#xA;// searches for a kernel before&#xA;for (int i=index-1; i>=0; i--) {&#xA;&#x9;if ( getCode(i) instanceof Kernel ) {&#xA;&#x9;&#x9;// swaps i and index&#xA;&#x9;&#x9;setCode(index, getCode(i));&#xA;&#x9;&#x9;setCode(i, kernel);&#xA;&#x9;&#x9;return;&#xA;&#x9;}&#xA;}&#xA;&#xA;// no kernel to swap with found"/>
+      </eAnnotations>
+      <eParameters name="kernel" eType="#//Kernel"/>
+    </eOperations>
+    <eOperations name="downKernel">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="int index = codeList.indexOf(kernel);&#xA;if ( index &lt; 0 || index >= codeList.size() -1 ) return;&#xA;&#xA;// searches for a kernel before&#xA;for (int i=index+1; i &lt; codeList.size(); i++) {&#xA;&#x9;if ( getCode(i) instanceof Kernel ) {&#xA;&#x9;&#x9;// swaps i and index&#xA;&#x9;&#x9;setCode(index, getCode(i));&#xA;&#x9;&#x9;setCode(i, kernel);&#xA;&#x9;&#x9;return;&#xA;&#x9;}&#xA;}&#xA;&#xA;// no kernel to swap with found"/>
+      </eAnnotations>
+      <eParameters name="kernel" eType="#//Kernel"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="code" upperBound="-1" eType="#//Code"
+        containment="true" eOpposite="#//Code/model"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="matrix" upperBound="-1"
+        eType="#//Matrix" containment="true" eOpposite="#//Matrix/model"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="scheduler" eType="#//Scheduler"
+        containment="true" eOpposite="#//Scheduler/model"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Scheduler">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="model" eType="#//Model"
+        eOpposite="#//Model/scheduler"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="task" upperBound="-1" eType="#//Task"
+        containment="true" eOpposite="#//Task/scheduler"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="device" eType="#//Device"
+        defaultValueLiteral="Device.ANY"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="deviceOrder" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Task">
+    <eOperations name="getPositionCopy" eType="#//FloatArray">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Returns a copy of position."/>
+        <details key="body" value="return Geometry.copyPoints(position);"/>
+        <details key="import" value="org.xid.basics.geometry.Geometry"/>
+      </eAnnotations>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="scheduler" eType="#//Scheduler"
+        eOpposite="#//Scheduler/task"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="globalWorkSizeX" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="512"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="globalWorkSizeY" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="256"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="globalWorkSizeZ" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="1"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="position" eType="#//FloatArray"
+        defaultValueLiteral="new float[] { 50f, 50f }"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="taskIn" upperBound="-1"
+        eType="#//Task"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="taskOut" upperBound="-1"
+        eType="#//Task"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="kernel" eType="#//Kernel"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Kernel" eSuperTypes="#//Code">
+    <eOperations name="createKernelProrotype" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Create kernel function's prototype.&#xA;@return a {@link String} with the prototype."/>
+        <details key="body" value="final StringBuilder proto = new StringBuilder();&#xA;proto.append(&quot;__kernel void &quot;);&#xA;proto.append(getName());&#xA;proto.append(&quot;( uint rand, uint step, uint mouseX, uint mouseY, uint mouseBtn&quot;);&#xA;for ( Matrix matrix : getModel().getMatrixList() ) {&#xA;&#x9;proto.append(&quot;,\n\t__global &quot;);&#xA;&#x9;proto.append(matrix.getCType());&#xA;&#x9;proto.append(&quot; &quot;);&#xA;&#x9;proto.append(matrix.getName());&#xA;&#x9;proto.append(&quot;, uint &quot;+matrix.getName()+&quot;_SX&quot;);&#xA;&#x9;proto.append(&quot;, uint &quot;+matrix.getName()+&quot;_SY&quot;);&#xA;&#x9;proto.append(&quot;, uint &quot;+matrix.getName()+&quot;_SZ&quot;);&#xA;}&#xA;proto.append(&quot;)&quot;);&#xA;return proto.toString();"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getWholeContents" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Returns complete code template including owner class adaptation.&#xA;@return a {@link String} with the complete code."/>
+        <details key="body" value="final StringBuilder codeWithPrototype = new StringBuilder();&#xA;codeWithPrototype.append(createKernelProrotype());&#xA;codeWithPrototype.append(&quot;\n{\n&quot;);&#xA;codeWithPrototype.append(getContents() == null ? &quot;&quot; : getContents());&#xA;codeWithPrototype.append(&quot;\n}\n&quot;);&#xA;return codeWithPrototype.toString();&#xA;"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="setWholeContents">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="final int start = newContents.indexOf(&quot;\n{\n&quot;) + 3;&#xA;final int end = newContents.length() - 3;&#xA;setContents(newContents.substring(start,end));"/>
+      </eAnnotations>
+      <eParameters name="newContents" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="getOpeningBracketIndex" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="return createKernelProrotype().length() + 3;"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getClosingBracketIndex" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="return createKernelProrotype().length() + 3 + (getContents() == null ? 0 : getContents().length());"/>
+      </eAnnotations>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="contents" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="&quot;&quot;"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Code" abstract="true" eSuperTypes="#//Named">
+    <eOperations name="getWholeContents" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eOperations name="setWholeContents">
+      <eParameters name="newContents" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+    <eOperations name="getNumberOfLines" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Returns the number of lines in {@link #getWholeContents()}."/>
+        <details key="body" value="if ( contents == null ) return 0;&#xA;int count = 0;&#xA;&#x9;&#x9;&#xA;String contents = getWholeContents();&#xA;int current = contents.indexOf('\n');&#xA;while (current != -1 ) {&#xA;&#x9;count ++;&#xA;&#x9;current = contents.indexOf('\n', current+1);&#xA;}&#xA;return count;"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getGlobalLineIndex" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Returns the line number where is included this inside the whole OpenCL code."/>
+        <details key="body" value="int count = 1;&#xA;for ( Code code : model.getCodeList() ) {&#xA;&#x9;if ( code instanceof Library ) {&#xA;&#x9;&#x9;if ( code == this ) return count;&#x9;&#xA;&#x9;&#x9;count += code.getNumberOfLines();&#xA;&#x9;}&#xA;}&#xA;for ( Code code : model.getCodeList() ) {&#xA;&#x9;if ( code instanceof Kernel ) {&#xA;&#x9;&#x9;if ( code == this ) return count;&#x9;&#xA;&#x9;&#x9;count += code.getNumberOfLines();&#xA;&#x9;}&#xA;}&#xA;return count;&#xA;"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getFunctionNames" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="Returns the list of function names in this."/>
+        <details key="body" value="List&lt;String> functionNames = new ArrayList&lt;String>();&#xA;if ( getContents() != null ) {&#xA;&#x9;for ( String line : getContents().split(&quot;\n&quot;) ) {&#xA;&#x9;&#x9;Matcher matcher = Tools.functionPrototypePattern.matcher(line);&#xA;&#x9;&#x9;if ( matcher.matches() ) {&#xA;&#x9;&#x9;&#x9;functionNames.add(matcher.group(2));&#xA;&#x9;&#x9;}&#xA;&#x9;}&#xA;}&#xA;return functionNames;"/>
+        <details key="import" value="java.util.ArrayList&#xA;java.util.regex.Matcher&#xA;matrixstudio.kernel.Tools"/>
+      </eAnnotations>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="model" eType="#//Model"
+        eOpposite="#//Model/code"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="contents" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        defaultValueLiteral="&quot;&quot;"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Library" eSuperTypes="#//Code">
+    <eOperations name="getWholeContents" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="return getContents();"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="setWholeContents">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="setContents(newContents);"/>
+      </eAnnotations>
+      <eParameters name="newContents" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eOperations>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Matrix" abstract="true" eSuperTypes="#//Named">
+    <eOperations name="initBlank"/>
+    <eOperations name="getLength" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="return sizeX * sizeY * sizeZ;"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getCType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eOperations name="setToInitialValues"/>
+    <eOperations name="getValueAt" eType="#//Number">
+      <eParameters name="i" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="j" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="k" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eOperations>
+    <eOperations name="setValueAt">
+      <eParameters name="i" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="j" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="k" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="v" eType="#//Number"/>
+    </eOperations>
+    <eOperations name="setInitValueAt">
+      <eParameters name="i" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="j" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="k" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="v" eType="#//Number"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="model" eType="#//Model"
+        eOpposite="#//Model/matrix"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="random" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ndRange" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="size" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="512"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sizeX" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="512"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sizeY" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="256"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="sizeZ" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MatrixFloat" eSuperTypes="#//Matrix">
+    <eOperations name="initBlank">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="matrixInit = new float[getSizeX()*getSizeY()*getSizeZ()];&#xA;matrix = new float[getSizeX()*getSizeY()*getSizeZ()];&#xA;&#xA;Random random = new Random();&#xA;for ( int i=0; i&lt;matrix.length; i++) {&#xA;&#x9;if(isRandom()) {&#xA;&#x9;&#x9;matrix[i] = random.nextFloat(); matrixInit[i] = matrix[i];&#xA;&#x9;} else {&#xA;&#x9;&#x9;matrix[i] = 0; matrixInit[i] = 0;&#xA;&#x9;}&#xA;}"/>
+        <details key="import" value="java.util.Random"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getCType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eOperations name="setToInitialValues">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="for ( int i=0; i&lt;matrix.length; i++ ) {&#xA;&#x9;matrix[i] = matrixInit[i];&#xA;}"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getValueAt" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloatObject">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="if(i>=0 &amp;&amp; j>=0 &amp;&amp; k>=0 &amp;&amp; i&lt;getSizeX() &amp;&amp; j&lt;getSizeY() &amp;&amp; k&lt;getSizeZ()) {&#xA;&#x9;return matrix[i+getSizeX()*j+getSizeX()*getSizeY()*k];&#xA;} else {&#xA;&#x9;return 0f;&#xA;}"/>
+      </eAnnotations>
+      <eParameters name="i" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="j" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="k" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eOperations>
+    <eOperations name="setValueAt">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="matrix[i+getSizeX()*j+getSizeX()*getSizeY()*k] = v.floatValue();"/>
+      </eAnnotations>
+      <eParameters name="i" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="j" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="k" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="v" eType="#//Number"/>
+    </eOperations>
+    <eOperations name="setInitValueAt">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="matrixInit[i+getSizeX()*j+getSizeX()*getSizeY()*k] = v.floatValue();"/>
+      </eAnnotations>
+      <eParameters name="i" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="j" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="k" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="v" eType="#//Number"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="matrix" eType="#//FloatArray"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="matrixInit" eType="#//FloatArray"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MatrixInteger" eSuperTypes="#//Matrix">
+    <eOperations name="initBlank">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="matrixInit = new int[getSizeX()*getSizeY()*getSizeZ()];&#xA;matrix = new int[getSizeX()*getSizeY()*getSizeZ()];&#xA;final Random random = new Random();&#xA;if(isRandom()) {&#xA;&#x9;for ( int i=0; i&lt; matrix.length; i++) { matrix[i] = random.nextInt(); matrixInit[i] = matrix[i];}&#xA;} else {&#xA;&#x9;for ( int i=0; i&lt; matrix.length; i++) { matrix[i] = 0; matrixInit[i] = matrix[i];}&#xA;}"/>
+        <details key="import" value="java.util.Random"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getCType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="return &quot;int *&quot;;"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="setToInitialValues">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="for ( int i=0; i&lt;matrix.length; i++ ) {&#xA;&#x9;matrix[i] = matrixInit[i];&#xA;}"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getValueAt" eType="#//Number">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="if(i>=0 &amp;&amp; j>=0 &amp;&amp; k>=0 &amp;&amp; i&lt;getSizeX() &amp;&amp; j&lt;getSizeY() &amp;&amp; k&lt;getSizeZ()) {&#xA;&#x9;return matrix[i+getSizeX()*j+getSizeX()*getSizeY()*k];&#xA;} else {&#xA;&#x9;return 0f;&#xA;}"/>
+      </eAnnotations>
+      <eParameters name="i" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="j" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="k" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eOperations>
+    <eOperations name="setValueAt">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="matrix[i+getSizeX()*j+getSizeX()*getSizeY()*k] = v.intValue();"/>
+      </eAnnotations>
+      <eParameters name="i" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="j" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="k" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="v" eType="#//Number"/>
+    </eOperations>
+    <eOperations name="setInitValueAt">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="matrixInit[i+getSizeX()*j+getSizeX()*getSizeY()*k] = v.intValue();"/>
+      </eAnnotations>
+      <eParameters name="i" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="j" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="k" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="v" eType="#//Number"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="matrix" eType="#//IntArray"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="matrixInit" eType="#//IntArray"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MatrixULong" eSuperTypes="#//Matrix">
+    <eOperations name="initBlank">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="matrixInit = new long[getSizeX()*getSizeY()*getSizeZ()];&#xA;matrix = new long[getSizeX()*getSizeY()*getSizeZ()];&#xA;final Random random = new Random();&#xA;if(isRandom()) {&#xA;&#x9;for ( int i=0; i&lt; matrix.length; i++) { matrix[i] = random.nextLong(); matrixInit[i] = matrix[i];}&#xA;} else {&#xA;&#x9;for ( int i=0; i&lt; matrix.length; i++) { matrix[i] = 0l; matrixInit[i] = matrix[i];}&#xA;}"/>
+        <details key="import" value="java.util.Random"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getCType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="return &quot;ulong *&quot;;"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="setToInitialValues">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="for ( int i=0; i&lt;matrix.length; i++ ) {&#xA;&#x9;matrix[i] = matrixInit[i];&#xA;}"/>
+      </eAnnotations>
+    </eOperations>
+    <eOperations name="getValueAt" eType="#//Number">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="if(i>=0 &amp;&amp; j>=0 &amp;&amp; k>=0 &amp;&amp; i&lt;getSizeX() &amp;&amp; j&lt;getSizeY() &amp;&amp; k&lt;getSizeZ()) {&#xA;&#x9;return matrix[i+getSizeX()*j+getSizeX()*getSizeY()*k];&#xA;} else {&#xA;&#x9;return 0f;&#xA;}"/>
+      </eAnnotations>
+      <eParameters name="i" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="j" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="k" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eOperations>
+    <eOperations name="setValueAt">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="matrix[i+getSizeX()*j+getSizeX()*getSizeY()*k] = v.longValue();"/>
+      </eAnnotations>
+      <eParameters name="i" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="j" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="k" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="v" eType="#//Number"/>
+    </eOperations>
+    <eOperations name="setInitValueAt">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="body" value="matrixInit[i+getSizeX()*j+getSizeX()*getSizeY()*k] = v.longValue();"/>
+      </eAnnotations>
+      <eParameters name="i" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="j" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="k" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eParameters name="v" eType="#//Number"/>
+    </eOperations>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="matrix" eType="#//LongArray"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="matrixInit" eType="#//LongArray"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="FloatArray" instanceClassName="float[]"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="IntArray" instanceClassName="int[]"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="LongArray" instanceClassName="long[]"/>
+  <eClassifiers xsi:type="ecore:EEnum" name="Device">
+    <eLiterals name="ANY" literal="ANY"/>
+    <eLiterals name="CPU" value="1"/>
+    <eLiterals name="GPU" value="2"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Number" instanceClassName="java.lang.Number"/>
+</ecore:EPackage>
