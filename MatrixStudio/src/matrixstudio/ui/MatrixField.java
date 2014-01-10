@@ -161,11 +161,11 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 		data.verticalSpan = 1;
 		canvas.setLayoutData(data);
 
-	};
+	}
 	
 	public boolean grabExcessVerticalSpace() {
 		return true;
-	};
+	}
 	
 	/** @return the field's value */
 	public Matrix getValue() {

@@ -100,7 +100,7 @@ public class MatrixTabController extends Controller<Model>{
 						Matrix matrix = new MatrixFloat();
 						matrix.setName(NameUtils.availableName("Matrix1", getSubject().getMatrixList()));
 						matrix.initBlank();
-						getSubject().addMatrixAndOpposite(matrix);;
+						getSubject().addMatrixAndOpposite(matrix);
 						matricesListField.setSingleSelection(matrix);
 						return Action.STATUS_OK;
 					}
@@ -110,7 +110,7 @@ public class MatrixTabController extends Controller<Model>{
 						Matrix matrix = new MatrixInteger();
 						matrix.setName(NameUtils.availableName("Matrix1", getSubject().getMatrixList()));
 						matrix.initBlank();
-						getSubject().addMatrixAndOpposite(matrix);;
+						getSubject().addMatrixAndOpposite(matrix);
 						matricesListField.setSingleSelection(matrix);
 						return Action.STATUS_OK;
 					}
@@ -120,7 +120,7 @@ public class MatrixTabController extends Controller<Model>{
 						Matrix matrix = new MatrixULong();
 						matrix.setName(NameUtils.availableName("Matrix1", getSubject().getMatrixList()));
 						matrix.initBlank();
-						getSubject().addMatrixAndOpposite(matrix);;
+						getSubject().addMatrixAndOpposite(matrix);
 						matricesListField.setSingleSelection(matrix);
 						return Action.STATUS_OK;
 					}

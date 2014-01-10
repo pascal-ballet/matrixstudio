@@ -163,8 +163,7 @@ public class SourceCodeField extends AbstractField implements RendererContext {
 	}
 
 	private int styledTextStyle() {
-		int textStyle = SWT.V_SCROLL | SWT.H_SCROLL;
-		return textStyle ;
+        return SWT.V_SCROLL | SWT.H_SCROLL;
 	}
 
 	/** Fired by {@link Display#timerExec(int, Runnable)} to update kernel.*/
@@ -344,7 +343,7 @@ public class SourceCodeField extends AbstractField implements RendererContext {
 	
 	public boolean grabExcessVerticalSpace() {
 		return true;
-	};
+	}
 	
 	/** @return the field's value */
 	private String getValue() {

@@ -2,6 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="58a7349e-d8b8-4ee3-8a78-cfa38916b8e8" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dictionaries/charlie.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/StoreField.java" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/Actions.java" afterPath="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/Actions.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/model/Kernel.java" afterPath="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/model/Kernel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/MatrixField.java" afterPath="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/MatrixField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/MatrixStudio.java" afterPath="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/MatrixStudio.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/MatrixTabController.java" afterPath="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/MatrixTabController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/SourceCodeField.java" afterPath="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/SourceCodeField.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="matrixstudio.iws" />
@@ -66,10 +74,89 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="LogHandler.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/LogHandler.java">
+      <file leaf-file-name="MjpegEncoder.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MatrixStudio/src/matrixstudio/kernel/MjpegEncoder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="735">
+            <state line="15" column="13" selection-start="379" selection-end="379" vertical-scroll-proportion="0.0" vertical-offset="11206" max-vertical-offset="11895">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SchedulerTest.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MatrixStudio/src-gen/toto/SchedulerTest.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="16" column="29" selection-start="387" selection-end="387" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1305">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MatrixField.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/MatrixField.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="167" column="5" selection-start="5178" selection-end="5178" vertical-scroll-proportion="0.0" vertical-offset="1833" max-vertical-offset="2670">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MatrixTabController.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/MatrixTabController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="575" column="15" selection-start="18131" selection-end="18131" vertical-scroll-proportion="0.0" vertical-offset="7893" max-vertical-offset="9615">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SourceCodeField.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/SourceCodeField.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="165" column="8" selection-start="4587" selection-end="4587" vertical-scroll-proportion="0.0" vertical-offset="1833" max-vertical-offset="5775">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Kernel.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MatrixStudio/src/matrixstudio/model/Kernel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="75" column="28" selection-start="1989" selection-end="1989" vertical-scroll-proportion="0.0" vertical-offset="891" max-vertical-offset="1755">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MatrixStudio.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/MatrixStudio.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="350" column="49" selection-start="9327" selection-end="9327" vertical-scroll-proportion="0.0" vertical-offset="4403" max-vertical-offset="6780">
+              <folding>
+                <element signature="e#5126#5127#0" expanded="true" />
+                <element signature="e#5151#5152#0" expanded="true" />
+                <element signature="e#6637#6638#0" expanded="true" />
+                <element signature="e#6660#6661#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Actions.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/Actions.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="265" column="16" selection-start="7955" selection-end="7955" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5400">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="charlie.xml" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.idea/dictionaries/charlie.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="439">
               <folding />
             </state>
           </provider>
@@ -92,6 +179,12 @@
         <option value="$PROJECT_DIR$/MatrixStudio/model/build.xml" />
         <option value="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/kernel/Essai.java" />
         <option value="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/LogHandler.java" />
+        <option value="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/MatrixField.java" />
+        <option value="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/MatrixTabController.java" />
+        <option value="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/SourceCodeField.java" />
+        <option value="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/model/Kernel.java" />
+        <option value="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/MatrixStudio.java" />
+        <option value="$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/Actions.java" />
       </list>
     </option>
   </component>
@@ -174,7 +267,61 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="src-test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="test" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="matrixstudio" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MatrixStudio" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="matrixstudio" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MatrixStudio" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="kernel" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="matrixstudio" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="MatrixStudio" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="export" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -189,7 +336,7 @@
     <property name="MemberChooser.sorted" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="MemberChooser.copyJavadoc" value="false" />
-    <property name="options.lastSelected" value="template.copyright.formatting" />
+    <property name="options.lastSelected" value="fileTemplates" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
@@ -394,18 +541,45 @@
       <created>1389307697609</created>
       <updated>1389307697609</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
-    <servers />
+    <task id="LOCAL-00005" summary="Don't know.">
+      <created>1389307958288</created>
+      <updated>1389307958288</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
+    <servers>
+      <Trello shared="false">
+        <commitMessageFormat>{id} {summary}</commitMessageFormat>
+        <option name="currentBoard">
+          <TrelloBoard id="5268ff812efbdca126002842" name="MatrixStudio" />
+        </option>
+        <option name="currentList">
+          <TrelloList id="5268ff812efbdca126002843" name="To Do">
+            <option name="moved" value="false" />
+          </TrelloList>
+        </option>
+        <option name="currentUser">
+          <TrelloUser id="5258f768cb827201130038a4" name="jeancharlesroger" />
+        </option>
+        <password>df9ddfcedf9edfc9df9cdf9cdfcedf99df99dfcbdfc9df93df9adf9cdfcedf92df92df9fdfcedf9edf9edf9edf9ddf9fdf99df9cdf9ddf9fdfccdfcfdf98df9adf9bdf9bdf9cdf98df9cdfccdf98dfcedf9fdfc8df9fdfcedfc8df9ddf9fdfcedf9bdf9edfc8df9cdfc8df92df9fdfcbdf99df9ddfccdfc8df93dfc8df92dfc9</password>
+        <option name="loginAnonymously" value="false" />
+        <option name="shouldFormatCommitMessage" value="false" />
+        <option name="url" value="trello.com" />
+        <option name="useHttpAuthentication" value="false" />
+        <option name="useProxy" value="false" />
+        <username />
+      </Trello>
+    </servers>
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32786885" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32876712" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.329235" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32876712" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24959612" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -418,11 +592,10 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2584814" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32876712" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
     </layout>
   </component>
@@ -440,7 +613,8 @@
     </option>
     <MESSAGE value="First import into Git repository" />
     <MESSAGE value="First import into Git repository&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="First import into Git repository&#10;" />
+    <MESSAGE value="Don't know." />
+    <option name="LAST_COMMIT_MESSAGE" value="Don't know." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -449,6 +623,17 @@
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
     <option name="FILTER_TARGETS" value="false" />
     <buildFile url="file://$PROJECT_DIR$/MatrixStudio/dist/build.xml">
+      <targetFilters>
+        <filter targetName="version" isVisible="false" />
+        <filter targetName="jar" isVisible="false" />
+        <filter targetName="build.win32" isVisible="false" />
+        <filter targetName="build.win64" isVisible="false" />
+        <filter targetName="build.linux32" isVisible="false" />
+        <filter targetName="build.linux64" isVisible="false" />
+        <filter targetName="build.macosx32" isVisible="false" />
+        <filter targetName="build.macosx64" isVisible="false" />
+        <filter targetName="all" isVisible="false" />
+      </targetFilters>
       <expanded value="false" />
     </buildFile>
     <buildFile url="file://$PROJECT_DIR$/MatrixStudio/model/build.xml">
@@ -598,7 +783,77 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/LogHandler.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="990">
+        <state line="6" column="0" selection-start="159" selection-end="159" vertical-scroll-proportion="0.16233766" vertical-offset="0" max-vertical-offset="735">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MatrixStudio/src/matrixstudio/kernel/MjpegEncoder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="13" selection-start="379" selection-end="379" vertical-scroll-proportion="0.0" vertical-offset="11206" max-vertical-offset="11895">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MatrixStudio/src-gen/toto/SchedulerTest.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="29" selection-start="387" selection-end="387" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1305">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/MatrixField.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="167" column="5" selection-start="5178" selection-end="5178" vertical-scroll-proportion="0.0" vertical-offset="1833" max-vertical-offset="2670">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/MatrixTabController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="575" column="15" selection-start="18131" selection-end="18131" vertical-scroll-proportion="0.0" vertical-offset="7893" max-vertical-offset="9615">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/SourceCodeField.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="165" column="8" selection-start="4587" selection-end="4587" vertical-scroll-proportion="0.0" vertical-offset="1833" max-vertical-offset="5775">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MatrixStudio/src/matrixstudio/model/Kernel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="75" column="28" selection-start="1989" selection-end="1989" vertical-scroll-proportion="0.0" vertical-offset="891" max-vertical-offset="1755">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/MatrixStudio.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="350" column="49" selection-start="9327" selection-end="9327" vertical-scroll-proportion="0.0" vertical-offset="4403" max-vertical-offset="6780">
+          <folding>
+            <element signature="e#5126#5127#0" expanded="true" />
+            <element signature="e#5151#5152#0" expanded="true" />
+            <element signature="e#6637#6638#0" expanded="true" />
+            <element signature="e#6660#6661#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/MatrixStudio/src/matrixstudio/ui/Actions.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="265" column="16" selection-start="7955" selection-end="7955" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="5400">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/dictionaries/charlie.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="439">
           <folding />
         </state>
       </provider>

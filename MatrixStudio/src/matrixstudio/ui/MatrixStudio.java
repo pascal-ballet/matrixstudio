@@ -32,8 +32,7 @@ import org.xid.basics.ui.field.PropertiesField;
 
 
 public class MatrixStudio {
-	public static final String MATRIXSTORE_HOST = "matrixstore.host";
-	
+
 	private String version;
 	private String date;
 
@@ -53,7 +52,6 @@ public class MatrixStudio {
 	
 	private MultiTabField centerField;
 	
-	private StoreField storeField; 
 	private MatrixTabController matrixTabController;
 	private ScheduleTabController schedulerTabController;
 	private KernelTabController kernelTabController;
@@ -108,7 +106,6 @@ public class MatrixStudio {
 	public CompositeField createFields() {
 		centerField = new MultiTabField();
 		
-		openStoreTab();
 		createMatricesTab();
 		createSchedulerTab();
 		createKernelsTab();
@@ -136,26 +133,6 @@ public class MatrixStudio {
 		return mainField;
 	}
 
-	public void openStoreTab() {
-		if ( storeField == null ) {
-			String host = System.getProperty(MATRIXSTORE_HOST);
-			// if property is set create the store tab.
-			if ( host != null ) {
-				storeField = new StoreField();
-				storeField.setUrl(host + "/index.html");
-				centerField.addTab(storeField, resources.getImage("MatrixStudio-16.png"), false, 0);
-				centerField.setSelected(0);
-			}
-		}
-	}
-	
-	public void closeStoreTab() {
-		if ( storeField != null ) {
-			centerField.removeTab(storeField);
-			storeField = null;
-		}
-	}
-	
 	private void createMatricesTab() {
 		matrixTabController = new MatrixTabController(this);
 		matrixTabController.setSubject(model);
@@ -199,11 +176,7 @@ public class MatrixStudio {
 	public boolean isTextEditing() {
 		// Careful is tab order changes.
 		int selected = centerField.getSelected();
-		// adds one two selected if storeField is null
-		if ( storeField == null ) {
-			selected += 1;
-		}
-		return selected >= 3;
+		return selected >= 2;
 	}
 
 	public void refreshFields() {
@@ -215,36 +188,23 @@ public class MatrixStudio {
 			// refresh field depending on selected tab.
 			// Careful is tab order changes.
 			int selected = centerField.getSelected();
-			// adds one two selected if storeField is null
-			if ( storeField == null ) {
-				selected += 1;
-			}
-			mainField.setMaximized(selected == 0 ? centerField : null);
-				
 			switch (selected) {
 			case 0:
-				refreshStore();
-				break;
-			case 1:
 				refreshMatrices();
 				break;
-			case 2:
+			case 1:
 				refreshSchedule();
 				break;
-			case 3:
+			case 2:
 				refreshKernels();
 				break;
-			case 4:
+			case 3:
 				refreshLibrary();
 				break;
 			}
 			
 			if (toolkit != null ) toolkit.validateAll();
 		}
-	}
-	
-	public void refreshStore() {
-		storeField.refresh();
 	}
 
 	public void refreshMatrices() {
@@ -389,13 +349,9 @@ public class MatrixStudio {
 	public void openFindAndReplaceDialog() {
 		// Careful is tab order changes.
 		int selected = centerField.getSelected();
-		// adds one two selected if storeField is null
-		if ( storeField == null ) {
-			selected += 1;
-		}
-		if ( selected == 3 ) {
+		if ( selected == 2 ) {
 			kernelTabController.openFindAndReplaceDialog();
-		} else if ( selected == 4 ) {
+		} else if ( selected == 3 ) {
 			libraryTabController.openFindAndReplaceDialog();
 		}
 	
@@ -514,16 +470,13 @@ public class MatrixStudio {
 	 * @return a string.
 	 */
 	private String createHeaderTitle() {
-		StringBuilder title = new StringBuilder();
-		title.append("M A T R I X   S T U D I O");
-		title.append(" - ");
-		title.append("Version ");
-		title.append(version);
-		title.append(" of ");
-		title.append(date);
-		title.append("\n\nOpenCL device(s) ");
-		title.append(CLUtil.isClPresent() ? "FOUND." : "NOT FOUND. There are 2 possibilities:\n1) Your computer have no OpenCL device\n2) You have to update your OpenCL device driver.");
-		return title.toString();
+        return
+                "M A T R I X   S T U D I O" + " - " +
+                "Version " + version + " of " + date + "\n\n" +
+                "OpenCL device(s) " + (CLUtil.isClPresent() ? "FOUND." : "NOT FOUND. " +
+                "There are 2 possibilities:\n" +
+                "1) Your computer have no OpenCL device\n"+
+                "2) You have to update your OpenCL device driver.");
 	}
 	
 	public void recordMPEG() {

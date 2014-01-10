@@ -51,9 +51,18 @@ public class Kernel extends Code implements ModelObject, BoostObject {
 			proto.append(matrix.getCType());
 			proto.append(" ");
 			proto.append(matrix.getName());
-			proto.append(", uint "+matrix.getName()+"_SX");
-			proto.append(", uint "+matrix.getName()+"_SY");
-			proto.append(", uint "+matrix.getName()+"_SZ");
+
+            proto.append(", uint ");
+			proto.append(matrix.getName());
+			proto.append("_SX");
+
+			proto.append(", uint ");
+			proto.append(matrix.getName());
+			proto.append("_SY");
+
+            proto.append(", uint ");
+            proto.append(matrix.getName());
+            proto.append("_SZ");
 		}
 		proto.append(")");
 		return proto.toString();

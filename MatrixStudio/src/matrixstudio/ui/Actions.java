@@ -63,26 +63,15 @@ public class Actions {
 		createFileAction();
 		createMatrixAction();
 		createEditAction();
-		createStoreAction();
 
-		if ( System.getProperty(MatrixStudio.MATRIXSTORE_HOST) != null ) {
-			addAction("MenuBar", 
-				new Action.Container("MenuBar", 
-						getAction("File"), 
-						getAction("Edit"), 
-						getAction("Matrix"), 
-						getAction("Store")
-				)
-			);
-		} else {
-			addAction("MenuBar", 
-					new Action.Container("MenuBar", 
-							getAction("File"), 
-							getAction("Edit"),
-							getAction("Matrix") 
-							)
-					);
-		}
+        addAction("MenuBar",
+                new Action.Container("MenuBar",
+                        getAction("File"),
+                        getAction("Edit"),
+                        getAction("Matrix")
+                        )
+                );
+
 	}
 	
 	private void createFileAction() {
@@ -364,35 +353,5 @@ public class Actions {
 				getAction("Resize")
 			));
 
-	}
-	
-	private void createStoreAction() {
-		addAction("OpenStore", new Action.Stub("Open", Action.STYLE_DEFAULT) {
-			@Override
-			public int run(ActionMonitor monitor) {
-				ui.openStoreTab();
-				return STATUS_OK;
-			}
-		});
-		addAction("CloseStore", new Action.Stub("Close", Action.STYLE_DEFAULT) {
-			@Override
-			public int run(ActionMonitor monitor) {
-				ui.closeStoreTab();
-				return STATUS_OK;
-			}
-		});
-		addAction("RefreshStore", new Action.Stub("Refresh", Action.STYLE_DEFAULT) {
-			@Override
-			public int run(ActionMonitor monitor) {
-				ui.refreshStore();
-				return STATUS_OK;
-			}
-		});
-		addAction("Store", new Action.Container("Store", 
-				getAction("OpenStore"),
-				getAction("CloseStore"),
-				separator,
-				getAction("RefreshStore")
-			));
 	}
 }
