@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Distribution" default="all">
+	<property file="../ui/src/matrixstudio/ui/version.properties" />
+	<property file="build.properties" />
+	<mkdir dir="${destination.dir}" />
+
+	<!-- default mode is classic -->
+	<property name="mode" value="classic" />
+	
+	<!-- Time stamp for daily builds. -->	
+	<tstamp>
+		<format property="today" pattern="d-MMMM-yyyy" locale="en,UK"/>
+	</tstamp>
+	
+	<!-- Version and date for classic builds -->	
+	<property file="../ui/src/matrixstudio/ui/version.properties" />
+
+	<condition property="daily" value="true" else="false">
+		<equals arg1="${mode}" arg2="daily"/>
+	</condition>
+
+	<!-- Creates file.suffix depending on mode -->
+	<condition property="tag" value="${today}" else="${version}">
+		<equals arg1="${daily}" arg2="true" />
+	</condition>
+
+	<!-- Creates and copies version.property file to print the daily version -->
+	<target name="version" if="${daily}">
+		<mkdir dir="../bin/matrixstudio/ui" />
+		<propertyfile file="../bin/matrixstudio/ui/version.properties">
+		  <entry  key="version" value="daily"/>
+		  <entry  key="date" value="${tag}"/>
+		</propertyfile>
+	</target>	
+
+	<target name="jar" depends="version">
+		<mkdir dir="${destination.dir}/jars" />
+		<jar 
+			destfile="${destination.dir}/jars/MatrixStudio.jar"
+			manifest="template/jars/MANIFEST.MF"
+		>
+			<fileset dir="../out/production/core">
+				<include name="**/*" />
+			</fileset>
+			<fileset dir="../out/production/ui">
+				<include name="**/*" />
+			</fileset>
+
+		</jar>
+		<jar
+			destfile="${destination.dir}/jars/MatrixStudioMac.jar"
+			manifest="template/jars/MANIFEST-mac.MF"
+		>
+			<fileset dir="../out/production/core">
+				<include name="**/*" />
+			</fileset>
+			<fileset dir="../out/production/ui">
+				<include name="**/*" />
+			</fileset>
+		</jar>
+	</target>
+	
+	
+	<target name="build.win32" depends="jar">
+		<delete failonerror="no" dir="${destination.dir}/win32" />
+		<mkdir dir="${destination.dir}/win32"/>
+		<copy todir="${destination.dir}/win32/MatrixStudio">
+			<fileset dir="template/win32/MatrixStudio">
+				<include name="**/*" />
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+		
+		<copy file="${destination.dir}/jars/MatrixStudio.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
+		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" tofile="${destination.dir}/win32/MatrixStudio/jars/jocl.jar"/>
+		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
+		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
+		<copy file="../libraries/swt/swt-4.3-win32-win32-x86/swt.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
+		
+		<zip destfile="${destination.dir}/MatrixStudio-${tag}-win32.zip">
+			<fileset dir="${destination.dir}/win32" id="id">
+			    <include name="MatrixStudio/**/*"/>
+			</fileset>
+		</zip>
+	</target>
+	
+	<target name="build.win64" depends="jar">
+		<delete failonerror="no" dir="${destination.dir}/win64" />
+		<mkdir dir="${destination.dir}/win64"/>
+		<copy todir="${destination.dir}/win64/MatrixStudio">
+			<fileset dir="template/win64/MatrixStudio">
+				<include name="**/*" />
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+		
+		<copy file="${destination.dir}/jars/MatrixStudio.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
+		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" tofile="${destination.dir}/win64/MatrixStudio/jars/jocl.jar"/>
+		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
+		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
+		<copy file="../libraries/swt/swt-4.3-win32-win32-x86_64/swt.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
+		
+		<zip destfile="${destination.dir}/MatrixStudio-${tag}-win64.zip">
+			<fileset dir="${destination.dir}/win64" id="id">
+			    <include name="MatrixStudio/**/*"/>
+			</fileset>
+		</zip>
+	</target>
+	
+	<target name="build.linux32" depends="jar">
+		<delete failonerror="no" dir="${destination.dir}/linux-32" />
+		<mkdir dir="${destination.dir}/linux-32" />
+		<copy todir="${destination.dir}/linux-32">
+			<fileset dir="template/linux">
+				<include name="**/*" />
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+
+		<copy file="${destination.dir}/jars/MatrixStudio.jar" todir="${destination.dir}/linux-32/MatrixStudio/jars"/>
+		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" tofile="${destination.dir}/linux-32/MatrixStudio/jars/jocl.jar"/>
+		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/linux-32/MatrixStudio/jars"/>
+		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/linux-32/MatrixStudio/jars"/>
+		<copy file="../libraries/swt/swt-4.3-gtk-linux-x86/swt.jar" tofile="${destination.dir}/linux-32/MatrixStudio/jars/swt.jar"/>
+		<chmod perm="+x" file="${destination.dir}/linux-32/MatrixStudio/MatrixStudio.sh"/>
+		
+		<tar destfile="${destination.dir}/MatrixStudio-${tag}-linux.tar.gz" compression="gzip" >
+			<fileset dir="${destination.dir}/linux-32" id="id">
+			    <include name="MatrixStudio/**/*"/>
+			</fileset>
+		</tar>
+	</target>
+
+	
+	<target name="build.linux64" depends="jar">
+		<delete failonerror="no" dir="${destination.dir}/linux-64" />
+		<mkdir dir="${destination.dir}/linux-64" />
+		<copy todir="${destination.dir}/linux-64">
+			<fileset dir="template/linux">
+				<include name="**/*" />
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+
+		<copy file="${destination.dir}/jars/MatrixStudio.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
+		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" tofile="${destination.dir}/linux-64/MatrixStudio/jars/jocl.jar"/>
+		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
+		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
+		<copy file="../libraries/swt/swt-4.3-gtk-linux-x86_64/swt.jar" tofile="${destination.dir}/linux-64/MatrixStudio/jars/swt.jar"/>
+		<chmod perm="+x" file="${destination.dir}/linux-64/MatrixStudio/MatrixStudio.sh"/>
+		
+		<tar destfile="${destination.dir}/MatrixStudio-${tag}-linux-64.tar.gz" compression="gzip">
+			<fileset dir="${destination.dir}/linux-64" id="id">
+			    <include name="MatrixStudio/**/*"/>
+			</fileset>
+		</tar>
+	</target>
+
+	<target name="build.macosx32" depends="jar">
+		<delete failonerror="no" dir="${destination.dir}/macosx32" />
+		<mkdir dir="${destination.dir}/macosx32" />
+		<copy todir="${destination.dir}/macosx32">
+			<fileset dir="template/macosx">
+				<include name="**/*" />
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+
+		<copy file="${destination.dir}/jars/MatrixStudioMac.jar" tofile="${destination.dir}/macosx32/MatrixStudio.app/Contents/MacOS/jars/MatrixStudio.jar"/>
+		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/macosx32/MatrixStudio.app/Contents/MacOS/jars"/>
+		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/macosx32/MatrixStudio.app/Contents/MacOS/jars"/>
+		<copy file="../libraries/basics-1.0.m3/basics-ui-cocoa.jar" todir="${destination.dir}/macosx32/MatrixStudio.app/Contents/MacOS/jars"/>
+		<copy file="../libraries/swt/swt-4.3-cocoa-macosx/swt.jar" todir="${destination.dir}/macosx32/MatrixStudio.app/Contents/MacOS/jars"/>
+		
+		<chmod perm="+x" file="${destination.dir}/macosx32/MatrixStudio.app/Contents/MacOS/MatrixStudio"/>
+	</target>
+	
+	<target name="build.macosx64" depends="jar">
+		<delete failonerror="no" dir="${destination.dir}/macosx64" />
+		<mkdir dir="${destination.dir}/macosx64"/>	
+		<copy todir="${destination.dir}/macosx64">
+			<fileset dir="template/macosx">
+				<include name="**/*" />
+				<exclude name="**/.svn" />
+			</fileset>
+		</copy>
+
+		<copy file="${destination.dir}/jars/MatrixStudioMac.jar" tofile="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars/MatrixStudio.jar"/>
+		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" tofile="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars/jocl.jar"/>
+		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
+		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
+		<copy file="../libraries/basics-1.0.m3/basics-ui-cocoa.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
+		<copy file="../libraries/swt/swt-4.3-cocoa-macosx-x86_64/swt.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
+		<chmod perm="+x" file="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/MatrixStudio"/>
+	</target>
+
+    <target name="build.dmg" depends="build.macosx32, build.macosx64">
+		<chmod perm="+x" file="./createDmg.sh"/>
+        <exec executable="./createDmg.sh"/>
+    </target>
+
+	<target name="all" depends="build.macosx32, build.macosx64, build.linux32, build.linux64, build.win32, build.win64, build.dmg"/>
+</project>

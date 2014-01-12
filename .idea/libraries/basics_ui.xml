@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="basics-ui">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libraries/basics-1.0.m3/basics-ui.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libraries/basics-1.0.m3/basics-ui-cocoa.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/libraries/basics-1.0.m3/basics-ui.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libraries/basics-1.0.m3/basics-ui-cocoa.jar!/" />
+    </SOURCES>
+  </library>
+</component>

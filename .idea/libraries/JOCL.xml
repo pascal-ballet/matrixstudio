@@ -1,7 +1,7 @@
 <component name="libraryTable">
   <library name="JOCL">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/MatrixStudio/libs/jocl-0.1.9/JOCL-0.1.9.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libraries/jocl-0.1.9/JOCL-0.1.9.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
