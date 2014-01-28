@@ -27,7 +27,7 @@
 	<!-- Creates and copies version.property file to print the daily version -->
 	<target name="version" if="${daily}">
 		<mkdir dir="../bin/matrixstudio/ui" />
-		<propertyfile file="../bin/matrixstudio/ui/version.properties">
+		<propertyfile file="../out/production/ui/matrixstudio/ui/version.properties">
 		  <entry  key="version" value="daily"/>
 		  <entry  key="date" value="${tag}"/>
 		</propertyfile>
