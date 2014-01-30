@@ -59,7 +59,10 @@
 			</fileset>
 		</jar>
 	</target>
-	
+
+    <target name="clean">
+        <delete failonerror="no" dir="${destination.dir" />
+    </target>
 	
 	<target name="build.win32" depends="jar">
 		<delete failonerror="no" dir="${destination.dir}/win32" />
@@ -199,5 +202,5 @@
         <exec executable="./createDmg.sh"/>
     </target>
 
-	<target name="all" depends="build.macosx32, build.macosx64, build.linux32, build.linux64, build.win32, build.win64, build.dmg"/>
+	<target name="all" depends="clean, build.macosx32, build.macosx64, build.linux32, build.linux64, build.win32, build.win64, build.dmg"/>
 </project>
