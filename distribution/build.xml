@@ -61,7 +61,7 @@
 	</target>
 
     <target name="clean">
-        <delete failonerror="no" dir="${destination.dir" />
+        <delete failonerror="no" dir="${destination.dir}" />
     </target>
 	
 	<target name="build.win32" depends="jar">
