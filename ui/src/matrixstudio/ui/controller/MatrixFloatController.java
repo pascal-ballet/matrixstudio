@@ -90,7 +90,7 @@ public class MatrixFloatController extends Controller<MatrixFloat> {
 			return true;
 		}
 		if ( field == depthField ) {
-			getSubject().setSizeY(depthField.getIntValue());
+			getSubject().setSizeZ(depthField.getIntValue());
 			getSubject().initBlank();
 			return true;
 		}

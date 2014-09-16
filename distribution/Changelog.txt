@@ -1,2 +1,4 @@
-Version 1.0
-First public version.
+
+Version 0.7.1
+-------------
++ Corrects changing size Z on float matrices.
