@@ -1,5 +1,5 @@
 <project name="Model Generation" default="all" basedir="../../">
-	<property name="lib.dir" location="${basedir}/libs"/> 
+	<property name="lib.dir" location="${basedir}/libraries"/>
 	
 	<property name="emf.classpath" location="${lib.dir}/emf-2.8.1/emf-2.8.1.jar"/>
 	<property name="basics.dir" location="${lib.dir}/basics-1.0.m3"/>
@@ -13,9 +13,9 @@
 	
 	<target name="generate" >
 		<generator
-		    source="${basedir}/model/MatrixStudio.ecore"
+		    source="${basedir}/core/model/MatrixStudio.ecore"
 			basepackage="matrixstudio"
-		    destination="${basedir}/src"
+		    destination="${basedir}/core/src"
 			model="true"
 			visitor="simple"
 			boost="true"
