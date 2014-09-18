@@ -339,10 +339,24 @@ public class Actions {
 				if ( dialog.open() != 0 ) return STATUS_CANCEL;
 				
 				
+                final int xFieldIntValue = xField.getIntValue();
+                final int yFieldIntValue = yField.getIntValue();
+                final int zFieldIntValue = zField.getIntValue();
 				for ( Matrix matrix : matrixField.getChecked() ) {
-					if ( xField.isEnable() ) matrix.setSizeX(xField.getIntValue());
-					if ( yField.isEnable() ) matrix.setSizeY(yField.getIntValue());
-					if ( zField.isEnable() ) matrix.setSizeZ(zField.getIntValue());
+                    boolean changed = false;
+					if (xField.isEnable() && matrix.getSizeX() != xFieldIntValue) {
+                        changed = true;
+                        matrix.setSizeX(xFieldIntValue);
+                    }
+					if (yField.isEnable() && matrix.getSizeY() != yFieldIntValue) {
+                        changed = true;
+                        matrix.setSizeY(yFieldIntValue);
+                    }
+					if (zField.isEnable() && matrix.getSizeZ() != zFieldIntValue) {
+                        changed = true;
+                        matrix.setSizeZ(zFieldIntValue);
+                    }
+                    if (changed) matrix.initBlank();
 				}
 				
 				return STATUS_OK;
