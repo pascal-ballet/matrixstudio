@@ -4,3 +4,4 @@ Version 0.7.1
 + Corrects changing size Z on float matrices.
 + Corrects C type handling for float matrices.
 + Fix global resizing (re-init matrices).
++ Corrects Scheduler tab name.

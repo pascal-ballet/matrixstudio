@@ -41,7 +41,7 @@ public class ScheduleTabController extends Controller<Model> {
 			}
 		});
 		
-		scheduleComposite = new CompositeField("SchedulerTest", scheduleDiagramField);
+		scheduleComposite = new CompositeField("Scheduler", scheduleDiagramField);
 		return scheduleComposite;
 	}
 
