@@ -74,8 +74,7 @@ public class MatrixFloat extends Matrix implements ModelObject, BoostObject {
 	}
 
 	public String getCType() {
-		// TODO implement getCType(...)
-		throw new UnsupportedOperationException();
+        return "float *";
 	}
 
 	public void setToInitialValues() {
