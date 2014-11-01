@@ -1,10 +1,10 @@
 package matrixstudio.ui;
 
 import matrixstudio.kernel.Simulator;
+import matrixstudio.kernel.Tools;
 import matrixstudio.model.Kernel;
 import matrixstudio.model.Model;
 import matrixstudio.model.Task;
-
 import org.xid.basics.progress.ActionMonitor;
 import org.xid.basics.ui.BasicsUI;
 import org.xid.basics.ui.action.Action;
@@ -50,7 +50,7 @@ public class KernelTabController extends Controller<Model> {
 			public int run(ActionMonitor monitor) {
 				Kernel kernel = new Kernel();
 				kernel.setName(NameUtils.availableName("Kernel1", getSubject().getCodeList()));
-				kernel.setContents("// *** Develop your code here\n");
+				kernel.setContents(Tools.INITIAL_KERNEL);
 				getSubject().addCodeAndOpposite(kernel);
 				return Action.STATUS_OK;
 			}

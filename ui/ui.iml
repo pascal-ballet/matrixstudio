@@ -20,19 +20,9 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="library" name="SWT" level="project" />
-    <orderEntry type="module-library" scope="TEST">
-      <library name="junit4">
-        <CLASSES>
-          <root url="jar://$APPLICATION_HOME_DIR$/lib/junit-4.10.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="library" name="basics" level="project" />
-    <orderEntry type="library" name="basics-ui" level="project" />
     <orderEntry type="library" name="JOCL" level="project" />
     <orderEntry type="module" module-name="core" />
+    <orderEntry type="library" name="basics-ui" level="project" />
   </component>
 </module>
-

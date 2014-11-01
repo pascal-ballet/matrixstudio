@@ -1,17 +1,10 @@
 package matrixstudio.ui;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Properties;
-
-import matrixstudio.kernel.SimulatorContext;
 import matrixstudio.kernel.CLUtil;
 import matrixstudio.kernel.Simulator;
+import matrixstudio.kernel.SimulatorContext;
 import matrixstudio.kernel.Tools;
 import matrixstudio.model.Model;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
@@ -30,6 +23,12 @@ import org.xid.basics.ui.field.CompositeField;
 import org.xid.basics.ui.field.ConsoleField;
 import org.xid.basics.ui.field.MultiTabField;
 import org.xid.basics.ui.field.PropertiesField;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.Properties;
 
 
 public class MatrixStudio implements SimulatorContext, StudioContext {
@@ -446,15 +445,14 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 		
 		CompositeField mainField = createFields();
 		refreshFields();
-		shell = FieldShellToolkit.createShell(display, "Matrix Studio");
+		shell = FieldShellToolkit.createShell(display, createHeaderTitle());
 
 		actions = new Actions(this);
 		
 		String title = createHeaderTitle();
 		
-		toolkit = new FieldShellToolkit(shell, title , BasicsUI.SHOW_HINTS | BasicsUI.NO_AUTOMATIC_VALIDATION, mainField);
-		toolkit.setInitialMessage("Pascal Ballet - Lab-STICC - European University of Brittany - UBO.\nJean-Charles Roger.");
-		toolkit.setBannerImage(resources.getImage("MatrixStudio-64.png"));
+		toolkit = new FieldShellToolkit(shell, title , BasicsUI.SHOW_HINTS | BasicsUI.NO_AUTOMATIC_VALIDATION | BasicsUI.NO_HEADER, mainField);
+		toolkit.setBannerImage(resources.getImage("MatrixStudio-32.png"));
 		toolkit.setActionExecuter(executer);
 		toolkit.setMenuActions(actions.getMenuBarAction().getActions());
 		toolkit.init();
@@ -486,11 +484,8 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 	private String createHeaderTitle() {
         return
                 "M A T R I X   S T U D I O" + " - " +
-                "Version " + version + " of " + date + "\n\n" +
-                "OpenCL device(s) " + (CLUtil.isClPresent() ? "FOUND." : "NOT FOUND. " +
-                "There are 2 possibilities:\n" +
-                "1) Your computer have no OpenCL device\n"+
-                "2) You have to update your OpenCL device driver.");
+                "Version " + version + " of " + date + " - " +
+                "OpenCL device(s) " + (CLUtil.isClPresent() ? "FOUND." : "NOT FOUND. ");
 	}
 	
 	public void recordMPEG() {
