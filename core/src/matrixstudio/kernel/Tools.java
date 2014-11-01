@@ -1,5 +1,13 @@
 package matrixstudio.kernel;
 
+import matrixstudio.model.Kernel;
+import matrixstudio.model.Library;
+import matrixstudio.model.MatrixInteger;
+import matrixstudio.model.Model;
+import matrixstudio.model.Scheduler;
+import matrixstudio.model.Task;
+import org.xid.basics.serializer.JBoost;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -12,18 +20,17 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import matrixstudio.model.Kernel;
-import matrixstudio.model.Library;
-import matrixstudio.model.MatrixInteger;
-import matrixstudio.model.Model;
-import matrixstudio.model.Scheduler;
-import matrixstudio.model.Task;
-
-import org.xid.basics.serializer.JBoost;
-
 public class Tools {
 
 	public static final Random rnd = new Random();
+	public static final String INITIAL_KERNEL =
+					"\tuint x = get_global_id(0);\n" +
+					"\tuint y = get_global_id(1);\n" +
+					"\tuint z = get_global_id(2);\n\n" +
+					"\t// Position in matrix\n" +
+					"\tuint p = x + y*workSizeX + z*workSizeX*workSizeY;\n\n" +
+					"\t// Work here"
+					;
 
 	public static String getDateTime() {
         DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
@@ -32,7 +39,7 @@ public class Tools {
     }
 	
 	public static final Pattern functionPrototypePattern = Pattern.compile(
-			"^\\s*(u?int|float|bool|void)\\s+([a-zA-Z0-9Ð]+)\\([^\\)]*\\)\\s*\\{?$"
+			"^\\s*(u?int|float|bool|void)\\s+([a-zA-Z0-9ï¿½]+)\\([^\\)]*\\)\\s*\\{?$"
 	);
 	
 	/**
@@ -53,7 +60,7 @@ public class Tools {
 			
 		final Kernel kernel1 = new Kernel();
 		kernel1.setName("Kernel1");
-		kernel1.setContents("\t// *** Develop your program here.\n");
+		kernel1.setContents(INITIAL_KERNEL);
 		model.addCodeAndOpposite(kernel1);
 		
 		

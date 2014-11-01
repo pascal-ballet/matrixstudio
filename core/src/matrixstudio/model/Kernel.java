@@ -1,11 +1,9 @@
 package matrixstudio.model;
 
-import org.xid.basics.serializer.BoostObject;
-import org.xid.basics.serializer.Boost;
-import org.xid.basics.model.ModelObject;
 import org.xid.basics.model.ChangeRecorder;
-import matrixstudio.model.ModelVisitor;
-import matrixstudio.model.Code;
+import org.xid.basics.model.ModelObject;
+import org.xid.basics.serializer.Boost;
+import org.xid.basics.serializer.BoostObject;
 
 
 public class Kernel extends Code implements ModelObject, BoostObject {
@@ -45,7 +43,9 @@ public class Kernel extends Code implements ModelObject, BoostObject {
 		final StringBuilder proto = new StringBuilder();
 		proto.append("__kernel void ");
 		proto.append(getName());
-		proto.append("( uint rand, uint step, uint mouseX, uint mouseY, uint mouseBtn");
+		proto.append("(\n\t");
+		proto.append("uint rand, uint step, uint mouseX, uint mouseY, uint mouseBtn,\n\t");
+		proto.append("uint workSizeX, uint workSizeY, uint workSizeZ");
 		for ( Matrix matrix : getModel().getMatrixList() ) {
 			proto.append(",\n\t__global ");
 			proto.append(matrix.getCType());

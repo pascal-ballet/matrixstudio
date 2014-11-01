@@ -1,37 +1,5 @@
 package matrixstudio.kernel;
 
-import static org.jocl.CL.CL_BUILD_PROGRAM_FAILURE;
-import static org.jocl.CL.CL_COMPILER_NOT_AVAILABLE;
-import static org.jocl.CL.CL_CONTEXT_DEVICES;
-import static org.jocl.CL.CL_CONTEXT_PLATFORM;
-import static org.jocl.CL.CL_DEVICE_NAME;
-import static org.jocl.CL.CL_INVALID_BINARY;
-import static org.jocl.CL.CL_INVALID_BUILD_OPTIONS;
-import static org.jocl.CL.CL_INVALID_DEVICE;
-import static org.jocl.CL.CL_INVALID_OPERATION;
-import static org.jocl.CL.CL_INVALID_PROGRAM;
-import static org.jocl.CL.CL_INVALID_VALUE;
-import static org.jocl.CL.CL_MEM_COPY_HOST_PTR;
-import static org.jocl.CL.CL_MEM_READ_WRITE;
-import static org.jocl.CL.CL_OUT_OF_HOST_MEMORY;
-import static org.jocl.CL.CL_PLATFORM_NAME;
-import static org.jocl.CL.CL_SUCCESS;
-import static org.jocl.CL.clBuildProgram;
-import static org.jocl.CL.clCreateBuffer;
-import static org.jocl.CL.clCreateCommandQueue;
-import static org.jocl.CL.clCreateContext;
-import static org.jocl.CL.clCreateKernel;
-import static org.jocl.CL.clCreateProgramWithSource;
-import static org.jocl.CL.clEnqueueNDRangeKernel;
-import static org.jocl.CL.clEnqueueReadBuffer;
-import static org.jocl.CL.clGetContextInfo;
-import static org.jocl.CL.clGetPlatformIDs;
-import static org.jocl.CL.clSetKernelArg;
-
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
 import matrixstudio.model.Code;
 import matrixstudio.model.Kernel;
 import matrixstudio.model.Library;
@@ -42,7 +10,6 @@ import matrixstudio.model.MatrixULong;
 import matrixstudio.model.Model;
 import matrixstudio.model.Scheduler;
 import matrixstudio.model.Task;
-
 import org.jocl.CL;
 import org.jocl.CLException;
 import org.jocl.Pointer;
@@ -58,6 +25,12 @@ import org.jocl.cl_platform_id;
 import org.jocl.cl_program;
 import org.xid.basics.error.DiagnosticUtil;
 import org.xid.basics.progress.ActionMonitor;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.jocl.CL.*;
 
 
 public class Simulator implements Runnable {
@@ -545,19 +518,23 @@ public class Simulator implements Runnable {
 			
 			// First, we build the kernels parameters
 			for (int tt=0; tt<schedule.getTaskCount(); tt++ ) {
-				Task ta = schedule.getTask(tt);
+				Task task = schedule.getTask(tt);
 		        int rand = Tools.rnd.nextInt(1073741824);
 		        
 		        // Pass modified arguments that are not pointers (pointers do not need update)
 		        int argNum = 0;
-		        cl_kernel kernel = clKernelsByName.get(ta.getKernel().getName());
+		        cl_kernel kernel = clKernelsByName.get(task.getKernel().getName());
 		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(new int[]{rand}));
 	
 		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(new int[]{nbSteps}));
 		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(new int[]{mouseX}));
 		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(new int[]{mouseY}));
 		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(new int[]{mouseBtn}));
-			}		
+
+		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(new int[]{task.getGlobalWorkSizeX()}));
+		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(new int[]{task.getGlobalWorkSizeY()}));
+		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(new int[]{task.getGlobalWorkSizeZ()}));
+			}
 			
 			// Enqueue of all the tasks (schedule must be respected)
 			boolean result = executeAllTasks();
