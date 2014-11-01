@@ -1,3 +1,7 @@
+Version 0.8.0
+-------------
++ Reworked main view to gain room.
++ Adds work size in x,y and z in kernel parameters.
 
 Version 0.7.1
 -------------
