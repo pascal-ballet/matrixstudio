@@ -4,8 +4,11 @@
     <entry_points version="2.0" />
   </component>
   <component name="IdProvider" IDEtalkID="EB9F6F7F3AFF772496414ED85787A02D" />
+  <component name="ProjectResources">
+    <resource url="http://www.eclipse.org/emf/2002/Ecore" location="$USER_HOME$/Documents/Ecore.xsd" />
+    <resource url="http://www.omg.org/XMI" location="$USER_HOME$/Documents/xmi.xsd" />
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
-
