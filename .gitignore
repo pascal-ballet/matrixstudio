@@ -2,3 +2,7 @@ out
 .idea/module.xml
 distribution/built
 workspace.xml
+
+## Gradle ignore
+**/build/
+.gradle
