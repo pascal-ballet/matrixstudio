@@ -1,4 +1,7 @@
 
+apply plugin:'application'
+
+
 String swtJarName = '../libraries/swt/';
 switch(System.getProperty('os.name').toLowerCase().split()[0]) {
     case 'windows':
@@ -27,3 +30,14 @@ dependencies {
     compile group: 'org.jocl', name: 'jocl', version: '0.1.9'
     compile group: 'org.eclipse', name: 'swt', version: '3.3.0-v3346'
 }
+
+jar {
+    manifest.attributes(
+            'Class-Path': configurations.runtime.files.collect { it.name }.join(' '),
+            'Main-Class': 'matrixstudio.ui.MatrixStudio'
+    )
+}
+
+
+//mainClassName = 'matrixstudio.ui.MatrixStudio'
+applicationDefaultJvmArgs = ["-XstartOnFirstThread"]

@@ -3,3 +3,10 @@ dependencies {
     compile files('../libraries/basics-1.0.m3/basics.jar')
     compile group: 'org.jocl', name: 'jocl', version: '0.1.9'
 }
+
+jar {
+    manifest.attributes(
+            'Class-Path': configurations.runtime.files.collect { it.name }.join(' ')
+    )
+}
+
