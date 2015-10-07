@@ -16,3 +16,34 @@ allprojects {
         testCompile 'junit:junit:4.11'
     }
 }
+
+apply plugin:'application'
+
+dependencies {
+    compile project(':core')
+    compile project(':ui')
+}
+
+applicationDefaultJvmArgs = []
+mainClassName = 'matrixstudio.ui.MatrixStudio'
+
+switch(System.getProperty('os.name').toLowerCase().split()[0]) {
+    case 'windows':
+        break
+    case 'linux':
+        break
+    case 'mac':
+        applicationDefaultJvmArgs += "-XstartOnFirstThread"
+        break
+    default:
+        throw new Exception('Unsupported OS')
+}
+
+jar {
+    manifest.attributes(
+            'Class-Path': configurations.runtime.files.collect { it.name }.join(' '),
+            'Main-Class': 'matrixstudio.ui.MatrixStudio'
+    )
+}
+
+

@@ -1,7 +1,4 @@
 
-apply plugin:'application'
-
-
 String swtJarName = '../libraries/swt/';
 switch(System.getProperty('os.name').toLowerCase().split()[0]) {
     case 'windows':
@@ -33,11 +30,6 @@ dependencies {
 
 jar {
     manifest.attributes(
-            'Class-Path': configurations.runtime.files.collect { it.name }.join(' '),
-            'Main-Class': 'matrixstudio.ui.MatrixStudio'
+            'Class-Path': configurations.runtime.files.collect { it.name }.join(' ')
     )
 }
-
-
-//mainClassName = 'matrixstudio.ui.MatrixStudio'
-applicationDefaultJvmArgs = ["-XstartOnFirstThread"]
