@@ -56,5 +56,14 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library name="Gradle: basics-ui-cocoa">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../libraries/basics-1.0.m3/basics-ui-cocoa.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

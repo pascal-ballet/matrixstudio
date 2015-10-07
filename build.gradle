@@ -25,6 +25,7 @@ dependencies {
 }
 
 applicationDefaultJvmArgs = []
+
 mainClassName = 'matrixstudio.ui.MatrixStudio'
 
 switch(System.getProperty('os.name').toLowerCase().split()[0]) {
@@ -38,6 +39,8 @@ switch(System.getProperty('os.name').toLowerCase().split()[0]) {
     default:
         throw new Exception('Unsupported OS')
 }
+
+// FIXME Generated class path depends on building platform, need to construct application for all platforms
 
 jar {
     manifest.attributes(
