@@ -322,7 +322,12 @@ public class Simulator implements Runnable {
 	        clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // mouseX
 	        clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // mouseY
 	        clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // mouseBtn
-	        if(matrixCount>0) {
+
+			clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // workSizeX
+			clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // workSizeY
+			clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // workSizeZ
+
+			if(matrixCount>0) {
 	            for(int c=0; c<matrixCount; c++) {
 	            	final Matrix mat = model.getMatrix(c);
 	                clSetKernelArg(kernels[k], numArg++, Sizeof.cl_mem, Pointer.to(memObjects[c])); // Matrix
@@ -511,6 +516,7 @@ public class Simulator implements Runnable {
 	}
     
     public boolean executeStep(int mouseX, int mouseY, int mouseBtn) {
+
     	try {
     		
 	    	CL.clFlush(commandQueue);
@@ -537,7 +543,15 @@ public class Simulator implements Runnable {
 			}
 			
 			// Enqueue of all the tasks (schedule must be respected)
-			boolean result = executeAllTasks();
+			boolean result = false;
+			result = executeAllTasks(); // FUITE ICI
+
+			/*if(commandQueue != null) {
+				CL.clReleaseCommandQueue(commandQueue);
+				commandQueue = null;
+			}*/
+
+
 			nbSteps++;
 	        return result;
     	} catch(Exception e) {
@@ -548,10 +562,11 @@ public class Simulator implements Runnable {
     
     
     private boolean executeAllTasks() {
+
     	boolean result = true;
     	// enqueue all tasks
     	for ( Task task : orderedTasks ) {
-    		result &= enqueueTask(task);
+    		result &= enqueueTask(task); // Fuite ICI
     	}
     	
     	try {
@@ -569,6 +584,7 @@ public class Simulator implements Runnable {
     }
     
     private boolean enqueueTask(final Task task) {
+		// ICI BAS, fuite mémoire...
     	final cl_kernel kernel = clKernelsByName.get(task.getKernel().getName());
         
         final long[] global_work_size = globalSizeByTask.get(task);
@@ -579,14 +595,20 @@ public class Simulator implements Runnable {
         final int num_events_in_wait_list = dependencies == null ? 0 : dependencies.length;
         
         try {
+			//final int error = 1;
 			final int error = clEnqueueNDRangeKernel(
 	    			commandQueue, kernel, 
-	    			dimension, null, global_work_size, /*local_work_size*/ null, 
-	    			num_events_in_wait_list, dependencies, event
+	    			dimension, null, global_work_size, null,
+					//dimension, null, global_work_size, local_work_size,
+					num_events_in_wait_list, dependencies, event
+					//num_events_in_wait_list, dependencies, event
 	    		);
-	        if(error !=0) {
+			clFinish(commandQueue);
+
+			if(error !=0) {
 	        	log.error("Error in launchTask:" + error + ".");
 	        }
+
 	        return error == 0;
         } catch (CLException e) {
         	log.error(DiagnosticUtil.createMessage(e) );
@@ -602,12 +624,15 @@ public class Simulator implements Runnable {
             	Matrix mat = lst_mat.get(i);
             	if(mat instanceof MatrixInteger) {
             		clEnqueueReadBuffer(commandQueue, memObjects[i], CL.CL_TRUE, 0, mat.getSizeX()*mat.getSizeY()*mat.getSizeZ() * Sizeof.cl_int, matricesPointer[i], 0, null, null);
+					clFinish(commandQueue);
             	}
             	if(mat instanceof MatrixULong) {
             		clEnqueueReadBuffer(commandQueue, memObjects[i], CL.CL_TRUE, 0, mat.getSizeX()*mat.getSizeY()*mat.getSizeZ() * Sizeof.cl_ulong, matricesPointer[i], 0, null, null);
+					clFinish(commandQueue);
             	}
             	if(mat instanceof MatrixFloat) {
             		clEnqueueReadBuffer(commandQueue, memObjects[i], CL.CL_TRUE, 0, mat.getSizeX()*mat.getSizeY()*mat.getSizeZ() * Sizeof.cl_float, matricesPointer[i], 0, null, null);
+					clFinish(commandQueue);
             	}
             }
         } catch (Exception ex) {
@@ -664,7 +689,7 @@ public class Simulator implements Runnable {
 	    			if( result == false ) break;
 	    			
 	    			if( nbSteps % refreshStep == 0 ) {
-	    				GetResultCL(getModel().getMatrixList());
+	    				//GetResultCL(getModel().getMatrixList());
 						if(recordingMPEG == true)
 							log.recordMPEG();
 	
