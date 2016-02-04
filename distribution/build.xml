@@ -54,7 +54,7 @@
 		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
 		<copy file="../libraries/swt/swt-4.3-win32-win32-x86/swt.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
 		
-		<zip destfile="${destination.dir}/MatrixStudio-${tag}-win32.zip">
+		<zip destfile="${destination.dir}/MatrixStudio-${tag}-win-32.zip">
 			<fileset dir="${destination.dir}/win32" id="id">
 			    <include name="MatrixStudio/**/*"/>
 			</fileset>
@@ -79,7 +79,7 @@
 		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
 		<copy file="../libraries/swt/swt-4.3-win32-win32-x86_64/swt.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
 		
-		<zip destfile="${destination.dir}/MatrixStudio-${tag}-win64.zip">
+		<zip destfile="${destination.dir}/MatrixStudio-${tag}-win-64.zip">
 			<fileset dir="${destination.dir}/win64" id="id">
 			    <include name="MatrixStudio/**/*"/>
 			</fileset>
@@ -105,7 +105,7 @@
 		<copy file="../libraries/swt/swt-4.3-gtk-linux-x86/swt.jar" todir="${destination.dir}/linux-32/MatrixStudio/jars"/>
 		<chmod perm="+x" file="${destination.dir}/linux-32/MatrixStudio/MatrixStudio.sh"/>
 		
-		<tar destfile="${destination.dir}/MatrixStudio-${tag}-linux.tar.gz" compression="gzip" >
+		<tar destfile="${destination.dir}/MatrixStudio-${tag}-linux-32.tar.gz" compression="gzip" >
 			<fileset dir="${destination.dir}/linux-32" id="id">
 			    <include name="MatrixStudio/**/*"/>
 			</fileset>
@@ -133,8 +133,12 @@
 		<chmod perm="+x" file="${destination.dir}/linux-64/MatrixStudio/MatrixStudio.sh"/>
 		
 		<tar destfile="${destination.dir}/MatrixStudio-${tag}-linux-64.tar.gz" compression="gzip">
+            <tarfileset dir="${destination.dir}/linux-64" filemode="550" >
+                <include name="MatrixStudio/MatrixStudio.sh"/>
+            </tarfileset>
 			<fileset dir="${destination.dir}/linux-64" id="id">
 			    <include name="MatrixStudio/**/*"/>
+                <exclude name="MatrixStudio/MatrixStudio.sh"/>
 			</fileset>
 		</tar>
 	</target>
@@ -158,12 +162,19 @@
 		<copy file="../libraries/basics-1.0.m3/basics-ui-cocoa.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
 		<copy file="../libraries/swt/swt-4.3-cocoa-macosx-x86_64/swt.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
 		<chmod perm="+x" file="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/MatrixStudio"/>
-	</target>
 
-    <target name="build.dmg" depends="build.macosx64">
-		<chmod perm="+x" file="./createDmg.sh"/>
-        <exec executable="./createDmg.sh"/>
+        <tar destfile="${destination.dir}/MatrixStudio-${tag}-macosx-64.tar.gz" compression="gzip">
+            <tarfileset dir="${destination.dir}/macosx64" filemode="550" >
+                <include name="MatrixStudio.app/Contents/MacOS/MatrixStudio"/>
+            </tarfileset>
+
+            <fileset dir="${destination.dir}/macosx64" id="id">
+                <include name="MatrixStudio.app/**/*"/>
+                <exclude name="MatrixStudio.app/Contents/MacOS/MatrixStudio"/>
+            </fileset>
+        </tar>
+
     </target>
 
-	<target name="all" depends="clean, build.macosx64, build.linux32, build.linux64, build.win32, build.win64, build.dmg"/>
+	<target name="all" depends="clean, build.macosx64, build.linux32, build.linux64, build.win32, build.win64, build.macosx64"/>
 </project>

@@ -3,4 +3,4 @@ JAVA=java
 BASEDIR=`dirname "$0"`
 VMOPTIONS="-XstartOnFirstThread -Xmx512m -Djava.library.path=$BASEDIR"
 OPTIONS=""
-exec $JAVA $VMOPTIONS -jar $BASEDIR/jars/ui-0.8.jar $OPTIONS
+exec $JAVA $VMOPTIONS -jar $BASEDIR/jars/matrixstudio-0.8.jar $OPTIONS
