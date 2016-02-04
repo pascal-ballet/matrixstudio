@@ -9,6 +9,8 @@ It helps ou create multicore software without coding the host (100% OpenCL).
 
 [![Build Status](https://drone.io/github.com/jeancharles-roger/matrixstudio/status.png)](https://drone.io/github.com/jeancharles-roger/matrixstudio/latest)
 
+Download daily build [here](https://drone.io/github.com/jeancharles-roger/matrixstudio/files).
+
 ## Authors
 
 - Pascal Ballet ([Web Page](http://virtulab.univ-brest.fr/?page_id=32)).
