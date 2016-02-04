@@ -48,6 +48,7 @@
 		
 		<copy file="../core/build/libs/core-0.8.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
 		<copy file="../ui/build/libs/ui-0.8.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
+		<copy file="../build/libs/matrixstudio-0.8.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
 		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
@@ -72,6 +73,7 @@
 
         <copy file="../core/build/libs/core-0.8.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
         <copy file="../ui/build/libs/ui-0.8.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
+        <copy file="../build/libs/matrixstudio-0.8.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
 		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
@@ -96,6 +98,7 @@
 
         <copy file="../core/build/libs/core-0.8.jar" todir="${destination.dir}/linux-32/MatrixStudio/jars"/>
         <copy file="../ui/build/libs/ui-0.8.jar" todir="${destination.dir}/linux-32/MatrixStudio/jars"/>
+        <copy file="../build/libs/matrixstudio-0.8.jar" todir="${destination.dir}/linux-32/MatrixStudio/jars"/>
 		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" todir="${destination.dir}/linux-32/MatrixStudio/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/linux-32/MatrixStudio/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/linux-32/MatrixStudio/jars"/>
@@ -122,6 +125,7 @@
 
         <copy file="../core/build/libs/core-0.8.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
         <copy file="../ui/build/libs/ui-0.8.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
+        <copy file="../build/libs/matrixstudio-0.8.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
 		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
@@ -147,6 +151,7 @@
 
         <copy file="../core/build/libs/core-0.8.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
         <copy file="../ui/build/libs/ui-0.8.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
+        <copy file="../build/libs/matrixstudio-0.8.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
 		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
