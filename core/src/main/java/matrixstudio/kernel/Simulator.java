@@ -322,7 +322,12 @@ public class Simulator implements Runnable {
 	        clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // mouseX
 	        clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // mouseY
 	        clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // mouseBtn
-	        if(matrixCount>0) {
+
+			clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // workSizeX
+			clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // workSizeY
+			clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // workSizeZ
+
+			if(matrixCount>0) {
 	            for(int c=0; c<matrixCount; c++) {
 	            	final Matrix mat = model.getMatrix(c);
 	                clSetKernelArg(kernels[k], numArg++, Sizeof.cl_mem, Pointer.to(memObjects[c])); // Matrix
@@ -428,7 +433,13 @@ public class Simulator implements Runnable {
     }
     
     private void releaseCL() {
-        // Release kernel, program, and memory objects
+		// Release kernel, program, and memory objects
+		if(orderedTasks != null) {
+		for (Task task : orderedTasks) {
+			final cl_event event = eventsByTask.get(task);
+			CL.clReleaseEvent(event);
+		}
+	}
         if(memObjects != null) {
             for(int c=0; c<memObjects.length; c++) {
                 CL.clReleaseMemObject(memObjects[c]);
@@ -509,8 +520,32 @@ public class Simulator implements Runnable {
     public void setRefreshStep(int refreshStep) {
 		this.refreshStep = refreshStep;
 	}
-    
+
+	// integer parameters of the kernels
+	boolean pt_init = false;
+	int[] pt_rand;
+	int[] pt_steps;
+	int[] pt_mouseX;
+	int[] pt_mouseY;
+	int[] pt_mouseBtn;
+	int[] pt_WSX;
+	int[] pt_WSY;
+	int[] pt_WSZ;
+
     public boolean executeStep(int mouseX, int mouseY, int mouseBtn) {
+		int rand = 0xFF;
+		if(pt_init == false) {
+			pt_init = true;
+			pt_rand = new int[1];
+			pt_steps = new int[1];
+			pt_mouseX = new int[1];
+			pt_mouseY = new int[1];
+			pt_mouseBtn = new int[1];
+			pt_WSX = new int[1];
+			pt_WSY = new int[1];
+			pt_WSZ = new int[1];
+		}
+
     	try {
     		
 	    	CL.clFlush(commandQueue);
@@ -519,25 +554,35 @@ public class Simulator implements Runnable {
 			// First, we build the kernels parameters
 			for (int tt=0; tt<schedule.getTaskCount(); tt++ ) {
 				Task task = schedule.getTask(tt);
-		        int rand = Tools.rnd.nextInt(1073741824);
-		        
+		        rand = Tools.rnd.nextInt(1073741824);
+				// Update parameters
+				pt_rand[0] = rand;
+				pt_steps[0] = nbSteps;
+				pt_mouseX[0] = mouseX;
+				pt_mouseY[0] = mouseY;
+				pt_mouseBtn[0] = mouseBtn;
+				pt_WSX[0] = task.getGlobalWorkSizeX();
+				pt_WSY[0] = task.getGlobalWorkSizeY();
+				pt_WSZ[0] = task.getGlobalWorkSizeZ();
 		        // Pass modified arguments that are not pointers (pointers do not need update)
 		        int argNum = 0;
 		        cl_kernel kernel = clKernelsByName.get(task.getKernel().getName());
-		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(new int[]{rand}));
+		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_rand));
 	
-		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(new int[]{nbSteps}));
-		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(new int[]{mouseX}));
-		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(new int[]{mouseY}));
-		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(new int[]{mouseBtn}));
+		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_steps));
+		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_mouseX));
+		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_mouseY));
+		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_mouseBtn));
 
-		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(new int[]{task.getGlobalWorkSizeX()}));
-		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(new int[]{task.getGlobalWorkSizeY()}));
-		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(new int[]{task.getGlobalWorkSizeZ()}));
+		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_WSX));
+		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_WSY));
+		        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_WSZ));
 			}
 			
 			// Enqueue of all the tasks (schedule must be respected)
-			boolean result = executeAllTasks();
+			boolean result = false;
+			result = executeAllTasks(); // FUITE ICI
+
 			nbSteps++;
 	        return result;
     	} catch(Exception e) {
@@ -548,15 +593,16 @@ public class Simulator implements Runnable {
     
     
     private boolean executeAllTasks() {
+
     	boolean result = true;
     	// enqueue all tasks
     	for ( Task task : orderedTasks ) {
-    		result &= enqueueTask(task);
+    		result &= enqueueTask(task); // Fuite ICI
     	}
     	
     	try {
 	    	// waits for end of all tasks.
-	    	int error = CL.clWaitForEvents(allEvents.length, allEvents);
+	    	int error = 0;///lWaitForEvents(allEvents.length, allEvents);
 	    	if ( error != 0 ) {
 	    		log.error("Error waiting for tasks to complete: " + error + ".");
 	    		return false;
@@ -569,6 +615,7 @@ public class Simulator implements Runnable {
     }
     
     private boolean enqueueTask(final Task task) {
+		// ICI BAS, fuite mémoire...
     	final cl_kernel kernel = clKernelsByName.get(task.getKernel().getName());
         
         final long[] global_work_size = globalSizeByTask.get(task);
@@ -579,14 +626,26 @@ public class Simulator implements Runnable {
         final int num_events_in_wait_list = dependencies == null ? 0 : dependencies.length;
         
         try {
+			//final int error = 1;
+			/*final int error = clEnqueueTask(
+					commandQueue, kernel,
+					0, null,null //event (leak)
+			);*/
 			final int error = clEnqueueNDRangeKernel(
 	    			commandQueue, kernel, 
-	    			dimension, null, global_work_size, /*local_work_size*/ null, 
-	    			num_events_in_wait_list, dependencies, event
+	    			dimension, null, global_work_size, null,
+					//dimension, null, global_work_size, local_work_size,
+					  0, null, null
+					//num_events_in_wait_list, dependencies, event
 	    		);
-	        if(error !=0) {
+			//CL.clFinish(commandQueue);
+			//CL.clReleaseEvent(event);
+
+
+			if(error !=0) {
 	        	log.error("Error in launchTask:" + error + ".");
 	        }
+
 	        return error == 0;
         } catch (CLException e) {
         	log.error(DiagnosticUtil.createMessage(e) );
@@ -602,12 +661,15 @@ public class Simulator implements Runnable {
             	Matrix mat = lst_mat.get(i);
             	if(mat instanceof MatrixInteger) {
             		clEnqueueReadBuffer(commandQueue, memObjects[i], CL.CL_TRUE, 0, mat.getSizeX()*mat.getSizeY()*mat.getSizeZ() * Sizeof.cl_int, matricesPointer[i], 0, null, null);
+					//clFinish(commandQueue);
             	}
             	if(mat instanceof MatrixULong) {
             		clEnqueueReadBuffer(commandQueue, memObjects[i], CL.CL_TRUE, 0, mat.getSizeX()*mat.getSizeY()*mat.getSizeZ() * Sizeof.cl_ulong, matricesPointer[i], 0, null, null);
+					//clFinish(commandQueue);
             	}
             	if(mat instanceof MatrixFloat) {
             		clEnqueueReadBuffer(commandQueue, memObjects[i], CL.CL_TRUE, 0, mat.getSizeX()*mat.getSizeY()*mat.getSizeZ() * Sizeof.cl_float, matricesPointer[i], 0, null, null);
+					//clFinish(commandQueue);
             	}
             }
         } catch (Exception ex) {
