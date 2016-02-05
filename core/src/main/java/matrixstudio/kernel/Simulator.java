@@ -434,12 +434,6 @@ public class Simulator implements Runnable {
     
     private void releaseCL() {
 		// Release kernel, program, and memory objects
-		if(orderedTasks != null) {
-		for (Task task : orderedTasks) {
-			final cl_event event = eventsByTask.get(task);
-			CL.clReleaseEvent(event);
-		}
-	}
         if(memObjects != null) {
             for(int c=0; c<memObjects.length; c++) {
                 CL.clReleaseMemObject(memObjects[c]);
@@ -581,7 +575,7 @@ public class Simulator implements Runnable {
 			
 			// Enqueue of all the tasks (schedule must be respected)
 			boolean result = false;
-			result = executeAllTasks(); // FUITE ICI
+			result = executeAllTasks();
 
 			nbSteps++;
 	        return result;
@@ -597,25 +591,13 @@ public class Simulator implements Runnable {
     	boolean result = true;
     	// enqueue all tasks
     	for ( Task task : orderedTasks ) {
-    		result &= enqueueTask(task); // Fuite ICI
+    		result &= enqueueTask(task);
     	}
-    	
-    	try {
-	    	// waits for end of all tasks.
-	    	int error = 0;///lWaitForEvents(allEvents.length, allEvents);
-	    	if ( error != 0 ) {
-	    		log.error("Error waiting for tasks to complete: " + error + ".");
-	    		return false;
-	    	}
-    	} catch (CLException e) {
-    		log.error(DiagnosticUtil.createMessage(e));
-    		return false;
-		}
+
     	return result;
     }
     
     private boolean enqueueTask(final Task task) {
-		// ICI BAS, fuite mémoire...
     	final cl_kernel kernel = clKernelsByName.get(task.getKernel().getName());
         
         final long[] global_work_size = globalSizeByTask.get(task);
@@ -626,11 +608,6 @@ public class Simulator implements Runnable {
         final int num_events_in_wait_list = dependencies == null ? 0 : dependencies.length;
         
         try {
-			//final int error = 1;
-			/*final int error = clEnqueueTask(
-					commandQueue, kernel,
-					0, null,null //event (leak)
-			);*/
 			final int error = clEnqueueNDRangeKernel(
 	    			commandQueue, kernel, 
 	    			dimension, null, global_work_size, null,
@@ -638,9 +615,7 @@ public class Simulator implements Runnable {
 					  0, null, null
 					//num_events_in_wait_list, dependencies, event
 	    		);
-			//CL.clFinish(commandQueue);
-			//CL.clReleaseEvent(event);
-
+			CL.clFinish(commandQueue);
 
 			if(error !=0) {
 	        	log.error("Error in launchTask:" + error + ".");
