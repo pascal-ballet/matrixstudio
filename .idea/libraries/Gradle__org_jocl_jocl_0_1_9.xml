@@ -1,13 +1,13 @@
 <component name="libraryTable">
   <library name="Gradle: org.jocl:jocl:0.1.9">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../../../../.gradle/caches/modules-2/files-2.1/org.jocl/jocl/0.1.9/cfd5cdc8e000913419d414c3d68f290e2c074a45/jocl-0.1.9.jar!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jocl/jocl/0.1.9/cfd5cdc8e000913419d414c3d68f290e2c074a45/jocl-0.1.9.jar!/" />
+      <root url="jar:///Volumes/diskE/Users/j5r/.gradle/caches/modules-2/files-2.1/org.jocl/jocl/0.1.9/cfd5cdc8e000913419d414c3d68f290e2c074a45/jocl-0.1.9.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/../../../../../.gradle/caches/modules-2/files-2.1/org.jocl/jocl/0.1.9/ba3a2a1145e2e098e471dbb442ce7bc6b9f0bf82/jocl-0.1.9-sources.jar!/" />
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jocl/jocl/0.1.9/ba3a2a1145e2e098e471dbb442ce7bc6b9f0bf82/jocl-0.1.9-sources.jar!/" />
+      <root url="jar:///Volumes/diskE/Users/j5r/.gradle/caches/modules-2/files-2.1/org.jocl/jocl/0.1.9/ba3a2a1145e2e098e471dbb442ce7bc6b9f0bf82/jocl-0.1.9-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
