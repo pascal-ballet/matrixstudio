@@ -8,17 +8,17 @@
         <option name="gradleJvm" value="1.8" />
         <option name="modules">
           <set>
-            <option value="/Volumes/diskE/Users/j5r/Documents/Personnel/dev/matrixstudio/matrixstudio" />
-            <option value="/Volumes/diskE/Users/j5r/Documents/Personnel/dev/matrixstudio/matrixstudio/core" />
-            <option value="/Volumes/diskE/Users/j5r/Documents/Personnel/dev/matrixstudio/matrixstudio/ui" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/ui" />
           </set>
         </option>
         <option name="useAutoImport" value="true" />
         <option name="myModules">
           <set>
-            <option value="/Volumes/diskE/Users/j5r/Documents/Personnel/dev/matrixstudio/matrixstudio" />
-            <option value="/Volumes/diskE/Users/j5r/Documents/Personnel/dev/matrixstudio/matrixstudio/core" />
-            <option value="/Volumes/diskE/Users/j5r/Documents/Personnel/dev/matrixstudio/matrixstudio/ui" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/ui" />
           </set>
         </option>
       </GradleProjectSettings>
