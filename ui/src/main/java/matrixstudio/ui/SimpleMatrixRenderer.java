@@ -4,6 +4,7 @@ import matrixstudio.model.Matrix;
 import matrixstudio.model.MatrixFloat;
 import matrixstudio.model.MatrixInteger;
 import matrixstudio.model.MatrixULong;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -11,9 +12,39 @@ import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.opengl.GLCanvas;
+import org.eclipse.swt.opengl.GLData;
 
+import org.eclipse.swt.widgets.*;
+import org.lwjgl.opengl.GL11;
+//import org.lwjgl.opengl.GLContext;
+//import org.lwjgl.LWJGLUtil;
 
 public class SimpleMatrixRenderer implements MatrixRenderer {
+
+	public void render3D(GLCanvas glc, Matrix matrix) {
+		final Display display = Display.getCurrent();
+		Shell shell = new Shell(display);
+		shell.setLayout(new FillLayout());
+		Composite comp = new Composite(shell, SWT.NONE);
+		comp.setLayout(new FillLayout());
+		GLData data = new GLData ();
+		data.doubleBuffer = true;
+		final GLCanvas canvas = new GLCanvas(comp, SWT.NONE, data);
+		canvas.setCurrent();
+
+		GL11.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		GL11.glColor3f(1.0f, 0.0f, 0.0f);
+		GL11.glHint(GL11.GL_PERSPECTIVE_CORRECTION_HINT, GL11.GL_NICEST);
+		GL11.glClearDepth(1.0);
+		GL11.glLineWidth(2);
+		GL11.glEnable(GL11.GL_DEPTH_TEST);
+
+		shell.setText("SWT/LWJGL Example");
+		shell.setSize(640, 480);
+		shell.open();
+	}
 
 	public void render(GC gc, RendererContext context, Matrix matrix) {
 		ImageData imageData = null;

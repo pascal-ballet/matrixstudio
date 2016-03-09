@@ -31,8 +31,9 @@ dependencies {
     compile files(classPathExtension.toArray())
 
     compile group: 'org.jocl', name: 'jocl', version: '0.1.9'
-    compile group: 'org.lwjgl', name: 'lwjgl', version: '3.0.0a'
+    compile group: 'org.lwjgl.lwjgl', name: 'lwjgl_util', version: '3.0.0a'
     compile group: 'org.eclipse', name: 'swt', version: '3.3.0-v3346'
+
 }
 
 jar {

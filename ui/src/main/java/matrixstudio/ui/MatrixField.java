@@ -46,6 +46,9 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 		addRenderer(MatrixInteger.class, renderer);
 		addRenderer(MatrixFloat.class, renderer);
 		addRenderer(MatrixULong.class, renderer);
+
+		// Test 3D
+		//renderer.render3D(null, null);
 	}
 	
 	public boolean activate() {
@@ -62,7 +65,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 
 	private void createCanvas(Composite parent) {
 		canvas = new Canvas(parent, SWT.DOUBLE_BUFFERED);
-		
+
 		canvas.addPaintListener(new PaintListener() {
 			public void paintControl(PaintEvent e) {
 				GC gc = e.gc;
