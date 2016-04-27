@@ -3,6 +3,9 @@ out
 distribution/built
 workspace.xml
 
+## IntelliJ ignore
+*.iml
+
 ## Gradle ignore
 **/build/
 .gradle
