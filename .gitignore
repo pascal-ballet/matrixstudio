@@ -1,10 +1,9 @@
-out
-.idea/module.xml
 distribution/built
-workspace.xml
 
 ## IntelliJ ignore
+out
 *.iml
+.idea
 
 ## Gradle ignore
 **/build/
