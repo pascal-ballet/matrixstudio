@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="SWT">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/libraries/swt/swt-4.3-cocoa-macosx-x86_64/swt-debug.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
