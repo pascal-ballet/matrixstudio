@@ -36,31 +36,6 @@
         <delete failonerror="no" dir="${destination.dir}" />
     </target>
 	
-	<target name="build.win32">
-		<delete failonerror="no" dir="${destination.dir}/win32" />
-		<mkdir dir="${destination.dir}/win32"/>
-		<copy todir="${destination.dir}/win32/MatrixStudio">
-			<fileset dir="template/win32/MatrixStudio">
-				<include name="**/*" />
-				<exclude name="**/.svn" />
-			</fileset>
-		</copy>
-		
-		<copy file="../core/build/libs/core-0.8.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
-		<copy file="../ui/build/libs/ui-0.8.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
-		<copy file="../build/libs/matrixstudio-0.8.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
-		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
-		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
-		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
-		<copy file="../libraries/swt/swt-4.3-win32-win32-x86/swt.jar" todir="${destination.dir}/win32/MatrixStudio/jars"/>
-		
-		<zip destfile="${destination.dir}/MatrixStudio-${tag}-win-32.zip">
-			<fileset dir="${destination.dir}/win32" id="id">
-			    <include name="MatrixStudio/**/*"/>
-			</fileset>
-		</zip>
-	</target>
-	
 	<target name="build.win64">
 		<delete failonerror="no" dir="${destination.dir}/win64" />
 		<mkdir dir="${destination.dir}/win64"/>
@@ -75,6 +50,7 @@
         <copy file="../ui/build/libs/ui-0.8.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
         <copy file="../build/libs/matrixstudio-0.8.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
 		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
+		<copy file="../libraries/lwjgl-3.0.0a/lwjgl-3.0.0a.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
 		<copy file="../libraries/swt/swt-4.3-win32-win32-x86_64/swt.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
@@ -85,34 +61,7 @@
 			</fileset>
 		</zip>
 	</target>
-	
-	<target name="build.linux32">
-		<delete failonerror="no" dir="${destination.dir}/linux-32" />
-		<mkdir dir="${destination.dir}/linux-32" />
-		<copy todir="${destination.dir}/linux-32">
-			<fileset dir="template/linux">
-				<include name="**/*" />
-				<exclude name="**/.svn" />
-			</fileset>
-		</copy>
 
-        <copy file="../core/build/libs/core-0.8.jar" todir="${destination.dir}/linux-32/MatrixStudio/jars"/>
-        <copy file="../ui/build/libs/ui-0.8.jar" todir="${destination.dir}/linux-32/MatrixStudio/jars"/>
-        <copy file="../build/libs/matrixstudio-0.8.jar" todir="${destination.dir}/linux-32/MatrixStudio/jars"/>
-		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" todir="${destination.dir}/linux-32/MatrixStudio/jars"/>
-		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/linux-32/MatrixStudio/jars"/>
-		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/linux-32/MatrixStudio/jars"/>
-		<copy file="../libraries/swt/swt-4.3-gtk-linux-x86/swt.jar" todir="${destination.dir}/linux-32/MatrixStudio/jars"/>
-		<chmod perm="+x" file="${destination.dir}/linux-32/MatrixStudio/MatrixStudio.sh"/>
-		
-		<tar destfile="${destination.dir}/MatrixStudio-${tag}-linux-32.tar.gz" compression="gzip" >
-			<fileset dir="${destination.dir}/linux-32" id="id">
-			    <include name="MatrixStudio/**/*"/>
-			</fileset>
-		</tar>
-	</target>
-
-	
 	<target name="build.linux64">
 		<delete failonerror="no" dir="${destination.dir}/linux-64" />
 		<mkdir dir="${destination.dir}/linux-64" />
@@ -127,6 +76,7 @@
         <copy file="../ui/build/libs/ui-0.8.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
         <copy file="../build/libs/matrixstudio-0.8.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
 		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
+		<copy file="../libraries/lwjgl-3.0.0a/lwjgl-3.0.0a.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
 		<copy file="../libraries/swt/swt-4.3-gtk-linux-x86_64/swt.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
@@ -157,6 +107,7 @@
         <copy file="../ui/build/libs/ui-0.8.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
         <copy file="../build/libs/matrixstudio-0.8.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
 		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
+		<copy file="../libraries/lwjgl-3.0.0a/lwjgl-3.0.0a.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics-ui-cocoa.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
@@ -176,5 +127,5 @@
 
     </target>
 
-	<target name="all" depends="clean, build.macosx64, build.linux32, build.linux64, build.win32, build.win64, build.macosx64"/>
+	<target name="all" depends="clean, build.macosx64, build.linux64, build.win64"/>
 </project>
