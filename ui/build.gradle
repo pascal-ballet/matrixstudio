@@ -21,6 +21,7 @@ switch(System.getProperty('os.name').toLowerCase().split()[0]) {
         throw new Exception('Unknown OS')
 }
 
+project.ext.lwjglVersion = "3.0.0b"
 
 dependencies {
     compile project(':core')
@@ -31,7 +32,12 @@ dependencies {
     compile files(classPathExtension.toArray())
 
     compile group: 'org.jocl', name: 'jocl', version: '0.1.9'
-    compile group: 'org.lwjgl', name: 'lwjgl', version: '3.0.0a'
+
+    compile "org.lwjgl:lwjgl:${lwjglVersion}"
+    compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-windows"
+    compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-linux"
+    compile "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-osx"
+
     compile group: 'org.eclipse', name: 'swt', version: '3.3.0-v3346'
 }
 
