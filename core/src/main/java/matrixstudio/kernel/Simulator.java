@@ -157,7 +157,7 @@ public class Simulator implements Runnable {
         // Build the program
         int err = CL_SUCCESS;
         try {
-            String opt = null; // Try new String("-g"); to allow the debugging
+            String opt = null; //new String("-g"); //"-cl-opt-disable"); // Try new String("-g"); to allow the debugging
             err = clBuildProgram(program, 0, null, opt, null, null);
         } catch(Exception e) {
             log.error(DiagnosticUtil.createMessage(e) + ".");

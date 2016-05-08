@@ -232,7 +232,24 @@ public class MatrixTabController extends Controller<Model>{
 				return Action.STATUS_OK;
 			}
 		});
-		
+		matricesListField.addAction(new Action.Stub("3D", Action.STYLE_DEFAULT | Action.STYLE_TRANSACTIONNAL) {
+
+			@Override
+			public String getTooltip() {
+				return "3D view of '" + matricesListField.getSingleSelection().getName() + "'.";
+			}
+
+			@Override
+			public int getVisibility() {
+				return matricesListField.getSingleSelection() != null ? VISIBILITY_ENABLE : VISIBILITY_DISABLE;
+			}
+
+			@Override
+			public int run(ActionMonitor monitor) {
+				// TODO : iconify or deiconify Shell3D (see MatrixField)
+				return Action.STATUS_OK;
+			}
+		});
 		matricesListField.addListener(new NotificationListener() {
 			public void notified(Notification notification) {
 				if ( BasicsUI.NOTIFICATION_SELECTION.equals(notification.name) ) {
