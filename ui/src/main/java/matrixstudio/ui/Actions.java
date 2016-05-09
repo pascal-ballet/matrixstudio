@@ -1,6 +1,7 @@
 package matrixstudio.ui;
 
 import matrixstudio.model.Matrix;
+import matrixstudio.model.Task;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.MessageBox;
@@ -61,13 +62,15 @@ public class Actions {
 	private void createMenuBarActions() {
 		createFileAction();
 		createMatrixAction();
+		createTaskAction();
 		createEditAction();
 
         addAction("MenuBar",
                 new Action.Container("MenuBar",
                         getAction("File"),
                         getAction("Edit"),
-                        getAction("Matrix")
+                        getAction("Matrix"),
+						getAction("Task")
                         )
                 );
 
@@ -235,9 +238,9 @@ public class Actions {
 	}
 
 	private void createMatrixAction() {
-		
+
 		addAction("Resize", new Action.Stub("Global resize\u2026", Action.STYLE_DEFAULT | Action.STYLE_TRANSACTIONNAL) {
-			
+
 			@Override
 			public int getVisibility() {
 				return ui.getModel().getMatrixCount() > 0 ? VISIBILITY_ENABLE : VISIBILITY_DISABLE;
@@ -245,7 +248,7 @@ public class Actions {
 			@Override
 			public int run(ActionMonitor monitor) {
 				final Shell parent = ui.getShell();
-				
+
 				final ListField<Matrix> matrixField = new ListField<Matrix>(null, ui.getModel().getMatrixList(), BasicsUI.CHECK) {
 					public String getText(Matrix element) {
 						StringBuilder text = new StringBuilder();
@@ -265,8 +268,142 @@ public class Actions {
 						return matrixField.getChecked().size() > 0;
 					}
 				});
-				
+
 				final TextField xField = new TextField("New X");
+				xField.setValidator(new NumberValidator(Diagnostic.ERROR, "Invalid X", Basics.NOT_ZERO));
+				xField.setEnable(false);
+				final Action.Stub xFieldEnable = new Action.Stub(Action.STYLE_BUTTON | Action.STYLE_BOOLEAN_STATE) {
+					@Override
+					public boolean getState() {
+						return xField.isEnable();
+					}
+
+					@Override
+					public int run(ActionMonitor monitor) {
+						xField.setEnable(!xField.isEnable());
+						return STATUS_OK;
+					}
+				};
+				xField.addAction(xFieldEnable);
+
+				final TextField yField = new TextField("New Y");
+				yField.setValidator(new NumberValidator(Diagnostic.ERROR, "Invalid Y", Basics.NOT_ZERO));
+				yField.setEnable(false);
+				final Action.Stub yFieldEnable = new Action.Stub(Action.STYLE_BUTTON | Action.STYLE_BOOLEAN_STATE) {
+					@Override
+					public boolean getState() {
+						return yField.isEnable();
+					}
+
+					@Override
+					public int run(ActionMonitor monitor) {
+						yField.setEnable(!yField.isEnable());
+						return STATUS_OK;
+					}
+				};
+				yField.addAction(yFieldEnable);
+
+
+				final TextField zField = new TextField("New Z");
+				zField.setValidator(new NumberValidator(Diagnostic.ERROR, "Invalid Z", Basics.NOT_ZERO));
+				zField.setEnable(false);
+
+				final Action.Stub zFieldEnable = new Action.Stub(Action.STYLE_BUTTON | Action.STYLE_BOOLEAN_STATE) {
+					@Override
+					public boolean getState() {
+						return zField.isEnable();
+					}
+
+					@Override
+					public int run(ActionMonitor monitor) {
+						zField.setEnable(!zField.isEnable());
+						return STATUS_OK;
+					}
+				};
+				zField.addAction(zFieldEnable);
+
+				matrixField.addListener(new NotificationListener() {
+
+					public void notified(Notification notification) {
+						if ( matrixField.getChecked().size() > 0 ) {
+							Matrix matrix = matrixField.getChecked().get(0);
+							if ( xField.getValue() == null ) xField.setIntValue(matrix.getSizeX());
+							if ( yField.getValue() == null ) yField.setIntValue(matrix.getSizeY());
+							if ( zField.getValue() == null ) zField.setIntValue(matrix.getSizeZ());
+						}
+					}
+				});
+
+				CompositeField sizeField = new CompositeField("Size", BasicsUI.GROUP, xField, yField, zField);
+				CompositeField mainField = new CompositeField(matrixField, sizeField);
+
+				FieldDialog dialog = new FieldDialog(parent, parent.getText(), "Resize multiple matrices", BasicsUI.NONE, mainField);
+				if ( dialog.open() != 0 ) return STATUS_CANCEL;
+
+
+				final int xFieldIntValue = xField.getIntValue();
+				final int yFieldIntValue = yField.getIntValue();
+				final int zFieldIntValue = zField.getIntValue();
+				for ( Matrix matrix : matrixField.getChecked() ) {
+					boolean changed = false;
+					if (xField.isEnable() && matrix.getSizeX() != xFieldIntValue) {
+						changed = true;
+						matrix.setSizeX(xFieldIntValue);
+					}
+					if (yField.isEnable() && matrix.getSizeY() != yFieldIntValue) {
+						changed = true;
+						matrix.setSizeY(yFieldIntValue);
+					}
+					if (zField.isEnable() && matrix.getSizeZ() != zFieldIntValue) {
+						changed = true;
+						matrix.setSizeZ(zFieldIntValue);
+					}
+					if (changed) matrix.initBlank();
+				}
+
+				return STATUS_OK;
+			}
+		});
+
+		addAction("Matrix", new Action.Container("Matrix",
+				getAction("Resize")
+		));
+
+	}
+
+	private void createTaskAction() {
+		
+		addAction("Resize", new Action.Stub("Global resize\u2026", Action.STYLE_DEFAULT | Action.STYLE_TRANSACTIONNAL) {
+			
+			@Override
+			public int getVisibility() {
+				return ui.getModel().getScheduler().getTaskCount() > 0 ? VISIBILITY_ENABLE : VISIBILITY_DISABLE;
+			}
+			@Override
+			public int run(ActionMonitor monitor) {
+				final Shell parent = ui.getShell();
+				
+				final ListField<Task> taskField = new ListField<Task>(null, ui.getModel().getScheduler().getTaskList(), BasicsUI.CHECK) {
+					public String getText(Task element) {
+						StringBuilder text = new StringBuilder();
+						text.append(element.getKernel().getName() == null ? "" : element.getKernel().getName());
+						text.append(" [");
+						text.append(element.getGlobalWorkSizeX());
+						text.append(",");
+						text.append(element.getGlobalWorkSizeY());
+						text.append(",");
+						text.append(element.getGlobalWorkSizeZ());
+						text.append("]");
+						return text.toString();
+					}
+				};
+				taskField.setValidator(new Validator.Stub<List<Task>>(Diagnostic.ERROR, "You must check at least one task") {
+					public boolean isValid(List<Task> value) {
+						return taskField.getChecked().size() > 0;
+					}
+				});
+				
+				final TextField xField = new TextField("New Workspace X");
 				xField.setValidator(new NumberValidator(Diagnostic.ERROR, "Invalid X", Basics.NOT_ZERO));
 				xField.setEnable(false);
 				final Action.Stub xFieldEnable = new Action.Stub(Action.STYLE_BUTTON | Action.STYLE_BOOLEAN_STATE) {
@@ -283,7 +420,7 @@ public class Actions {
 				};
 				xField.addAction(xFieldEnable);
 				
-				final TextField yField = new TextField("New Y");
+				final TextField yField = new TextField("New Workspace Y");
 				yField.setValidator(new NumberValidator(Diagnostic.ERROR, "Invalid Y", Basics.NOT_ZERO));
 				yField.setEnable(false);
 				final Action.Stub yFieldEnable = new Action.Stub(Action.STYLE_BUTTON | Action.STYLE_BOOLEAN_STATE) {
@@ -301,7 +438,7 @@ public class Actions {
 				yField.addAction(yFieldEnable);
 
 				
-				final TextField zField = new TextField("New Z");
+				final TextField zField = new TextField("New Workspace Z");
 				zField.setValidator(new NumberValidator(Diagnostic.ERROR, "Invalid Z", Basics.NOT_ZERO));
 				zField.setEnable(false);
 				
@@ -319,52 +456,53 @@ public class Actions {
 				};
 				zField.addAction(zFieldEnable);
 				
-				matrixField.addListener(new NotificationListener() {
+				taskField.addListener(new NotificationListener() {
 					
 					public void notified(Notification notification) {
-						if ( matrixField.getChecked().size() > 0 ) {
-							Matrix matrix = matrixField.getChecked().get(0);
-							if ( xField.getValue() == null ) xField.setIntValue(matrix.getSizeX());
-							if ( yField.getValue() == null ) yField.setIntValue(matrix.getSizeY());
-							if ( zField.getValue() == null ) zField.setIntValue(matrix.getSizeZ());
+						if ( taskField.getChecked().size() > 0 ) {
+							Task task = taskField.getChecked().get(0);
+							if ( xField.getValue() == null ) xField.setIntValue(task.getGlobalWorkSizeX());
+							if ( yField.getValue() == null ) yField.setIntValue(task.getGlobalWorkSizeY());
+							if ( zField.getValue() == null ) zField.setIntValue(task.getGlobalWorkSizeZ());
 						}
 					}
 				});
 				
 				CompositeField sizeField = new CompositeField("Size", BasicsUI.GROUP, xField, yField, zField);
-				CompositeField mainField = new CompositeField(matrixField, sizeField);
+				CompositeField mainField = new CompositeField(taskField, sizeField);
 
-				FieldDialog dialog = new FieldDialog(parent, parent.getText(), "Resize multiple matrices", BasicsUI.NONE, mainField);
+				FieldDialog dialog = new FieldDialog(parent, parent.getText(), "Resize multiple tasks", BasicsUI.NONE, mainField);
 				if ( dialog.open() != 0 ) return STATUS_CANCEL;
 				
 				
                 final int xFieldIntValue = xField.getIntValue();
                 final int yFieldIntValue = yField.getIntValue();
                 final int zFieldIntValue = zField.getIntValue();
-				for ( Matrix matrix : matrixField.getChecked() ) {
+				for ( Task task : taskField.getChecked() ) {
                     boolean changed = false;
-					if (xField.isEnable() && matrix.getSizeX() != xFieldIntValue) {
+					if (xField.isEnable() && task.getGlobalWorkSizeX() != xFieldIntValue) {
                         changed = true;
-                        matrix.setSizeX(xFieldIntValue);
+                        task.setGlobalWorkSizeX(xFieldIntValue);
                     }
-					if (yField.isEnable() && matrix.getSizeY() != yFieldIntValue) {
+					if (yField.isEnable() && task.getGlobalWorkSizeY() != yFieldIntValue) {
                         changed = true;
-                        matrix.setSizeY(yFieldIntValue);
+                        task.setGlobalWorkSizeY(yFieldIntValue);
                     }
-					if (zField.isEnable() && matrix.getSizeZ() != zFieldIntValue) {
+					if (zField.isEnable() && task.getGlobalWorkSizeZ() != zFieldIntValue) {
                         changed = true;
-                        matrix.setSizeZ(zFieldIntValue);
+                        task.setGlobalWorkSizeZ(zFieldIntValue);
                     }
-                    if (changed) matrix.initBlank();
+                    //if (changed) task.initBlank();
 				}
 				
 				return STATUS_OK;
 			}
 		});
-	
-		addAction("Matrix", new Action.Container("Matrix", 
+
+		addAction("Task", new Action.Container("Task",
 				getAction("Resize")
 			));
+
 
 	}
 }

@@ -38,7 +38,8 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 	private int mouseX = -1;
 	private int mouseY = -1;
 	private int button = 0;
-	
+	private int keyDown = 0;
+	private int renderMode = 0;
 	public MatrixField(Simulator simulator, String label, int style) {
 		super(label, style);
 		this.simulator = simulator;
@@ -103,6 +104,20 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 		data.doubleBuffer = true;
 
 		gl_canvas = new GLCanvas(shell3D, SWT.NONE, data);
+		gl_canvas.addListener(SWT.KeyDown, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				keyDown 	= event.keyCode;
+				if(keyDown == SWT.TAB)
+					renderMode = (renderMode+1)%2; // 0=points, 1=cubes
+			}
+		});
+		gl_canvas.addListener(SWT.KeyUp, new Listener() {
+			@Override
+			public void handleEvent(Event event) {
+				keyDown 	= 0;
+			}
+		});
 		// Mouse down
 		gl_canvas.addListener(SWT.MouseDown, new Listener() {
 			@Override
@@ -133,14 +148,15 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 		gl_canvas.addListener(SWT.MouseMove, new Listener() {
 			@Override
 			public void handleEvent(Event event) {
-				if(mouseDownLeft3D == true){
+				//System.err.println(""+keyDown+","+SWT.CTRL);
+				if(mouseDownLeft3D == true && keyDown == 0){
 					angleY3D += (event.x - clickedX3D) / 4.0f;
 					angleX3D += (event.y - clickedY3D) / 4.0f;
 					canvas.redraw();
-				} else if(mouseDownMid3D == true){
+				} else if(mouseDownMid3D == true || (mouseDownLeft3D == true && (keyDown & SWT.CTRL) == SWT.CTRL)){
 					dz3D += (event.y - clickedY3D) 	/ 200.0f;
 					canvas.redraw();
-				} else if(mouseDownRight3D == true){
+				} else if(mouseDownRight3D == true || (mouseDownLeft3D == true && (keyDown & SWT.ALT) == SWT.ALT)){
 					dx3D += (event.x - clickedX3D) 	/ 400.0f;
 					dy3D += -(event.y - clickedY3D) / 400.0f;
 					canvas.redraw();
@@ -189,7 +205,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				
 				MatrixRenderer renderer = renderers.get((Class<? extends Matrix>) matrix.getClass());
 				if ( renderer != null ) {
-					renderer.render(gc, MatrixField.this, matrix, draw3D, dx3D, dy3D, dz3D, angleX3D, angleY3D, shell3D, gl_canvas);
+					renderer.render(gc, MatrixField.this, matrix, draw3D, dx3D, dy3D, dz3D, angleX3D, angleY3D, shell3D, gl_canvas,renderMode);
 				}
 
 				// Draw information texts about current simulation (time, execution state and recording state).

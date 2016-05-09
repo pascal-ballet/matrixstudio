@@ -30,9 +30,9 @@ import java.util.Random;
 public class SimpleMatrixRenderer implements MatrixRenderer {
 
 
-	public void render(GC gc, RendererContext context, Matrix matrix, boolean draw3D, float dx3D, float dy3D, float dz3D, float angleX3D, float angleY3D, Shell shell3D, GLCanvas gl_canvas) {
+	public void render(GC gc, RendererContext context, Matrix matrix, boolean draw3D, float dx3D, float dy3D, float dz3D, float angleX3D, float angleY3D, Shell shell3D, GLCanvas gl_canvas, int renderMode) {
 		if(draw3D == true) {
-			render3D(matrix, dx3D, dy3D, dz3D, angleX3D, angleY3D, shell3D, gl_canvas);
+			render3D(matrix, dx3D, dy3D, dz3D, angleX3D, angleY3D, shell3D, gl_canvas, renderMode);
 		}
 		ImageData imageData = null;
 		
@@ -127,7 +127,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 	}
 	//static Random rnd = new Random();
 
-	private void render3D(Matrix matrix, float dx3D, float dy3D, float dz3D, float angleX3D, float angleY3D, Shell shell3D, GLCanvas gl_canvas) {
+	private void render3D(Matrix matrix, float dx3D, float dy3D, float dz3D, float angleX3D, float angleY3D, Shell shell3D, GLCanvas gl_canvas, int renderMode) {
 		// Update 3D view
 		if(gl_canvas.isDisposed() == false && matrix instanceof MatrixInteger) {
 			//float angle = 45.0f;//360.0f*( (simulator.getNbSteps()%100000)/100000.0f);
@@ -171,8 +171,10 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 							g = (value >> 8) & 255;
 							b = (value >> 16) & 255;
 							a = 255 - (value >> 24) & 255;
-							//drawCube3D(i-SX2, j-SY2, k-SZ2, r, g, b, a, SXexp1);
-							drawPoint(i-SX2, j-SY2, k-SZ2, r, g, b, a, SXexp1);
+							if(renderMode == 1)
+								drawCube3D(i-SX2, j-SY2, k-SZ2, r, g, b, a, SXexp1);
+							if(renderMode == 0)
+								drawPoint(i-SX2, j-SY2, k-SZ2, r, g, b, a, SXexp1);
 						}
 					}
 				}
