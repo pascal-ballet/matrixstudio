@@ -108,8 +108,10 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 			@Override
 			public void handleEvent(Event event) {
 				keyDown 	= event.keyCode;
-				if(keyDown == SWT.TAB)
-					renderMode = (renderMode+1)%2; // 0=points, 1=cubes
+				if(keyDown == SWT.TAB) {
+					renderMode = (renderMode + 1) % 4; // 0=points, 1=small cubes, 2=full cubes, 3=cubes+lines
+					canvas.redraw();
+				}
 			}
 		});
 		gl_canvas.addListener(SWT.KeyUp, new Listener() {
@@ -153,6 +155,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 					angleY3D += (event.x - clickedX3D) / 4.0f;
 					angleX3D += (event.y - clickedY3D) / 4.0f;
 					canvas.redraw();
+					shell3D.redraw();
 				} else if(mouseDownMid3D == true || (mouseDownLeft3D == true && (keyDown & SWT.CTRL) == SWT.CTRL)){
 					dz3D += (event.y - clickedY3D) 	/ 200.0f;
 					canvas.redraw();

@@ -129,7 +129,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 
 	private void render3D(Matrix matrix, float dx3D, float dy3D, float dz3D, float angleX3D, float angleY3D, Shell shell3D, GLCanvas gl_canvas, int renderMode) {
 		// Update 3D view
-		if(gl_canvas.isDisposed() == false && matrix instanceof MatrixInteger) {
+		if(gl_canvas.isDisposed() == false) {
 			//float angle = 45.0f;//360.0f*( (simulator.getNbSteps()%100000)/100000.0f);
 			GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -157,28 +157,72 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 			int SX = matrix.getSizeX(), SY = matrix.getSizeY(), SZ = matrix.getSizeZ();
 			int SX2 = SX/2, SY2 = SY/2, SZ2 = SZ/2;
 			float SXexp1 = (1.0f/SX);
-			MatrixInteger matrixInteger = (MatrixInteger) matrix;
-			if(matrix.getSizeZ() < 1) {
-				//imageData.setPixels(0, 0, matrixInteger.getMatrix().length, matrixInteger.getMatrix(), 0);
-			} else {
-				// 3D Render (very simple: fill from far z to close z
-				for (int i=matrix.getSizeX()-1; i>=0; i--) {
-					for ( int j=matrix.getSizeY()-1; j>=0; j--) {
-						for (int k=matrix.getSizeZ()-1; k>=0; k--) {
-							Integer value = matrixInteger.getMatrix()[k*SX*SY + j*SX + i];
-							int r,g,b,a;
-							r = (value & 255);
-							g = (value >> 8) & 255;
-							b = (value >> 16) & 255;
-							a = 255 - (value >> 24) & 255;
-							if(renderMode == 1)
-								drawCube3D(i-SX2, j-SY2, k-SZ2, r, g, b, a, SXexp1);
-							if(renderMode == 0)
-								drawPoint(i-SX2, j-SY2, k-SZ2, r, g, b, a, SXexp1);
-						}
-					}
-				}
-			}
+            if(matrix instanceof MatrixInteger) {
+                MatrixInteger matrixInteger = (MatrixInteger) matrix;
+                for (int i = matrix.getSizeX() - 1; i >= 0; i--) {
+                    for (int j = matrix.getSizeY() - 1; j >= 0; j--) {
+                        for (int k = matrix.getSizeZ() - 1; k >= 0; k--) {
+                            Integer value = matrixInteger.getMatrix()[k * SX * SY + j * SX + i];
+                            int r, g, b, a;
+                            r = (value & 255);
+                            g = (value >> 8) & 255;
+                            b = (value >> 16) & 255;
+                            a = 255 - ((value >> 24) & 255);
+                            if (a > 0) {
+                                if (renderMode == 0)
+                                    drawPoint(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1);
+                                if (renderMode == 1)
+                                    drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.9f);
+                                if (renderMode == 2)
+                                    drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 1.0f);
+                                if (renderMode == 3)
+                                    drawWiredCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.99f);
+
+                            }
+                        }
+                    }
+                }
+            }
+            if(matrix instanceof MatrixFloat) {
+                MatrixFloat matrixFloat = (MatrixFloat) matrix;
+                for (int i=matrix.getSizeX()-1; i>=0; i--) {
+                    for ( int j=matrix.getSizeY()-1; j>=0; j--) {
+                        for (int k=matrix.getSizeZ()-1; k>=0; k--) {
+                            Float value = matrixFloat.getMatrix()[k*SX*SY + j*SX + i];
+                            float h,s,bf;
+                            h = 0.0f; // Hue
+                            s = 1.0f; // Saturation
+                            bf = 0.0f; // Brightness (min = 100)
+
+                            // Int value used to Brightness
+                            int pe = (int) (Math.floor(value.floatValue()));
+                            bf = pe/10000.0f;
+                            if(bf < 0.32f)  bf = 0.3f;
+                            if(bf > 1.0f)   bf = 1.0f;
+
+                            // Float value used to Hue
+                            h = value.floatValue() - pe;
+                            int r, g, b, a;
+                            r=(int)(h*360.0f);
+                            g=(int)s;
+                            b = (int)bf;
+                            a = (int) ( 10000000000.0f*value.intValue() );
+                            if(a > 0) {
+                                if (renderMode == 0)
+                                    drawPoint(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1);
+                                if (renderMode == 1)
+                                    drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.9f);
+                                if (renderMode == 2)
+                                    drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 1.0f);
+                                if (renderMode == 3)
+                                    drawWiredCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.99f);
+
+                            }
+                        }
+                    }
+                }
+            }
+
 
 			// Draw the surrounding mesh cube
 			GL11.glLineWidth(1.0f);
@@ -226,9 +270,9 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 			GL11.glVertex3f(x, y, z);
 		GL11.glEnd();
 	}
-	private void drawCube3D(int xx, int yy, int zz, int r, int g, int b, int a, float SXexp1) {
+	private void drawCube3D(int xx, int yy, int zz, int r, int g, int b, int a, float SXexp1, float s) {
 		float x = SXexp1*xx, y = SXexp1*yy, z = SXexp1*zz;
-		float size = SXexp1/2.0f;
+		float size = s*SXexp1/2.0f;
 		GL11.glBegin(GL11.GL_QUADS);
 		GL11.glColor4ub((byte)r,(byte)g,(byte)b,(byte)a);
 		GL11.glVertex3f(x+size, y+size,z-size);
@@ -260,6 +304,70 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 		GL11.glVertex3f(x+size,y+size,z+size);
 		GL11.glVertex3f(x+size,y-size,z+size);
 		GL11.glVertex3f(x+size,y-size,z-size);
+		GL11.glEnd();
+	}
+	private void drawWiredCube3D(int xx, int yy, int zz, int r, int g, int b, int a, float SXexp1, float s) {
+		float x = SXexp1*xx, y = SXexp1*yy, z = SXexp1*zz;
+		float size = s*SXexp1/2.0f;
+		GL11.glBegin(GL11.GL_QUADS);
+			GL11.glColor4ub((byte)r,(byte)g,(byte)b,(byte)a);
+			GL11.glVertex3f(x+size, y+size,z-size);
+			GL11.glVertex3f(x-size, y+size,z-size);
+			GL11.glVertex3f(x-size, y+size,z+size);
+			GL11.glVertex3f(x+size, y+size,z+size);
+			//GL11.glColor4i(r,g,b,a);
+			GL11.glVertex3f(x+size,y-size,z+size);
+			GL11.glVertex3f(x-size,y-size,z+size);
+			GL11.glVertex3f(x-size,y-size,z-size);
+			GL11.glVertex3f(x+size,y-size,z-size);
+			//GL11.glColor4i(r,g,b,a);
+			GL11.glVertex3f(x+size,y+size,z+size);
+			GL11.glVertex3f(x-size,y+size,z+size);
+			GL11.glVertex3f(x-size,y-size,z+size);
+			GL11.glVertex3f(x+size,y-size,z+size);
+			//GL11.glColor4i(r,g,b,a);
+			GL11.glVertex3f(x+size,y-size,z-size);
+			GL11.glVertex3f(x-size,y-size,z-size);
+			GL11.glVertex3f(x-size,y+size,z-size);
+			GL11.glVertex3f(x+size,y+size,z-size);
+			//GL11.glColor4i(r,g,b,a);
+			GL11.glVertex3f(x-size,y+size,z+size);
+			GL11.glVertex3f(x-size,y+size,z-size);
+			GL11.glVertex3f(x-size,y-size,z-size);
+			GL11.glVertex3f(x-size,y-size,z+size);
+			//GL11.glColor4i(r,g,b,a);
+			GL11.glVertex3f(x+size,y+size,z-size);
+			GL11.glVertex3f(x+size,y+size,z+size);
+			GL11.glVertex3f(x+size,y-size,z+size);
+			GL11.glVertex3f(x+size,y-size,z-size);
+		GL11.glEnd();
+		size = SXexp1/2.0f;
+		GL11.glBegin(GL11.GL_LINE_STRIP);
+			GL11.glColor4ub((byte)60,(byte)60,(byte)60,(byte)a);
+			// Upper side
+			GL11.glVertex3f(x+size, y+size,z-size); // 1
+			GL11.glVertex3f(x-size, y+size,z-size); // 2
+			GL11.glVertex3f(x-size, y+size,z+size); // 3
+			GL11.glVertex3f(x+size, y+size,z+size); // 4
+			GL11.glVertex3f(x+size, y+size,z-size); // 5
+			// Right side
+			GL11.glVertex3f(x+size,y+size,z+size); // 6
+			GL11.glVertex3f(x+size,y-size,z+size); // 7
+			GL11.glVertex3f(x+size,y-size,z-size); // 8
+			GL11.glVertex3f(x+size,y+size,z-size); // 9
+			// Back side
+			GL11.glVertex3f(x+size,y-size,z-size); // 10
+			GL11.glVertex3f(x-size,y-size,z-size); // 11
+			GL11.glVertex3f(x-size,y+size,z-size); // 12
+			GL11.glVertex3f(x+size,y+size,z-size); // 13
+			// Left side
+			GL11.glVertex3f(x-size,y+size,z-size); // 14
+			GL11.glVertex3f(x-size,y-size,z-size); // 15
+			GL11.glVertex3f(x-size,y-size,z+size); // 16
+			GL11.glVertex3f(x-size,y+size,z+size); // 17
+			//
+			GL11.glVertex3f(x-size,y-size,z+size); // 18
+			GL11.glVertex3f(x+size,y-size,z+size); // 19
 		GL11.glEnd();
 	}
 
