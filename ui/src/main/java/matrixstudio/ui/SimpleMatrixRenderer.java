@@ -172,7 +172,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
                                 if (renderMode == 0)
                                     drawPoint(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1);
                                 if (renderMode == 1)
-                                    drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.9f);
+                                    drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.4f);
                                 if (renderMode == 2)
                                     drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 1.0f);
                                 if (renderMode == 3)
@@ -196,22 +196,22 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 
                             // Int value used to Brightness
                             int pe = (int) (Math.floor(value.floatValue()));
-                            bf = pe/10000.0f;
-                            if(bf < 0.32f)  bf = 0.3f;
-                            if(bf > 1.0f)   bf = 1.0f;
-
+                            bf = 1.0f;//pe/10000.0f;
+                            //if(bf < 0.32f)  bf = 0.6f;
+                            //if(bf > 1.0f)   bf = 1.0f;
+							h = value.floatValue() - pe;
+							RGB rgb = new RGB(h*360.0f, s, bf);
                             // Float value used to Hue
-                            h = value.floatValue() - pe;
                             int r, g, b, a;
-                            r=(int)(h*360.0f);
-                            g=(int)s;
-                            b = (int)bf;
-                            a = (int) ( 10000000000.0f*value.intValue() );
+							r = rgb.red;
+							g = rgb.green;
+							b = rgb.blue;
+                            a = 50;//(int) ( 10000000000.0f*value.intValue() );
                             if(a > 0) {
                                 if (renderMode == 0)
                                     drawPoint(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1);
                                 if (renderMode == 1)
-                                    drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.9f);
+                                    drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.4f);
                                 if (renderMode == 2)
                                     drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 1.0f);
                                 if (renderMode == 3)
