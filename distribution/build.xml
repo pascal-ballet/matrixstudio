@@ -50,7 +50,8 @@
         <copy file="../ui/build/libs/ui-0.8.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
         <copy file="../build/libs/matrixstudio-0.8.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
 		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
-		<copy file="../libraries/lwjgl-3.0.0a/lwjgl-3.0.0a.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
+		<copy file="../libraries/lwjgl-3.0.0b/lwjgl-3.0.0b.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
+		<copy file="../libraries/lwjgl-3.0.0b/lwjgl-platform-3.0.0b-natives-windows.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
 		<copy file="../libraries/swt/swt-4.3-win32-win32-x86_64/swt.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
@@ -76,7 +77,8 @@
         <copy file="../ui/build/libs/ui-0.8.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
         <copy file="../build/libs/matrixstudio-0.8.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
 		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
-		<copy file="../libraries/lwjgl-3.0.0a/lwjgl-3.0.0a.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
+		<copy file="../libraries/lwjgl-3.0.0b/lwjgl-3.0.0b.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
+		<copy file="../libraries/lwjgl-3.0.0b/lwjgl-platform-3.0.0b-natives-linux.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
 		<copy file="../libraries/swt/swt-4.3-gtk-linux-x86_64/swt.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
@@ -107,7 +109,8 @@
         <copy file="../ui/build/libs/ui-0.8.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
         <copy file="../build/libs/matrixstudio-0.8.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
 		<copy file="../libraries/jocl-0.1.9/JOCL-0.1.9.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
-		<copy file="../libraries/lwjgl-3.0.0a/lwjgl-3.0.0a.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
+		<copy file="../libraries/lwjgl-3.0.0b/lwjgl-3.0.0b.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
+		<copy file="../libraries/lwjgl-3.0.0b/lwjgl-platform-3.0.0b-natives-osx.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics-ui.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
 		<copy file="../libraries/basics-1.0.m3/basics-ui-cocoa.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
