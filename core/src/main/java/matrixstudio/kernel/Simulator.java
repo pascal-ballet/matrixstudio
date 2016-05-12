@@ -592,6 +592,11 @@ public class Simulator implements Runnable {
     	// enqueue all tasks
     	for ( Task task : orderedTasks ) {
     		result &= enqueueTask(task);
+            /*try { // DEBUG => Force each task to complete before enqueing another one
+                Thread.sleep(1000);                 //1000 milliseconds is one second.
+            } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }*/
     	}
 
     	return result;

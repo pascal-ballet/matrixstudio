@@ -44,7 +44,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 				imageData.setPixels(0, 0, matrixInteger.getMatrix().length, matrixInteger.getMatrix(), 0);
 			} else {
 				// 2D Render
-				int k=0;
+                int k = (int)Math.floor(matrix.getSizeX()/2);
 				for (int i=0; i<matrix.getSizeX(); i++) {
 					for ( int j=0; j<matrix.getSizeY(); j++) {
 						Integer value = matrixInteger.getMatrix()[k*matrix.getSizeX()*matrix.getSizeY() + j*matrix.getSizeX() + i];
@@ -67,9 +67,10 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 			MatrixULong matrixULong = (MatrixULong) matrix;
 			PaletteData palette = new PaletteData(0xFF, 0xFF00, 0xFF0000);
 			imageData = new ImageData(matrix.getSizeX(), matrix.getSizeY(), 32, palette);
-			for (int i=0; i<matrix.getSizeX(); i++) {
+            int k = (int)Math.floor(matrix.getSizeX()/2);
+            for (int i=0; i<matrix.getSizeX(); i++) {
 				for ( int j=0; j<matrix.getSizeY(); j++) {
-					long value = matrixULong.getMatrix()[j*matrix.getSizeX() + i];
+					long value = matrixULong.getMatrix()[k*matrix.getSizeX()*matrix.getSizeY() + j*matrix.getSizeX() + i];
 					float h,s,b; 
 					h = 0.0f; // Hue
 					s = 1.0f; // Saturation
@@ -87,7 +88,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 					if(h < 0.32f) h = 0.3f; 
 					if(h > 1.0f) h = 1.0f;
 					RGB rgb = new RGB(h*360.0f, s, b);
-					imageData.setPixel(i, j, palette.getPixel(rgb));
+					imageData.setPixel(i, matrix.getSizeY()-j-1, palette.getPixel(rgb));
 				}
 			}
 		}
@@ -96,9 +97,10 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 			MatrixFloat matrixFloat = (MatrixFloat) matrix;
 			PaletteData palette = new PaletteData(0xFF, 0xFF00, 0xFF0000);
 			imageData = new ImageData(matrix.getSizeX(), matrix.getSizeY(), 32, palette);
+            int k = (int)Math.floor(matrix.getSizeX()/2);
 			for (int i=0; i<matrix.getSizeX(); i++) {
 				for ( int j=0; j<matrix.getSizeY(); j++) {
-					Float value = matrixFloat.getMatrix()[j*matrix.getSizeX() + i];
+					Float value = matrixFloat.getMatrix()[k*matrix.getSizeX()*matrix.getSizeY() + j*matrix.getSizeX() + i];
 					float h,s,b; 
 					h = 0.0f; // Hue
 					s = 1.0f; // Saturation
@@ -113,7 +115,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 					// Float value used to Hue
 					h = value.floatValue() - pe;
 					RGB rgb = new RGB(h*360.0f, s, b);
-					imageData.setPixel(i, j, palette.getPixel(rgb));
+					imageData.setPixel(i, matrix.getSizeY()-j-1, palette.getPixel(rgb));
 				}
 			}
 		}

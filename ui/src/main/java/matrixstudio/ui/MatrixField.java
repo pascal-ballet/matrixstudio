@@ -239,6 +239,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				if(matrix.getSizeX() <= 0 || matrix.getSizeY() <= 0 || matrix.getSizeZ() <= 0) return;
 				mouseX = (e.x * matrix.getSizeX() )/canvas.getSize().x;
 				mouseY = matrix.getSizeY()-(e.y * matrix.getSizeY() )/canvas.getSize().y - 1;
+                int k = (int)Math.floor(matrix.getSizeZ()/2);
 				String name = matrix.getName();
 				
 				final StringBuilder builder = new StringBuilder();
@@ -247,8 +248,10 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				builder.append(mouseX);
 				builder.append(",");
 				builder.append(mouseY);
-				builder.append("] = ");
-				final Number valueAt = matrix.getValueAt(mouseX, mouseY, 0);
+                builder.append(",");
+                builder.append(k);
+                builder.append("] = ");
+				final Number valueAt = matrix.getValueAt(mouseX, mouseY,  k);
 				builder.append(valueAt);
 				if ( valueAt instanceof Integer ) {
 					builder.append("\n0x");
