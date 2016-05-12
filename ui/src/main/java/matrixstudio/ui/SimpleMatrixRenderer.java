@@ -167,7 +167,10 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
                             r = (value & 255);
                             g = (value >> 8) & 255;
                             b = (value >> 16) & 255;
-                            a = 255 - ((value >> 24) & 255);
+                            a = (value >> 24) & 255;
+                            if(r == 0 && g == 0 && b == 0) a=0;
+                            if( (r > 0 || g > 0 || b > 0) && a == 0) a=50;
+
                             if (a > 0) {
                                 if (renderMode == 0)
                                     drawPoint(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1);
