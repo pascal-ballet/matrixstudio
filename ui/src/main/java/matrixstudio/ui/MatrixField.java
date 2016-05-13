@@ -24,6 +24,9 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.*;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +40,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 	
 	private int mouseX = -1;
 	private int mouseY = -1;
+    private int mouseZ = 0;
 	private int button = 0;
 	private int keyDown = 0;
 	private int renderMode = 0;
@@ -75,6 +79,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 	private void createShell3D() {
 		// Create a basic SWT window
 		shell3D = new Shell();
+        shell3D.setText("Matrix Studio 3D View");
 
 		shell3D.setLayout(new FillLayout());
 		// Disable the close button
@@ -171,24 +176,71 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 		});
 		gl_canvas.setCurrent();
 
+
 		// LWJGL init
 		GLCapabilities swtCapabilities = GL.createCapabilities();
 		// OpenGL init
+        //material colors
+        float[] matambient={0.1f,0.1f,0.1f,0f};
+        float[] matdiffuse={0.5f,0.5f,0.5f,0};
+        float[] matemission={0.1f,0.1f,0.1f,0};
+    //    float[] matspecular={1.0f,1.0f,1.0f,0.0f};
+        //light colors
+        float[] lightspecular={1f,1f,1f,1};
+        float[] lightdiffuse={0.5f,0.5f,0.5f,0};
+        float[] lightambient={0.1f,0.1f,0.1f,0};
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		GL11.glLoadIdentity();
 
+        ByteBuffer temp = ByteBuffer.allocateDirect(16);
+        temp.order(ByteOrder.nativeOrder());
+        GL11.glMaterialfv(GL11.GL_FRONT, GL11.GL_AMBIENT,   (FloatBuffer)temp.asFloatBuffer().put(matambient).flip());   // 0.2f, 0.2f, 0.2f, 1f
+        GL11.glMaterialfv(GL11.GL_FRONT, GL11.GL_DIFFUSE,   (FloatBuffer)temp.asFloatBuffer().put(matdiffuse).flip());  // 0.8f, 0.8f, 0.8f, 1f
+        GL11.glMaterialfv(GL11.GL_FRONT, GL11.GL_EMISSION,  (FloatBuffer)temp.asFloatBuffer().put(matemission).flip());   // 0,0,0,1
+    //    GL11.glMaterialfv(GL11.GL_FRONT, GL11.GL_SPECULAR,  (FloatBuffer)temp.asFloatBuffer().put(matspecular).flip());   // 0,0,0,1
+        //GL11.glMaterialfv(GL11.GL_FRONT, GL11.GL_SHININESS, (FloatBuffer)temp.asFloatBuffer().put(matambient).flip()); // 0,0,0,0
+        GL11.glEnable(GL11.GL_NORMALIZE);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_DITHER);
+
+        GL11.glShadeModel(GL11.GL_SMOOTH);
+        GL11.glClearDepth(1.0);
+        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+        GL11.glDepthFunc(GL11.GL_LEQUAL); // The Type Of Depth Testing To Do
+        GL11.glEnable(GL11.GL_DEPTH_TEST); // Enables Depth Testing
+        // OpenGL uses a backwards x,y coordinate system, so use GL_BACK for culling
+        GL11.glCullFace(GL11.GL_BACK);
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        //GL11.glDepthMask(false);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glAlphaFunc(GL11.GL_ALWAYS, 1.0f);
 		// Enable depth testing
-		GL11.glEnable(GL11.GL_DEPTH_TEST);
-		GL11.glEnable(GL11.GL_CULL_FACE);
+		//GL11.glEnable(GL11.GL_DEPTH_TEST);
+        //GL11.glDepthFunc(GL11.GL_LEQUAL);
+		//GL11.glEnable(GL11.GL_CULL_FACE);
+        //GL11.glShadeModel(GL11.GL_FLAT);
+        //GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
+        // Surface material mirror the color.
+        //GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+        GL11.glColorMaterial(GL11.GL_FRONT_AND_BACK,GL11.GL_AMBIENT_AND_DIFFUSE);
 
-		shell3D.setText("Matrix Studio 3D View");
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
 
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        // Lights
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glEnable(GL11.GL_LIGHT0);
+        // Blending
+		//GL11.glEnable(GL11.GL_BLEND);
+		//GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        // Double face
+    //    GL11.glLightModeli(GL11.GL_LIGHT_MODEL_TWO_SIDE, GL11.GL_TRUE);
+        // Background color
+        GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
-		GL11.glEnd();
+		//GL11.glEnd();
 
 		shell3D.open();
 		gl_canvas.swapBuffers();
@@ -208,7 +260,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				
 				MatrixRenderer renderer = renderers.get((Class<? extends Matrix>) matrix.getClass());
 				if ( renderer != null ) {
-					renderer.render(gc, MatrixField.this, matrix, draw3D, dx3D, dy3D, dz3D, angleX3D, angleY3D, shell3D, gl_canvas,renderMode);
+					renderer.render(gc, MatrixField.this, matrix, mouseZ, draw3D, dx3D, dy3D, dz3D, angleX3D, angleY3D, shell3D, gl_canvas,renderMode);
 				}
 
 				// Draw information texts about current simulation (time, execution state and recording state).
@@ -239,7 +291,6 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				if(matrix.getSizeX() <= 0 || matrix.getSizeY() <= 0 || matrix.getSizeZ() <= 0) return;
 				mouseX = (e.x * matrix.getSizeX() )/canvas.getSize().x;
 				mouseY = matrix.getSizeY()-(e.y * matrix.getSizeY() )/canvas.getSize().y - 1;
-                int k = (int)Math.floor(matrix.getSizeZ()/2);
 				String name = matrix.getName();
 				
 				final StringBuilder builder = new StringBuilder();
@@ -249,9 +300,9 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				builder.append(",");
 				builder.append(mouseY);
                 builder.append(",");
-                builder.append(k);
+                builder.append(mouseZ);
                 builder.append("] = ");
-				final Number valueAt = matrix.getValueAt(mouseX, mouseY,  k);
+				final Number valueAt = matrix.getValueAt(mouseX, mouseY,  mouseZ);
 				builder.append(valueAt);
 				if ( valueAt instanceof Integer ) {
 					builder.append("\n0x");
@@ -259,7 +310,8 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				}
 				
 				tooltip = builder.toString();
-			}
+
+            }
 		});
 		
 		canvas.addMouseListener(new MouseListener() {
@@ -276,7 +328,20 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				// nothing
 			}
 		});
-		
+
+        canvas.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseScrolled(MouseEvent mouseEvent) {
+                if(matrix == null || canvas == null) return;
+                int dz = mouseEvent.count;
+                System.err.println(">" + dz);
+                mouseZ += dz;
+                if(mouseZ < 0) mouseZ = 0;
+                if(mouseZ >= matrix.getSizeZ()) mouseZ = matrix.getSizeZ()-1;
+                canvas.redraw();
+            }
+        });
+
 		canvas.addListener(SWT.MouseExit, new Listener() {
 			
 			public void handleEvent(Event event) {
@@ -285,7 +350,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				mouseY = -1;
 			}
 		});
-		
+
 		attachFieldToWidget(canvas);
 		fireWidgetCreation(canvas);
 		
@@ -296,7 +361,6 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 		data.horizontalSpan = fieldHorizontalSpan();
 		data.verticalSpan = 1;
 		canvas.setLayoutData(data);
-
 	}
 	
 	public boolean grabExcessVerticalSpace() {
