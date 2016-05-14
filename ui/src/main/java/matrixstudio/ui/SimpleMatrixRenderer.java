@@ -29,8 +29,11 @@ import java.util.Random;
 
 public class SimpleMatrixRenderer implements MatrixRenderer {
 
-
+	float dx3D,  dy3D,  dz3D;
 	public void render(GC gc, RendererContext context, Matrix matrix, int mouseZ, boolean draw3D, float dx3D, float dy3D, float dz3D, float angleX3D, float angleY3D, Shell shell3D, GLCanvas gl_canvas, int renderMode) {
+		this.dx3D = dx3D;
+		this.dy3D = dy3D;
+		this.dz3D = dz3D;
 		if(draw3D == true) {
 			render3D(matrix, dx3D, dy3D, dz3D, angleX3D, angleY3D, shell3D, gl_canvas, renderMode);
 		}
@@ -170,13 +173,12 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
                             if (a > 0) {
                                 if (renderMode == 0)
                                     drawPoint(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1);
-                                if (renderMode == 1)
+								if (renderMode == 1 && a == 255)
+									drawWiredCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, 255, SXexp1, 0.95f);
+								if (renderMode == 2 && a == 255)
+									drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.95f);
+								if (renderMode == 3 && a == 255)
                                     drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.4f);
-                                if (renderMode == 2)
-                                    drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.95f);
-                                if (renderMode == 3)
-                                    drawWiredCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.95f);
-
                             }
                         }
                     }
@@ -205,17 +207,9 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 							r = rgb.red;
 							g = rgb.green;
 							b = rgb.blue;
-                            a = 50;//(int) ( 10000000000.0f*value.intValue() );
-                            if(a > 0) {
-                                if (renderMode == 0)
-                                    drawPoint(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1);
-                                if (renderMode == 1)
-                                    drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.4f);
-                                if (renderMode == 2)
-                                    drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.95f);
-                                if (renderMode == 3)
-                                    drawWiredCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.95f);
-
+                            //a = 50;//(int) ( 10000000000.0f*value.intValue() );
+                            if(value > 0) {
+	                            drawPoint(i - SX2, j - SY2, k - SZ2, r, g, b, 50, SXexp1);
                             }
                         }
                     }
@@ -259,14 +253,59 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 		float fW = fH * aspect;
 		GL11.glFrustum( -fW, fW, -fH, fH, zNear, zFar );
 	}
-
+	Random rnd = new Random();
 	private void drawPoint(int xx, int yy, int zz, int r, int g, int b, int a , float SXexp1) {
 		float x = SXexp1*xx, y = SXexp1*yy, z = SXexp1*zz;
-		//float size = SXexp1/2.0f;
-		GL11.glColor4ub((byte)r,(byte)g,(byte)b,(byte)a);
+		float size = SXexp1;///2.0f;
+		float xxx,yyy,zzz;
+		//int px = (int)((dx3D + xx)/SXexp1);
+		//int py = (int)((dy3D + yy)/SXexp1);
+		//int pz = (int)((dz3D + zz)/SXexp1);
+		int nb = a; //1000 - (px*px + py*py + pz*pz);
+		//if(nb<0) nb = 0;
+		GL11.glColor4ub((byte)r,(byte)g,(byte)b,(byte)255);//(byte)a);
 		GL11.glBegin(GL11.GL_POINTS);
-			GL11.glVertex3f(x, y, z);
+		for(int i=nb; i>=0; i--) {
+			xxx = x + size*rnd.nextFloat() - size/2;
+			yyy = y + size*rnd.nextFloat() - size/2;
+			zzz = z + size*rnd.nextFloat() - size/2;
+			GL11.glVertex3f(xxx, yyy, zzz);
+		}
 		GL11.glEnd();
+
+		if(a == 255) {
+			// Englobing lines
+			size = SXexp1/2.0f;
+			GL11.glBegin(GL11.GL_LINE_STRIP);
+			//GL11.glColor4ub((byte) 60, (byte) 60, (byte) 60, (byte) a);
+			// Upper side
+			GL11.glVertex3f(x + size, y + size, z - size); // 1
+			GL11.glVertex3f(x - size, y + size, z - size); // 2
+			GL11.glVertex3f(x - size, y + size, z + size); // 3
+			GL11.glVertex3f(x + size, y + size, z + size); // 4
+			GL11.glVertex3f(x + size, y + size, z - size); // 5
+			// Right side
+			GL11.glVertex3f(x + size, y + size, z + size); // 6
+			GL11.glVertex3f(x + size, y - size, z + size); // 7
+			GL11.glVertex3f(x + size, y - size, z - size); // 8
+			GL11.glVertex3f(x + size, y + size, z - size); // 9
+			// Back side
+			GL11.glVertex3f(x + size, y - size, z - size); // 10
+			GL11.glVertex3f(x - size, y - size, z - size); // 11
+			GL11.glVertex3f(x - size, y + size, z - size); // 12
+			GL11.glVertex3f(x + size, y + size, z - size); // 13
+			// Left side
+			GL11.glVertex3f(x - size, y + size, z - size); // 14
+			GL11.glVertex3f(x - size, y - size, z - size); // 15
+			GL11.glVertex3f(x - size, y - size, z + size); // 16
+			GL11.glVertex3f(x - size, y + size, z + size); // 17
+			//
+			GL11.glVertex3f(x - size, y - size, z + size); // 18
+			GL11.glVertex3f(x + size, y - size, z + size); // 19
+			GL11.glEnd();
+		}
+
+
 	}
 	private void drawCube3D(int xx, int yy, int zz, int r, int g, int b, int a, float SXexp1, float s) {
 		float x = SXexp1*xx, y = SXexp1*yy, z = SXexp1*zz;
