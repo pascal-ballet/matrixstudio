@@ -85,7 +85,7 @@ public class OpenCLSourceCode extends SourceCode {
 		case RED_KEYWORD:
 			return SWT.COLOR_DARK_RED;
 		case COMMENT:
-			return SWT.COLOR_GRAY;
+			return SWT.COLOR_DARK_GRAY;
 		case STRING:
 			return SWT.COLOR_DARK_GREEN;
 		}

@@ -157,16 +157,16 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 			public void handleEvent(Event event) {
 				//System.err.println(""+keyDown+","+SWT.CTRL);
 				if(mouseDownLeft3D == true && keyDown == 0){
-					angleY3D += (event.x - clickedX3D) / 10.0f;
-					angleX3D += (event.y - clickedY3D) / 10.0f;
+					angleY3D += (event.x - clickedX3D) / 5.0f;
+					angleX3D += (event.y - clickedY3D) / 5.0f;
 					canvas.redraw();
 					shell3D.redraw();
 				} else if(mouseDownMid3D == true || (mouseDownLeft3D == true && (keyDown & SWT.CTRL) == SWT.CTRL)){
-					dz3D += (event.y - clickedY3D) 	/ 2000.0f;
+					dz3D += (event.y - clickedY3D) 	/ 1000.0f;
 					canvas.redraw();
 				} else if(mouseDownRight3D == true || (mouseDownLeft3D == true && (keyDown & SWT.ALT) == SWT.ALT)){
-					dx3D += (event.x - clickedX3D) 	/ 4000.0f;
-					dy3D += -(event.y - clickedY3D) / 4000.0f;
+					dx3D += (event.x - clickedX3D) 	/ 2000.0f;
+					dy3D += -(event.y - clickedY3D) / 2000.0f;
 					canvas.redraw();
 				}
 				clickedX3D = event.x;
@@ -175,7 +175,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 
 		});
 		gl_canvas.setCurrent();
-        
+
 		// LWJGL init
 		GLCapabilities swtCapabilities = GL.createCapabilities();
 		// OpenGL init

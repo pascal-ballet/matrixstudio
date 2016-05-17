@@ -250,24 +250,26 @@ public class Actions {
 				final Shell parent = ui.getShell();
 
 				final ListField<Matrix> matrixField = new ListField<Matrix>(null, ui.getModel().getMatrixList(), BasicsUI.CHECK) {
-					public String getText(Matrix element) {
-						StringBuilder text = new StringBuilder();
-						text.append(element.getName() == null ? "" : element.getName());
-						text.append(" [");
-						text.append(element.getSizeX());
-						text.append(",");
-						text.append(element.getSizeY());
-						text.append(",");
-						text.append(element.getSizeZ());
-						text.append("]");
-						return text.toString();
-					}
-				};
+                    public String getText(Matrix element) {
+                        StringBuilder text = new StringBuilder();
+                        text.append(element.getName() == null ? "" : element.getName());
+                        text.append(" [");
+                        text.append(element.getSizeX());
+                        text.append(",");
+                        text.append(element.getSizeY());
+                        text.append(",");
+                        text.append(element.getSizeZ());
+                        text.append("]");
+                        return text.toString();
+                    }
+
+                };
 				matrixField.setValidator(new Validator.Stub<List<Matrix>>(Diagnostic.ERROR, "You must check at least one matrix") {
 					public boolean isValid(List<Matrix> value) {
 						return matrixField.getChecked().size() > 0;
 					}
 				});
+                matrixField.setChecked(ui.getModel().getMatrixList());
 
 				final TextField xField = new TextField("New X");
 				xField.setValidator(new NumberValidator(Diagnostic.ERROR, "Invalid X", Basics.NOT_ZERO));
@@ -402,8 +404,9 @@ public class Actions {
 						return taskField.getChecked().size() > 0;
 					}
 				});
-				
-				final TextField xField = new TextField("New Workspace X");
+                taskField.setChecked(ui.getModel().getScheduler().getTaskList());
+
+                final TextField xField = new TextField("New Workspace X");
 				xField.setValidator(new NumberValidator(Diagnostic.ERROR, "Invalid X", Basics.NOT_ZERO));
 				xField.setEnable(false);
 				final Action.Stub xFieldEnable = new Action.Stub(Action.STYLE_BUTTON | Action.STYLE_BOOLEAN_STATE) {

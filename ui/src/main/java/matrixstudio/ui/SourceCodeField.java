@@ -212,7 +212,7 @@ public class SourceCodeField extends AbstractField implements RendererContext {
 				computeStyleRanges(event.lineText, event.lineOffset, bluePattern, resources.getSystemColor(SWT.COLOR_DARK_BLUE), SWT.BOLD, styles);
 				computeStyleRanges(event.lineText, event.lineOffset, redPattern, resources.getSystemColor(SWT.COLOR_DARK_RED), SWT.ITALIC, styles);
 				computeStyleRanges(event.lineText, event.lineOffset, greenPattern, resources.getSystemColor(SWT.COLOR_DARK_GREEN), SWT.NONE, styles);
-				computeStyleRanges(event.lineText, event.lineOffset, grayPattern, resources.getSystemColor(SWT.COLOR_GRAY), SWT.NONE, styles);
+				computeStyleRanges(event.lineText, event.lineOffset, grayPattern, resources.getSystemColor(SWT.COLOR_DARK_GRAY), SWT.NONE, styles);
 				event.styles = styles.toArray(new StyleRange[styles.size()]);
 			}
 		});
