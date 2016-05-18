@@ -200,6 +200,8 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
         GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
+        shell3D.setSize(800,800);
+
 		shell3D.open();
 		gl_canvas.swapBuffers();
 	}
