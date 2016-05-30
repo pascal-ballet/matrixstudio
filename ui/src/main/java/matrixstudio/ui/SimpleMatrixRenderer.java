@@ -209,7 +209,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 							b = rgb.blue;
                             //a = 50;//(int) ( 10000000000.0f*value.intValue() );
                             if(value > 0) {
-	                            drawPoint(i - SX2, j - SY2, k - SZ2, r, g, b, 50, SXexp1);
+	                            drawPoint(i - SX2, j - SY2, k - SZ2, r, g, b, 5, SXexp1);
                             }
                         }
                     }
