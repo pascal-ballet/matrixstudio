@@ -4,7 +4,7 @@ import matrixstudio.model.Matrix;
 import matrixstudio.model.MatrixFloat;
 import matrixstudio.model.MatrixInteger;
 import matrixstudio.model.MatrixULong;
-import org.eclipse.swt.SWT;
+
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
@@ -12,30 +12,23 @@ import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
 
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.opengl.GLCanvas;
-import org.eclipse.swt.opengl.GLData;
 
 import org.eclipse.swt.widgets.*;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.*;
 
 import java.util.Random;
-//import org.lwjgl.opengl.GLContext;
-//import org.eclipse.swt.opengl.GLContext;
-
-//import org.lwjgl.opengl.GLContext;
-//import org.lwjgl.LWJGLUtil;
 
 public class SimpleMatrixRenderer implements MatrixRenderer {
 
 	float dx3D,  dy3D,  dz3D;
-	public void render(GC gc, RendererContext context, Matrix matrix, int mouseZ, boolean draw3D, float dx3D, float dy3D, float dz3D, float angleX3D, float angleY3D, Shell shell3D, GLCanvas gl_canvas, int renderMode) {
+	public void render(GC gc, RendererContext context, Matrix matrix, int mouseZ, boolean draw3D, float dx3D, float dy3D, float dz3D, float angleX3D, float angleY3D, Shell shell3D, GLCanvas gl_canvas, int renderMode, int program) {
 		this.dx3D = dx3D;
 		this.dy3D = dy3D;
 		this.dz3D = dz3D;
+
 		if(draw3D == true) {
-			render3D(matrix, dx3D, dy3D, dz3D, angleX3D, angleY3D, shell3D, gl_canvas, renderMode);
+			render3D(matrix, dx3D, dy3D, dz3D, angleX3D, angleY3D, shell3D, gl_canvas, renderMode, program);
 		}
 		ImageData imageData = null;
 
@@ -116,6 +109,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 					
 					// Float value used to Hue
 					h = value.floatValue() - pe;
+					if(value == 0.0f) { h=0.0f; s=0.0f; b=0.0f;}
 					RGB rgb = new RGB(h*360.0f, s, b);
 					imageData.setPixel(i, matrix.getSizeY()-j-1, palette.getPixel(rgb));
 				}
@@ -129,9 +123,9 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 			image.dispose();
 		}
 	}
-
-    // 2D rendering
-	private void render3D(Matrix matrix, float dx3D, float dy3D, float dz3D, float angleX3D, float angleY3D, Shell shell3D, GLCanvas gl_canvas, int renderMode) {
+	//Matrix4f viewProjMatrix = new Matrix4f();
+    // 3D rendering
+	private void render3D(Matrix matrix, float dx3D, float dy3D, float dz3D, float angleX3D, float angleY3D, Shell shell3D, GLCanvas gl_canvas, int renderMode, int program) {
 		// Update 3D view
 		if(gl_canvas.isDisposed() == false) {
 			gl_canvas.setCurrent();
@@ -151,12 +145,13 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 
             // Clear background
 			//GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
+ ///           GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 			// Draw the cubes (can be very very very long...) => optimization to find with OpenGL / OpenCL exchange
 			int SX = matrix.getSizeX(), SY = matrix.getSizeY(), SZ = matrix.getSizeZ();
 			int SX2 = SX/2, SY2 = SY/2, SZ2 = SZ/2;
 			float SXexp1 = (1.0f/SX);
-            if(matrix instanceof MatrixInteger) {
+
+			if(matrix instanceof MatrixInteger) {
                 MatrixInteger matrixInteger = (MatrixInteger) matrix;
                 for (int i = matrix.getSizeX() - 1; i >= 0; i--) {
                     for (int j = matrix.getSizeY() - 1; j >= 0; j--) {
@@ -261,7 +256,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 		//int px = (int)((dx3D + xx)/SXexp1);
 		//int py = (int)((dy3D + yy)/SXexp1);
 		//int pz = (int)((dz3D + zz)/SXexp1);
-		int nb = a; //1000 - (px*px + py*py + pz*pz);
+		int nb = a/4; //1000 - (px*px + py*py + pz*pz);
 		//if(nb<0) nb = 0;
 		GL11.glColor4ub((byte)r,(byte)g,(byte)b,(byte)255);//(byte)a);
 		GL11.glBegin(GL11.GL_POINTS);

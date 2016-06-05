@@ -15,6 +15,9 @@ import org.eclipse.swt.opengl.GLCanvas;
 import org.eclipse.swt.opengl.GLData;
 import org.eclipse.swt.widgets.*;
 
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.lwjgl.BufferUtils;
 import org.xid.basics.notification.Notification;
 import org.xid.basics.ui.BasicsUI;
 import org.xid.basics.ui.Resources;
@@ -29,6 +32,9 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
 
 public class MatrixField extends AbstractField implements RendererContext, UserInputProvider {
 
@@ -76,7 +82,128 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 	private float dx3D = 0.0f, dy3D = 0.0f, dz3D = 0.0f;
 	private int clickedX3D, clickedY3D;
 	private boolean draw3D = true;
+
+	int program;
+
+	////////////////////////////////////////
+	Matrix4f viewProjMatrix = new Matrix4f();
+	FloatBuffer fb = BufferUtils.createFloatBuffer(16);
+
+	long window;
+	int width = 800;
+	int height = 800;
+	Object lock = new Object();
+	boolean destroyed;
+	long lastTime;
+	int matLocation;
+	int colorLocation;
+	Quaternionf q;
+
+	void renderCube() {
+		glBegin(GL_QUADS);
+		glVertex3f(  0.5f, -0.5f, -0.5f );
+		glVertex3f( -0.5f, -0.5f, -0.5f );
+		glVertex3f( -0.5f,  0.5f, -0.5f );
+		glVertex3f(  0.5f,  0.5f, -0.5f );
+
+		glVertex3f(  0.5f, -0.5f,  0.5f );
+		glVertex3f(  0.5f,  0.5f,  0.5f );
+		glVertex3f( -0.5f,  0.5f,  0.5f );
+		glVertex3f( -0.5f, -0.5f,  0.5f );
+
+		glVertex3f(  0.5f, -0.5f, -0.5f );
+		glVertex3f(  0.5f,  0.5f, -0.5f );
+		glVertex3f(  0.5f,  0.5f,  0.5f );
+		glVertex3f(  0.5f, -0.5f,  0.5f );
+
+		glVertex3f( -0.5f, -0.5f,  0.5f );
+		glVertex3f( -0.5f,  0.5f,  0.5f );
+		glVertex3f( -0.5f,  0.5f, -0.5f );
+		glVertex3f( -0.5f, -0.5f, -0.5f );
+
+		glVertex3f(  0.5f,  0.5f,  0.5f );
+		glVertex3f(  0.5f,  0.5f, -0.5f );
+		glVertex3f( -0.5f,  0.5f, -0.5f );
+		glVertex3f( -0.5f,  0.5f,  0.5f );
+
+		glVertex3f(  0.5f, -0.5f, -0.5f );
+		glVertex3f(  0.5f, -0.5f,  0.5f );
+		glVertex3f( -0.5f, -0.5f,  0.5f );
+		glVertex3f( -0.5f, -0.5f, -0.5f );
+		glEnd();
+	}
+
+	void renderGrid() {
+		glBegin(GL_LINES);
+		for (float i = -4.0f; i <= 4.0f; i+=0.1f) {
+			glVertex3f(-4.0f, 	-0.5f, i);
+			glVertex3f( 4.0f, 	-0.5f, i);
+			glVertex3f(i, 		-0.5f, -4.0f);
+			glVertex3f(i, 		-0.5f,  4.0f);
+		}
+		glEnd();
+	}
+
+	void initOpenGLAndRenderInAnotherThread() {
+		// Create a simple shader program
+		int program = glCreateProgram();
+		int vs = glCreateShader(GL_VERTEX_SHADER);
+		glShaderSource(vs,
+				"uniform mat4 viewProjMatrix;" +
+						"void main(void) {" +
+						"  gl_Position = viewProjMatrix * gl_Vertex;" +
+						"}");
+		glCompileShader(vs);
+		glAttachShader(program, vs);
+		int fs = glCreateShader(GL_FRAGMENT_SHADER);
+		glShaderSource(fs,
+				"uniform vec3 color;" +
+						"void main(void) {" +
+						"  gl_FragColor = vec4(color, 1.0);" +
+						"}");
+		glCompileShader(fs);
+		glAttachShader(program, fs);
+		glLinkProgram(program);
+		glUseProgram(program);
+
+		// Obtain uniform location
+		matLocation = glGetUniformLocation(program, "viewProjMatrix");
+		colorLocation = glGetUniformLocation(program, "color");
+		lastTime = System.nanoTime();
+
+        /* Quaternion to rotate the cube */
+		q = new Quaternionf();
+
+	}
+
+	private void renderShader() {
+		glUseProgram(program);
+
+		long thisTime = System.nanoTime();
+		float dt = (thisTime - lastTime) / 1E9f;
+		lastTime = thisTime;
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+		// Render the grid
+		glUniform3f(colorLocation, 0.1f, 0.1f, 0.1f);
+		GL11.glColor3f( 0.2f, 0.2f, 0.2f);
+		renderGrid();
+
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glEnable(GL_POLYGON_OFFSET_LINE);
+		glPolygonOffset(-1.f,-1.f);
+		glUniform3f(colorLocation, 0.0f, 0.0f, 0.0f);
+		renderCube();
+		glDisable(GL_POLYGON_OFFSET_LINE);
+
+		//glUseProgram(0); // No more shader (to uncomment in the future?)
+
+	}
+
+	////////////////////////////////////////
 	private void createShell3D() {
+
 		// Create a basic SWT window
 		shell3D = new Shell();
         shell3D.setText("Matrix Studio 3D View");
@@ -178,6 +305,12 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 
 		// LWJGL init
 		GLCapabilities swtCapabilities = GL.createCapabilities();
+		if (!swtCapabilities.GL_ARB_shader_objects)
+			throw new UnsupportedOperationException("This demo requires the ARB_shader_objects extension");
+		if (!swtCapabilities.GL_ARB_vertex_shader)
+			throw new UnsupportedOperationException("This demo requires the ARB_vertex_shader extension");
+		if (!swtCapabilities.GL_ARB_fragment_shader)
+			throw new UnsupportedOperationException("This demo requires the ARB_fragment_shader extension");
 		// OpenGL init
         //material colors
         float[] matambient={0.1f,0.1f,0.1f,0f};
@@ -186,7 +319,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 
         ByteBuffer temp = ByteBuffer.allocateDirect(16);
         temp.order(ByteOrder.nativeOrder());
-        GL11.glMaterialfv(GL11.GL_FRONT, GL11.GL_AMBIENT,   (FloatBuffer)temp.asFloatBuffer().put(matambient).flip());   // 0.2f, 0.2f, 0.2f, 1f
+		GL11.glMaterialfv(GL11.GL_FRONT, GL11.GL_AMBIENT,   (FloatBuffer)temp.asFloatBuffer().put(matambient).flip());   // 0.2f, 0.2f, 0.2f, 1f
         GL11.glMaterialfv(GL11.GL_FRONT, GL11.GL_DIFFUSE,   (FloatBuffer)temp.asFloatBuffer().put(matdiffuse).flip());  // 0.8f, 0.8f, 0.8f, 1f
         GL11.glMaterialfv(GL11.GL_FRONT, GL11.GL_EMISSION,  (FloatBuffer)temp.asFloatBuffer().put(matemission).flip());   // 0,0,0,1
 
@@ -197,13 +330,20 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
         GL11.glMatrixMode(GL11.GL_PROJECTION);
 
         // Background color
-        GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        GL11.glClearColor(0.0f, 0.0f, 0.2f, 0.0f);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+
+
+		/// SHADERS
+		initOpenGLAndRenderInAnotherThread();
+
+
+
 
         shell3D.setSize(800,800);
 
 		shell3D.open();
-		gl_canvas.swapBuffers();
+///		gl_canvas.swapBuffers();
 	}
 
 	private void createCanvas(Composite parent) {
@@ -214,13 +354,12 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				GC gc = e.gc;
 				//gc.setBackground(resources.getSystemColor(SWT.COLOR_BLACK));
 				//gc.fillRectangle(gc.getClipping());
-				
+				renderShader();
 				// don't draw matrix if value is null or if x or y is invalid
 				if ( matrix == null || matrix.getSizeX() <= 0 || matrix.getSizeY() <= 0 ) return;
-				
 				MatrixRenderer renderer = renderers.get((Class<? extends Matrix>) matrix.getClass());
 				if ( renderer != null ) {
-					renderer.render(gc, MatrixField.this, matrix, mouseZ, draw3D, dx3D, dy3D, dz3D, angleX3D, angleY3D, shell3D, gl_canvas,renderMode);
+					renderer.render(gc, MatrixField.this, matrix, mouseZ, draw3D, dx3D, dy3D, dz3D, angleX3D, angleY3D, shell3D, gl_canvas,renderMode, program);
 				}
 
 				// Draw information texts about current simulation (time, execution state and recording state).
