@@ -1,4 +1,5 @@
 <project name="Model Generation" default="all" basedir="../../">
+
 	<property name="lib.dir" location="${basedir}/libraries"/>
 	
 	<property name="emf.classpath" location="${lib.dir}/emf-2.8.1/emf-2.8.1.jar"/>
@@ -12,6 +13,8 @@
 	/>
 	
 	<target name="generate" >
+        <echo message="Generation is deprecated, the model is now handled manually"/>
+		<!--
 		<generator
 		    source="${basedir}/core/model/MatrixStudio.ecore"
 			basepackage="matrixstudio"
@@ -20,6 +23,7 @@
 			visitor="simple"
 			boost="true"
 		/>
+		-->
 
 	</target>
 
