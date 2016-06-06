@@ -8,3 +8,7 @@ out
 ## Gradle ignore
 **/build/
 .gradle
+
+
+## Crash log
+*.log
