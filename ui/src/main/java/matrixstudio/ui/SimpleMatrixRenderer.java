@@ -37,27 +37,17 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 			MatrixInteger matrixInteger = (MatrixInteger) matrix;
 			PaletteData palette = new PaletteData(0xFF, 0xFF00, 0xFF0000);
 			imageData = new ImageData(matrix.getSizeX(), matrix.getSizeY(), 32, palette);
-			if(matrix.getSizeZ() <= 1) {
-				imageData.setPixels(0, 0, matrixInteger.getMatrix().length, matrixInteger.getMatrix(), 0);
-			} else {
-				// 2D Render
-                //int k = (int)Math.floor(matrix.getSizeX()/2);
-				for (int i=0; i<matrix.getSizeX(); i++) {
-					for ( int j=0; j<matrix.getSizeY(); j++) {
-						Integer value = matrixInteger.getMatrix()[k*matrix.getSizeX()*matrix.getSizeY() + j*matrix.getSizeX() + i];
-						int r,g,b;
-						r = (value & 255);
-						g = (value >> 8) & 255;
-						b = (value >> 16) & 255;
-						int nr,ng,nb;
-						nr = (r + imageData.getPixel(i, j) & 255)/2 ; 		if(nr > 255) nr = 255;
-						ng = (g + (imageData.getPixel(i, j)>>8) & 255)/2; 	if(ng > 255) ng = 255;
-						nb = (b + (imageData.getPixel(i, j)>>16) & 255)/2;	if(nb > 255) nb = 255;
-						RGB rgb = new RGB(nr, ng, nb);
-						imageData.setPixel(i, matrix.getSizeY()-j-1, palette.getPixel(rgb));
-					}
-				}
-			}
+            for (int i=0; i<matrix.getSizeX(); i++) {
+                for ( int j=0; j<matrix.getSizeY(); j++) {
+                    Integer value = matrixInteger.getMatrix()[k*matrix.getSizeX()*matrix.getSizeY() + j*matrix.getSizeX() + i];
+                    int r,g,b;
+                    r = (value & 255);
+                    g = (value >> 8) & 255;
+                    b = (value >> 16) & 255;
+                    RGB rgb = new RGB(r, g, b);
+                    imageData.setPixel(i, matrix.getSizeY()-j-1, palette.getPixel(rgb));
+                }
+            }
 		}
 		
 		if ( matrix instanceof MatrixULong ) {
