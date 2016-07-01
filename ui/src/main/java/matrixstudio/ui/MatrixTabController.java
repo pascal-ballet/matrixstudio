@@ -609,11 +609,11 @@ public class MatrixTabController extends Controller<Model>{
 					else g.drawString("Step="+simulator.getNbSteps() + "   Time="+(System.currentTimeMillis()-simulator.getInitialSimulationTime())/1000, 0,10);
 	    	   
 	       } else {} // If not matrix selected, we keep it blank
-	           try {
-	        	   mpeg.addImage(img);
-	           } catch (Exception ex) {
-	        	   System.out.println(ex.getMessage());
-	           }
+		   try {
+			   mpeg.addImage(img);
+		   } catch (Exception ex) {
+			   System.out.println(ex.getMessage());
+		   }
 		}
 	
 	private void stopRecordMPEG() {

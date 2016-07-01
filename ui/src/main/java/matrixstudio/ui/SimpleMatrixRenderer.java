@@ -113,7 +113,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 			image.dispose();
 		}
 	}
-	//Matrix4f viewProjMatrix = new Matrix4f();
+
     // 3D rendering
 	private void render3D(Matrix matrix, float dx3D, float dy3D, float dz3D, float angleX3D, float angleY3D, Shell shell3D, GLCanvas gl_canvas, int renderMode, int program) {
 		// Update 3D view
@@ -133,9 +133,6 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 			GL11.glRotatef(angleY3D,0.0f,1.0f,0.0f);
 			GL11.glRotatef(angleX3D,1.0f,0.0f,0.0f);
 
-            // Clear background
-			//GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
- ///           GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT | GL11.GL_STENCIL_BUFFER_BIT);
 			// Draw the cubes (can be very very very long...) => optimization to find with OpenGL / OpenCL exchange
 			int SX = matrix.getSizeX(), SY = matrix.getSizeY(), SZ = matrix.getSizeZ();
 			int SX2 = SX/2, SY2 = SY/2, SZ2 = SZ/2;
@@ -183,8 +180,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
                             // Int value used to Brightness
                             int pe = (int) (Math.floor(value.floatValue()));
                             bf = 1.0f;//pe/10000.0f;
-                            //if(bf < 0.32f)  bf = 0.6f;
-                            //if(bf > 1.0f)   bf = 1.0f;
+
 							h = value.floatValue() - pe;
 							RGB rgb = new RGB(h*360.0f, s, bf);
                             // Float value used to Hue
@@ -192,7 +188,6 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 							r = rgb.red;
 							g = rgb.green;
 							b = rgb.blue;
-                            //a = 50;//(int) ( 10000000000.0f*value.intValue() );
                             if(value > 0) {
 	                            drawPoint(i - SX2, j - SY2, k - SZ2, r, g, b, 5, SXexp1);
                             }
@@ -200,7 +195,6 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
                     }
                 }
             }
-
 
 			// Draw the surrounding mesh cube
 			GL11.glLineWidth(1.0f);
@@ -243,11 +237,9 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 		float x = SXexp1*xx, y = SXexp1*yy, z = SXexp1*zz;
 		float size = SXexp1;///2.0f;
 		float xxx,yyy,zzz;
-		//int px = (int)((dx3D + xx)/SXexp1);
-		//int py = (int)((dy3D + yy)/SXexp1);
-		//int pz = (int)((dz3D + zz)/SXexp1);
+
 		int nb = a/4; //1000 - (px*px + py*py + pz*pz);
-		//if(nb<0) nb = 0;
+
 		GL11.glColor4ub((byte)r,(byte)g,(byte)b,(byte)255);//(byte)a);
 		GL11.glBegin(GL11.GL_POINTS);
 		for(int i=nb; i>=0; i--) {
@@ -262,7 +254,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 			// Englobing lines
 			size = SXexp1/2.0f;
 			GL11.glBegin(GL11.GL_LINE_STRIP);
-			//GL11.glColor4ub((byte) 60, (byte) 60, (byte) 60, (byte) a);
+
 			// Upper side
 			GL11.glVertex3f(x + size, y + size, z - size); // 1
 			GL11.glVertex3f(x - size, y + size, z - size); // 2
