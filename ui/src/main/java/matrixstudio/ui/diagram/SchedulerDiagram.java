@@ -1,6 +1,5 @@
 package matrixstudio.ui.diagram;
 
-import matrixstudio.model.Kernel;
 import matrixstudio.model.Model;
 import matrixstudio.model.Scheduler;
 import matrixstudio.model.Task;
@@ -138,10 +137,14 @@ public class SchedulerDiagram extends Diagram<Scheduler> {
 				final Task task = new Task();
 				
 				final Model root = model.getModel();
-				final List<Kernel> kernelList = root.getKernelList();
+				/*
+				// TODO handle the kernel
+                final List<Kernel> kernelList = root.getKernelList();
 				if ( kernelList.size() > 0) {
 					task.setKernel(kernelList.get(0));
 				}
+				*/
+
 				task.setPosition(new float[] { 100f, 100f });
 				getModel().addTaskAndOpposite(task);
 				return Action.STATUS_OK;

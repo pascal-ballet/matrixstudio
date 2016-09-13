@@ -1,5 +1,6 @@
 package matrixstudio.ui;
 
+import matrixstudio.model.Kernel;
 import matrixstudio.model.Matrix;
 import matrixstudio.model.Task;
 import org.eclipse.swt.SWT;
@@ -387,8 +388,19 @@ public class Actions {
 				
 				final ListField<Task> taskField = new ListField<Task>(null, ui.getModel().getScheduler().getTaskList(), BasicsUI.CHECK) {
 					public String getText(Task element) {
-						StringBuilder text = new StringBuilder();
-						text.append(element.getKernel().getName() == null ? "" : element.getKernel().getName());
+                        StringBuilder name = new StringBuilder();
+                        if (element.getKernelCount() > 0) {
+                            for (Kernel kernel : element.getKernelList()) {
+                                if (name.length() > 0) name.append(",");
+                                name.append(kernel.getName());
+                            }
+
+                        } else {
+                            name.append("[No kernel]");
+                        }
+
+                        StringBuilder text = new StringBuilder();
+						text.append(name);
 						text.append(" [");
 						text.append(element.getGlobalWorkSizeX());
 						text.append(",");

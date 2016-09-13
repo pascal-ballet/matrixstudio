@@ -6,17 +6,19 @@ import org.xid.basics.error.Diagnostic;
 import org.xid.basics.error.Validator;
 import org.xid.basics.ui.BasicsUI;
 import org.xid.basics.ui.controller.Controller;
-import org.xid.basics.ui.field.ChoiceField;
 import org.xid.basics.ui.field.CompositeField;
 import org.xid.basics.ui.field.Field;
+import org.xid.basics.ui.field.ListField;
 import org.xid.basics.ui.field.TextField;
 
 import java.util.Arrays;
+import java.util.List;
 
 
 public class TaskController extends Controller<Task> {
 
-	private ChoiceField<Kernel> kernelField;
+	private ListField<Kernel> kernelField;
+
 	private TextField positionField;
 	private TextField globalWorkSizeXField;
 	private TextField globalWorkSizeYField;
@@ -26,16 +28,16 @@ public class TaskController extends Controller<Task> {
 	
 	@Override
 	public CompositeField createFields() {
-		kernelField = new ChoiceField<Kernel>("Kernel", BasicsUI.NONE) {
+		kernelField = new ListField<Kernel>("Kernels", BasicsUI.NONE) {
 			@Override
 			public String getText(Kernel element) {
 				return element.getName();
 			}
 		};
 		kernelField.setTooltip("Change the Task's kernel reference.");
-		kernelField.setValidator(new Validator.Stub<Kernel>(Diagnostic.ERROR, "Task's kernel can't be null.") {
-			public boolean isValid(Kernel value) {
-				return value != null;
+		kernelField.setValidator(new Validator.Stub<List<Kernel>>(Diagnostic.ERROR, "Task's kernel list can't be empty.") {
+			public boolean isValid(List<Kernel> value) {
+				return value != null && value.size() > 0;
 			}
 		});
 		
@@ -74,10 +76,9 @@ public class TaskController extends Controller<Task> {
 			compositeField.setEnable(false);
 		} else {
 			compositeField.setEnable(true);
-			
-			kernelField.setRange(getSubject().getScheduler().getModel().getKernelList());
-			kernelField.setValue(getSubject().getKernel());
-			
+
+            kernelField.setValue(getSubject().getKernelList());
+
 			globalWorkSizeXField.setValue(""+getSubject().getGlobalWorkSizeX());
 			globalWorkSizeYField.setValue(""+getSubject().getGlobalWorkSizeY());
 			globalWorkSizeZField.setValue(""+getSubject().getGlobalWorkSizeZ());
@@ -89,10 +90,6 @@ public class TaskController extends Controller<Task> {
 	
 	@Override
 	public boolean updateSubject(Field field) {
-		if ( field == kernelField ) {
-			getSubject().setKernel(kernelField.getValue());
-			return true;
-		}
 		if ( field == globalWorkSizeXField ) {
 			getSubject().setGlobalWorkSizeX(globalWorkSizeXField.getIntValue());
 			return true;

@@ -22,6 +22,8 @@ import java.util.zip.ZipOutputStream;
 
 public class Tools {
 
+    public static final int BOOST_VERSION = 2;
+
 	public static final Random rnd = new Random();
 	public static final String INITIAL_KERNEL =
 					"\tuint x = get_global_id(0);\n" +
@@ -65,7 +67,7 @@ public class Tools {
 		
 		
 		final Task task1 = new Task();
-		task1.setKernel(kernel1);
+		task1.addKernel(kernel1);
 		task1.setPosition(new float[] { 360f, 120f });
 		scheduler.addTaskAndOpposite(task1);    	
 	
@@ -81,7 +83,7 @@ public class Tools {
 	private static final String INSIDE_NAME = "contents.umss";
 	
 	private static JBoost createBoost() {
-		return new JBoost("MatrixStudio", 1);
+		return new JBoost("MatrixStudio", BOOST_VERSION);
 	}
 	
 	/**

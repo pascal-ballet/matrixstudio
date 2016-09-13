@@ -75,9 +75,7 @@ public class KernelTabController extends Controller<Model> {
 				
 				// clears tasks of given kernel.
 				for ( Task task : getSubject().getScheduler().getTaskList() ) {
-					if ( task.getKernel() == kernel ) {
-						task.setKernel(null);
-					}
+				    task.removeKernel(kernel);
 				}
 				return Action.STATUS_OK;
 			}

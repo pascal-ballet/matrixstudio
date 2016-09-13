@@ -28,32 +28,43 @@ public class Task implements ModelObject, BoostObject {
 	/**
 	 * <p>taskIn field.</p>
 	 */
-	private final List<matrixstudio.model.Task> taskInList = new ArrayList<matrixstudio.model.Task>();
+	private final List<Task> taskInList = new ArrayList<>();
 
 	/**
 	 * <p>taskOut field.</p>
 	 */
-	private final List<matrixstudio.model.Task> taskOutList = new ArrayList<matrixstudio.model.Task>();
+	private final List<Task> taskOutList = new ArrayList<>();
 
-	private Kernel kernel;
+    /**
+     * <p>Kernel list field.</p>
+     */
+	private final List<Kernel> kernelList = new ArrayList<>();
 
 	public Task() {
 	}
 
 	protected Task(Boost boost) {
 		boost.register(this);
+        int version = boost.getFileVersion();
 		scheduler = boost.readObject(Scheduler.class);
 		globalWorkSizeX = boost.readInt();
 		globalWorkSizeY = boost.readInt();
 		globalWorkSizeZ = boost.readInt();
 		position = BoostUtil.readFloatArray(boost);
-		for ( matrixstudio.model.Task oneChild : BoostUtil.readObjectList(boost, matrixstudio.model.Task.class) ) {
+		for ( Task oneChild : BoostUtil.readObjectList(boost, Task.class) ) {
 			taskInList.add(oneChild);
 		}
-		for ( matrixstudio.model.Task oneChild : BoostUtil.readObjectList(boost, matrixstudio.model.Task.class) ) {
+		for ( Task oneChild : BoostUtil.readObjectList(boost, Task.class) ) {
 			taskOutList.add(oneChild);
 		}
-		kernel = boost.readObject(Kernel.class);
+        if (version >= 2) {
+            for ( Kernel oneChild : BoostUtil.readObjectList(boost, Kernel.class) ) {
+                kernelList.add(oneChild);
+            }
+        } else {
+            kernelList.add(boost.readObject(Kernel.class));
+        }
+
 	}
 
 	/**
@@ -144,7 +155,7 @@ public class Task implements ModelObject, BoostObject {
 	/**
 	 * <p>Returns all values of taskIn.</p>
 	 */
-	public List<matrixstudio.model.Task> getTaskInList() {
+	public List<Task> getTaskInList() {
 		return Collections.unmodifiableList(taskInList);
 	}
 
@@ -158,7 +169,7 @@ public class Task implements ModelObject, BoostObject {
 	/**
 	 * <p>Gets taskIn at given index.</p>
 	 */
-	public matrixstudio.model.Task getTaskIn(int index) {
+	public Task getTaskIn(int index) {
 		if ( index < 0 || index >= getTaskInCount() ) { return null; }
 		return taskInList.get(index);
 	}
@@ -166,14 +177,14 @@ public class Task implements ModelObject, BoostObject {
 	/**
 	 * <p>Adds an object in taskIn.</p>
 	 */
-	public void addTaskIn(matrixstudio.model.Task newValue) {
+	public void addTaskIn(Task newValue) {
 		addTaskIn(getTaskInCount(), newValue);
 	}
 
 	/**
 	 * <p>Adds an object in taskIn at given index.</p>
 	 */
-	public void addTaskIn(int index, matrixstudio.model.Task newValue) {
+	public void addTaskIn(int index, Task newValue) {
 		getChangeRecorder().recordAddObject(this, "taskIn", index);
 		taskInList.add(index, newValue);
 	}
@@ -181,8 +192,8 @@ public class Task implements ModelObject, BoostObject {
 	/**
 	 * <p>Replaces an object in taskIn at given index. Returns the old value.</p>
 	 */
-	public matrixstudio.model.Task setTaskIn(int index, matrixstudio.model.Task newValue) {
-		matrixstudio.model.Task oldValue = taskInList.set(index, newValue);
+	public Task setTaskIn(int index, Task newValue) {
+		Task oldValue = taskInList.set(index, newValue);
 		getChangeRecorder().recordRemoveObject(this, "taskIn", index, oldValue);
 		getChangeRecorder().recordAddObject(this, "taskIn", index);
 		return oldValue;
@@ -191,8 +202,8 @@ public class Task implements ModelObject, BoostObject {
 	/**
 	 * <p>Adds a collection of objects in taskIn.</p>
 	 */
-	public void addAllTaskIn(Collection<matrixstudio.model.Task> toAddList) {
-		for (matrixstudio.model.Task newValue : toAddList) {
+	public void addAllTaskIn(Collection<Task> toAddList) {
+		for (Task newValue : toAddList) {
 			addTaskIn(getTaskInCount(), newValue);
 		}
 	}
@@ -200,7 +211,7 @@ public class Task implements ModelObject, BoostObject {
 	/**
 	 * <p>Removes given object from taskIn.</p>
 	 */
-	public void removeTaskIn(matrixstudio.model.Task value) {
+	public void removeTaskIn(Task value) {
 		int index = taskInList.indexOf(value);
 		if (index >= 0 ) {
 			removeTaskIn(index);
@@ -211,7 +222,7 @@ public class Task implements ModelObject, BoostObject {
 	 * <p>Removes object from taskIn at given index.</p>
 	 */
 	public void removeTaskIn(int index) {
-		matrixstudio.model.Task oldValue = taskInList.get(index);
+		Task oldValue = taskInList.get(index);
 		getChangeRecorder().recordRemoveObject(this, "taskIn", index, oldValue);
 		taskInList.remove(index);
 	}
@@ -219,7 +230,7 @@ public class Task implements ModelObject, BoostObject {
 	/**
 	 * <p>Returns all values of taskOut.</p>
 	 */
-	public List<matrixstudio.model.Task> getTaskOutList() {
+	public List<Task> getTaskOutList() {
 		return Collections.unmodifiableList(taskOutList);
 	}
 
@@ -233,7 +244,7 @@ public class Task implements ModelObject, BoostObject {
 	/**
 	 * <p>Gets taskOut at given index.</p>
 	 */
-	public matrixstudio.model.Task getTaskOut(int index) {
+	public Task getTaskOut(int index) {
 		if ( index < 0 || index >= getTaskOutCount() ) { return null; }
 		return taskOutList.get(index);
 	}
@@ -241,14 +252,14 @@ public class Task implements ModelObject, BoostObject {
 	/**
 	 * <p>Adds an object in taskOut.</p>
 	 */
-	public void addTaskOut(matrixstudio.model.Task newValue) {
+	public void addTaskOut(Task newValue) {
 		addTaskOut(getTaskOutCount(), newValue);
 	}
 
 	/**
 	 * <p>Adds an object in taskOut at given index.</p>
 	 */
-	public void addTaskOut(int index, matrixstudio.model.Task newValue) {
+	public void addTaskOut(int index, Task newValue) {
 		getChangeRecorder().recordAddObject(this, "taskOut", index);
 		taskOutList.add(index, newValue);
 	}
@@ -256,8 +267,8 @@ public class Task implements ModelObject, BoostObject {
 	/**
 	 * <p>Replaces an object in taskOut at given index. Returns the old value.</p>
 	 */
-	public matrixstudio.model.Task setTaskOut(int index, matrixstudio.model.Task newValue) {
-		matrixstudio.model.Task oldValue = taskOutList.set(index, newValue);
+	public Task setTaskOut(int index, Task newValue) {
+		Task oldValue = taskOutList.set(index, newValue);
 		getChangeRecorder().recordRemoveObject(this, "taskOut", index, oldValue);
 		getChangeRecorder().recordAddObject(this, "taskOut", index);
 		return oldValue;
@@ -266,8 +277,8 @@ public class Task implements ModelObject, BoostObject {
 	/**
 	 * <p>Adds a collection of objects in taskOut.</p>
 	 */
-	public void addAllTaskOut(Collection<matrixstudio.model.Task> toAddList) {
-		for (matrixstudio.model.Task newValue : toAddList) {
+	public void addAllTaskOut(Collection<Task> toAddList) {
+		for (Task newValue : toAddList) {
 			addTaskOut(getTaskOutCount(), newValue);
 		}
 	}
@@ -275,7 +286,7 @@ public class Task implements ModelObject, BoostObject {
 	/**
 	 * <p>Removes given object from taskOut.</p>
 	 */
-	public void removeTaskOut(matrixstudio.model.Task value) {
+	public void removeTaskOut(Task value) {
 		int index = taskOutList.indexOf(value);
 		if (index >= 0 ) {
 			removeTaskOut(index);
@@ -286,27 +297,87 @@ public class Task implements ModelObject, BoostObject {
 	 * <p>Removes object from taskOut at given index.</p>
 	 */
 	public void removeTaskOut(int index) {
-		matrixstudio.model.Task oldValue = taskOutList.get(index);
+		Task oldValue = taskOutList.get(index);
 		getChangeRecorder().recordRemoveObject(this, "taskOut", index, oldValue);
 		taskOutList.remove(index);
 	}
 
-	/**
-	 * <p>Gets kernel.</p>
-	 */
-	public Kernel getKernel() {
-		return kernel;
-	}
+    // -----
 
-	/**
-	 * <p>Sets kernel.</p>
-	 */
-	public void setKernel(Kernel newValue) {
-		if (kernel == null ? newValue != null : (kernel.equals(newValue) == false)) {
-			getChangeRecorder().recordChangeAttribute(this, "kernel", this.kernel);
-			this.kernel= newValue;
-		}
-	}
+    /**
+     * <p>Returns all values of kernel.</p>
+     */
+    public List<Kernel> getKernelList() {
+        return Collections.unmodifiableList(kernelList);
+    }
+
+    /**
+     * <p>Gets kernel object count.</p>
+     */
+    public int getKernelCount() {
+        return kernelList.size();
+    }
+
+    /**
+     * <p>Gets kernel at given index.</p>
+     */
+    public Kernel getKernel(int index) {
+        if ( index < 0 || index >= getKernelCount() ) { return null; }
+        return kernelList.get(index);
+    }
+
+    /**
+     * <p>Adds an object in kernel.</p>
+     */
+    public void addKernel(Kernel newValue) {
+        addKernel(getKernelCount(), newValue);
+    }
+
+    /**
+     * <p>Adds an object in kernel at given index.</p>
+     */
+    public void addKernel(int index, Kernel newValue) {
+        getChangeRecorder().recordAddObject(this, "kernel", index);
+        kernelList.add(index, newValue);
+    }
+
+    /**
+     * <p>Replaces an object in kernel at given index. Returns the old value.</p>
+     */
+    public Kernel setKernel(int index, Kernel newValue) {
+        Kernel oldValue = kernelList.set(index, newValue);
+        getChangeRecorder().recordRemoveObject(this, "kernel", index, oldValue);
+        getChangeRecorder().recordAddObject(this, "kernel", index);
+        return oldValue;
+    }
+
+    /**
+     * <p>Adds a collection of objects in kernel.</p>
+     */
+    public void addAllKernel(Collection<Kernel> toAddList) {
+        for (Kernel newValue : toAddList) {
+            addKernel(getKernelCount(), newValue);
+        }
+    }
+
+    /**
+     * <p>Removes given object from kernel.</p>
+     */
+    public void removeKernel(Kernel value) {
+        int index = kernelList.indexOf(value);
+        if (index >= 0 ) {
+            removeKernel(index);
+        }
+    }
+
+    /**
+     * <p>Removes object from kernel at given index.</p>
+     */
+    public void removeKernel(int index) {
+        Kernel oldValue = kernelList.get(index);
+        getChangeRecorder().recordRemoveObject(this, "kernel", index, oldValue);
+        kernelList.remove(index);
+    }
 
 	/**
 	 * <p><b>getPositionCopy</b>: Returns a copy of position.</p>
@@ -316,6 +387,7 @@ public class Task implements ModelObject, BoostObject {
 	}
 
 	public void writeToBoost(Boost boost) {
+        int version = boost.getFileVersion();
 		boost.writeObject(scheduler);
 		boost.writeInt(globalWorkSizeX);
 		boost.writeInt(globalWorkSizeY);
@@ -323,7 +395,15 @@ public class Task implements ModelObject, BoostObject {
 		BoostUtil.writeFloatArray(boost, position);
 		BoostUtil.writeObjectCollection(boost, taskInList);
 		BoostUtil.writeObjectCollection(boost, taskOutList);
-		boost.writeObject(kernel);
+        if (version >= 2) {
+		    BoostUtil.writeObjectCollection(boost, kernelList);
+        } else {
+            if (kernelList.size() > 0) {
+                boost.writeObject(kernelList.get(0));
+            } else {
+                boost.writeObject(null);
+            }
+        }
 	}
 
 	/**

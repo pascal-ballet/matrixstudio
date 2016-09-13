@@ -1,5 +1,6 @@
 package matrixstudio.ui.diagram;
 
+import matrixstudio.model.Kernel;
 import matrixstudio.model.Task;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -24,8 +25,7 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
 	
 	private Task task;
 	private float[] point;
-	
-	
+
 	private Font smallFont = null;
 	
 	public TaskElement(Task task) {
@@ -101,8 +101,17 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
 		GcUtils.drawRoundRectangle(gc, rectangle, 10f, 10f, true);
 		
 		// draws kernel name
-		String name = task.getKernel() == null ? "[No kernel]" : task.getKernel().getName();
-		GcUtils.drawStringAligned(gc, name, point[0], point[1]-8f, Geometry.CENTER);
+        StringBuilder name = new StringBuilder();
+        if (task.getKernelCount() > 0) {
+            for (Kernel kernel : task.getKernelList()) {
+                if (name.length() > 0) name.append(",");
+                name.append(kernel.getName());
+            }
+
+        } else {
+            name.append("[No kernel]");
+        }
+		GcUtils.drawStringAligned(gc, name.toString(), point[0], point[1]-8f, Geometry.CENTER);
 		
 		// prints info at bottom
 		final StringBuilder info = new StringBuilder();
