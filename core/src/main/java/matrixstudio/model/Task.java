@@ -379,7 +379,24 @@ public class Task implements ModelObject, BoostObject {
         kernelList.remove(index);
     }
 
-	/**
+    public void upKernel(int index) {
+        if ( index <= 0 && index >= kernelList.size() ) return;
+
+        Kernel kernel = getKernel(index);
+        setKernel(index, getKernel(index-1));
+        setKernel(index-1, kernel);
+    }
+
+    public void downKernel(int index) {
+        if ( index < 0 && index >= kernelList.size() - 1 ) return;
+
+        Kernel kernel = getKernel(index);
+        setKernel(index, getKernel(index+1));
+        setKernel(index+1, kernel);
+    }
+
+
+    /**
 	 * <p><b>getPositionCopy</b>: Returns a copy of position.</p>
 	 */
 	public float[] getPositionCopy() {

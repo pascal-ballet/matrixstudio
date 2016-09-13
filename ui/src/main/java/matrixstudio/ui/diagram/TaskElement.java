@@ -42,9 +42,11 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
 	}
 	
 	public void computeRectangle(float[] rectangle) {
-		rectangle[0] = point[0] - 50f;
+	    int halfLength = (getName().length() *8)/2;
+        if (halfLength < 50) halfLength = 50;
+		rectangle[0] = point[0] - halfLength;
 		rectangle[1] = point[1] - 25f;
-		rectangle[2] = point[0] + 50f;
+		rectangle[2] = point[0] + halfLength;
 		rectangle[3] = point[1] + 25f;
 	}
 
@@ -101,17 +103,7 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
 		GcUtils.drawRoundRectangle(gc, rectangle, 10f, 10f, true);
 		
 		// draws kernel name
-        StringBuilder name = new StringBuilder();
-        if (task.getKernelCount() > 0) {
-            for (Kernel kernel : task.getKernelList()) {
-                if (name.length() > 0) name.append(",");
-                name.append(kernel.getName());
-            }
-
-        } else {
-            name.append("[No kernel]");
-        }
-		GcUtils.drawStringAligned(gc, name.toString(), point[0], point[1]-8f, Geometry.CENTER);
+        GcUtils.drawStringAligned(gc, getName(), point[0], point[1]-8f, Geometry.CENTER);
 		
 		// prints info at bottom
 		final StringBuilder info = new StringBuilder();
@@ -132,7 +124,21 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
 		
 	}
 
-	@Override
+    private String getName() {
+        StringBuilder name = new StringBuilder();
+        if (task.getKernelCount() > 0) {
+            for (Kernel kernel : task.getKernelList()) {
+                if (name.length() > 0) name.append(",");
+                name.append(kernel.getName());
+            }
+
+        } else {
+            name.append("[No kernel]");
+        }
+        return name.toString();
+    }
+
+    @Override
 	public void hitTesting(List<Element> result, float[] detectionPoint, float[] detectionRectangle, int type, DiagramContext context) {
 		if ( type == DiagramContext.HIT_SELECTION ) {
 			float[] rectangle = new float[4];
