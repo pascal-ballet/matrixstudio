@@ -42,7 +42,7 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
 	}
 	
 	public void computeRectangle(float[] rectangle) {
-	    int halfLength = (getName().length() *8)/2;
+	    int halfLength = (getName().length() *8)/2 + 5;
         if (halfLength < 50) halfLength = 50;
 		rectangle[0] = point[0] - halfLength;
 		rectangle[1] = point[1] - 25f;
@@ -120,7 +120,7 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
 		gc.setFont(oldFont);
 		
 		// draws create connection icon.
-		GcUtils.drawImageAligned(gc, context.getResources().getImage("create_connection.gif"), point[0] + 30f, point[1] - 25f, Geometry.NORTH_WEST);
+		GcUtils.drawImageAligned(gc, context.getResources().getImage("create_connection.gif"), rectangle[2] - 20f, rectangle[1] + 2f, Geometry.NORTH_WEST);
 		
 	}
 
@@ -157,9 +157,9 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
 	
 	@Override
 	public void computeInteractionObjects(List<InteractionObject> result, int type, DiagramContext context) {
-		float[] rectangle = new float[4];
-		computeRectangle(rectangle);
 		if ( type == DiagramContext.HIT_SELECTION ) {
+		    float[] rectangle = new float[4];
+		    computeRectangle(rectangle);
 			Handle.addRectangleHandles(result, this, rectangle, true, false);
 		}
 	}
