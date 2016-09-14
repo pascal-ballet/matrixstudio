@@ -573,34 +573,39 @@ public class Simulator implements Runnable {
 			
 			// First, we build the kernels parameters
 			for (int tt=0; tt<schedule.getTaskCount(); tt++ ) {
-				Task task = schedule.getTask(tt);
-                for (int ki = 0; ki < task.getKernelCount(); ki++) {
-                    rand = Tools.rnd.nextInt(1073741824);
-                    // Update parameters
-                    pt_rand[0] = rand;
-                    pt_steps[0] = nbSteps;
-                    pt_mouseX[0] = mouseX;
-                    pt_mouseY[0] = mouseY;
-                    pt_mouseBtn[0] = mouseBtn;
-                    pt_WSX[0] = task.getGlobalWorkSizeX();
-                    pt_WSY[0] = task.getGlobalWorkSizeY();
-                    pt_WSZ[0] = task.getGlobalWorkSizeZ();
-                    // Pass modified arguments that are not pointers (pointers do not need update)
-                    int argNum = 0;
-                    cl_kernel kernel = clKernelsByName.get(task.getKernel(ki).getName());
-                    clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_rand));
+                Task task = schedule.getTask(tt);
+                int repetition = task.getRepetition();
+                if (repetition <= 0) repetition = 1;
 
-                    clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_steps));
-                    clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_mouseX));
-                    clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_mouseY));
-                    clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_mouseBtn));
+                for (int i = 0; i < repetition; i++) {
 
-                    clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_WSX));
-                    clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_WSY));
-                    clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_WSZ));
+                    for (int ki = 0; ki < task.getKernelCount(); ki++) {
+                        rand = Tools.rnd.nextInt(1073741824);
+                        // Update parameters
+                        pt_rand[0] = rand;
+                        pt_steps[0] = nbSteps;
+                        pt_mouseX[0] = mouseX;
+                        pt_mouseY[0] = mouseY;
+                        pt_mouseBtn[0] = mouseBtn;
+                        pt_WSX[0] = task.getGlobalWorkSizeX();
+                        pt_WSY[0] = task.getGlobalWorkSizeY();
+                        pt_WSZ[0] = task.getGlobalWorkSizeZ();
+                        // Pass modified arguments that are not pointers (pointers do not need update)
+                        int argNum = 0;
+                        cl_kernel kernel = clKernelsByName.get(task.getKernel(ki).getName());
+                        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_rand));
+
+                        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_steps));
+                        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_mouseX));
+                        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_mouseY));
+                        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_mouseBtn));
+
+                        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_WSX));
+                        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_WSY));
+                        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_WSZ));
+                    }
                 }
-			}
-			
+            }
 			// Enqueue of all the tasks (schedule must be respected)
 			boolean result = false;
 			result = executeAllTasks();
@@ -626,33 +631,38 @@ public class Simulator implements Runnable {
     }
     
     private boolean enqueueTask(final Task task) {
-        for (int ki = 0; ki < task.getKernelCount(); ki++) {
-            final cl_kernel kernel = clKernelsByName.get(task.getKernel(ki).getName());
+        int repetition = task.getRepetition();
+        if (repetition <= 0) repetition = 1;
 
-            final long[] global_work_size = globalSizeByTask.get(task);
-            final int dimension = global_work_size.length;
+        for (int i = 0; i < repetition; i++) {
+            for (int ki = 0; ki < task.getKernelCount(); ki++) {
+                final cl_kernel kernel = clKernelsByName.get(task.getKernel(ki).getName());
 
-            final cl_event event = eventsByTask.get(task);
-            final cl_event[] dependencies = dependenciesByTask.get(task);
-            final int num_events_in_wait_list = dependencies == null ? 0 : dependencies.length;
+                final long[] global_work_size = globalSizeByTask.get(task);
+                final int dimension = global_work_size.length;
 
-            try {
-                final int error = clEnqueueNDRangeKernel(
-                        commandQueue, kernel,
-                        dimension, null, global_work_size, null,
-                        //dimension, null, global_work_size, local_work_size,
-                        0, null, null
-                        //num_events_in_wait_list, dependencies, event
-                );
-                CL.clFinish(commandQueue);
+                final cl_event event = eventsByTask.get(task);
+                final cl_event[] dependencies = dependenciesByTask.get(task);
+                final int num_events_in_wait_list = dependencies == null ? 0 : dependencies.length;
 
-                if (error != 0) {
-                    log.error("Error in launchTask:" + error + ".");
+                try {
+                    final int error = clEnqueueNDRangeKernel(
+                            commandQueue, kernel,
+                            dimension, null, global_work_size, null,
+                            //dimension, null, global_work_size, local_work_size,
+                            0, null, null
+                            //num_events_in_wait_list, dependencies, event
+                    );
+                    CL.clFinish(commandQueue);
+
+                    if (error != 0) {
+                        log.error("Error in launchTask:" + error + ".");
+                        return false;
+                    }
+                } catch (CLException e) {
+                    log.error(DiagnosticUtil.createMessage(e));
                     return false;
                 }
-            } catch (CLException e) {
-                log.error(DiagnosticUtil.createMessage(e));
-                return false;
             }
         }
         return true;
