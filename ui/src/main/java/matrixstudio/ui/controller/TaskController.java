@@ -20,6 +20,8 @@ import java.util.List;
 
 public class TaskController extends Controller<Task> {
 
+	private TextField repetitionField;
+
 	private ListField<Kernel> kernelListField;
 	private ChoiceField<Kernel> kernelChoiceField;
 
@@ -32,6 +34,15 @@ public class TaskController extends Controller<Task> {
 	
 	@Override
 	public CompositeField createFields() {
+
+        repetitionField = new TextField("Repetition", BasicsUI.NONE);
+        repetitionField.setValidator(new Validator.Stub<String>(Diagnostic.ERROR, "Invalid repetition") {
+            public boolean isValid(String value) {
+                if ( value == null ) return false;
+                return value.matches("[0-9][0-9]*");
+            }
+        });
+
 		kernelListField = new ListField<Kernel>("Kernels", BasicsUI.NONE) {
 			@Override
 			public String getText(Kernel element) {
@@ -156,7 +167,7 @@ public class TaskController extends Controller<Task> {
 		});
 		positionField = new TextField("Position", BasicsUI.READ_ONLY);
 		
-		compositeField = new CompositeField("Task", BasicsUI.GROUP, kernelListField, kernelChoiceField, globalWorkSizeXField, globalWorkSizeYField, globalWorkSizeZField);
+		compositeField = new CompositeField("Task", BasicsUI.GROUP, repetitionField, kernelListField, kernelChoiceField, globalWorkSizeXField, globalWorkSizeYField, globalWorkSizeZField);
 		return compositeField;
 		
 	}
@@ -168,6 +179,9 @@ public class TaskController extends Controller<Task> {
 			compositeField.setEnable(false);
 		} else {
 			compositeField.setEnable(true);
+
+            String repetition = getSubject().getRepetition() <= 0 ? "" : Integer.toString(getSubject().getRepetition());
+            repetitionField.setValue(repetition);
 
             kernelListField.setValue(getSubject().getKernelList());
             kernelChoiceField.setValue(kernelListField.getSingleSelection());
@@ -189,6 +203,10 @@ public class TaskController extends Controller<Task> {
 	
 	@Override
 	public boolean updateSubject(Field field) {
+        if ( field == repetitionField ) {
+            getSubject().setRepetition(repetitionField.getIntValue());
+            return true;
+        }
 	    if (field == kernelChoiceField && kernelListField.getSingleSelection() != null) {
             getSubject().setKernel(kernelListField.getSingleSelectionIndex(), kernelChoiceField.getValue());
 	        return true;
