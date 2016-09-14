@@ -105,9 +105,15 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
 		// draws kernel name
         GcUtils.drawStringAligned(gc, getName(), point[0], point[1]-8f, Geometry.CENTER);
 
+		Font oldFont = gc.getFont();
+		gc.setFont(smallFont);
+
         // prints repetition if needed
-        if (task.getRepetition() > 1) {
-            GcUtils.drawStringAligned(gc, Integer.toString(task.getRepetition()), rectangle[0] - 20f, rectangle[3] + 2f, Geometry.NORTH_WEST);
+        int repetition = task.getRepetition();
+        if (repetition > 1) {
+            gc.setBackground(context.getResources().getSystemColor(SWT.COLOR_WHITE));
+            gc.fillOval((int) rectangle[0] + 3, (int) rectangle[3] - 15, (repetition >= 100) ? 30 : 15, 12);
+            GcUtils.drawStringAligned(gc, Integer.toString(repetition), rectangle[0] + 5f, rectangle[3] - 15f, Geometry.NORTH_WEST);
         }
 
 		// prints info at bottom
@@ -119,9 +125,8 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
 		info.append(",");
 		info.append(task.getGlobalWorkSizeZ());
 		info.append(")");
-		Font oldFont = gc.getFont();
-		gc.setFont(smallFont);
 		GcUtils.drawStringAligned(gc, info.toString(), point[0], point[1]+12f, Geometry.CENTER);
+
 		gc.setFont(oldFont);
 		
 		// draws create connection icon.
