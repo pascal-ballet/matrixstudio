@@ -17,6 +17,8 @@ public class Task implements ModelObject, BoostObject {
 
 	private Scheduler scheduler;
 
+    private int repetition = 1;
+
 	private int globalWorkSizeX = 512;
 
 	private int globalWorkSizeY = 256;
@@ -44,9 +46,10 @@ public class Task implements ModelObject, BoostObject {
 	}
 
 	protected Task(Boost boost) {
-		boost.register(this);
+        boost.register(this);
         int version = boost.getFileVersion();
-		scheduler = boost.readObject(Scheduler.class);
+        scheduler = boost.readObject(Scheduler.class);
+        repetition = version >= 2 ? boost.readInt() : 1;
 		globalWorkSizeX = boost.readInt();
 		globalWorkSizeY = boost.readInt();
 		globalWorkSizeZ = boost.readInt();
@@ -84,7 +87,24 @@ public class Task implements ModelObject, BoostObject {
 		}
 	}
 
-	/**
+    /**
+     * <p>Gets repetition.</p>
+     */
+    public int getRepetition() {
+        return repetition;
+    }
+
+    /**
+     * <p>Sets repetition.</p>
+     */
+    public void setRepetition(int newValue) {
+        if (repetition != newValue) {
+            getChangeRecorder().recordChangeAttribute(this, "repetition", this.repetition);
+            this.repetition= newValue;
+        }
+    }
+
+    /**
 	 * <p>Gets globalWorkSizeX.</p>
 	 */
 	public int getGlobalWorkSizeX() {
