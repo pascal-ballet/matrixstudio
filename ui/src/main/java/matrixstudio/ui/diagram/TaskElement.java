@@ -104,7 +104,12 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
 		
 		// draws kernel name
         GcUtils.drawStringAligned(gc, getName(), point[0], point[1]-8f, Geometry.CENTER);
-		
+
+        // prints repetition if needed
+        if (task.getRepetition() > 1) {
+            GcUtils.drawStringAligned(gc, Integer.toString(task.getRepetition()), rectangle[0] - 20f, rectangle[3] + 2f, Geometry.NORTH_WEST);
+        }
+
 		// prints info at bottom
 		final StringBuilder info = new StringBuilder();
 		info.append("(");
