@@ -8,12 +8,6 @@ import java.text.ParseException;
 public class FormulaParser {
 
     private final static char EOL = '\u0000';
-    private final int ff = 3;
-
-    private final ParserPredicate reference = (i, c) -> i == 0 && Character.isJavaIdentifierStart(c) || i > 0 && Character.isJavaIdentifierPart(c);
-    private final ParserPredicate literal = (i, c) -> i == 0 && (c == '+' || c == '-') || Character.isDigit(c);
-    private final ParserPredicate unaryOp = (i, c) -> c == '+' || c == '-' ;
-    private final ParserPredicate binaryOp = (i, c) -> c == '+' || c == '-' || c == '*' || c == '/' || c == '%';
 
     private final String expression;
 
@@ -30,8 +24,10 @@ public class FormulaParser {
     }
 
     private String peek(int start, int length) {
-        int position = current + start;
-        return expression.substring(position, position+length);
+        int gStart = current + start;
+        int gEnd = gStart + length;
+
+        return expression.substring(gStart, gEnd);
     }
 
     private void skip(int n) {
@@ -43,48 +39,75 @@ public class FormulaParser {
     }
 
     private Formula readFormula() throws ParseException {
+        Formula left = readTerminal();
 
+        return readBinary(left);
+    }
 
+    /** Reads binary Multiply and Divide */
+    private Formula readBinary(Formula left) throws ParseException {
         char c = peek(0);
-        while (c != ')' && c != EOL ) {
-            if (c == '(') {
-                skip(1);
-                SubFormula subFormula = new SubFormula(readFormula());
-                skip(1); // skips ')'
-                return subFormula;
-            } else if (test(unaryOp, 1)) {
-                // TODO
-            } else if (test(reference, ff)) {
-                return new Reference(readString(reference));
-            } else if (test(literal, ff)) {
-                String string = readString(literal);
-                return new Literal(Long.parseLong(string));
-            }
-            c = peek(0);
+
+        if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%') {
+            String op = Character.toString(c);
+            readSymbol(op);
+            Formula right = readFormula();
+            return new BinaryOperation(BinaryOperation.fromSymbol(op), left, right);
         }
 
-        return null;
+        return left;
+
     }
 
-    private boolean testSubFormula() {
-        return peek(0) == '(';
-    }
 
-    private boolean test(ParserPredicate predicate, int max) {
-        for (int i = 0; i < max; i++) {
-            if (predicate.test(i, peek(i)) == false) return false;
+
+    private Formula readTerminal() throws ParseException {
+        char c = peek(0);
+        if ( c == '(' ) {
+            readSymbol("(");
+            Formula subFormula = readFormula();
+            readSymbol(")");
+            return new SubFormula(subFormula);
         }
-        return true;
+        Formula result = readReference();
+        if (result != null) return result;
+
+        result = readLiteral();
+        if (result != null) return result;
+
+        throw new ParseException("Unexpected token '"+ c +"'", current);
     }
 
-    private String readString(ParserPredicate predicate) {
+    private Reference readReference() {
         int i = 0;
 
         while (true) {
-            char peek = peek(i);
-            if (peek == EOL) break;
+            char c = peek(i);
 
-            if (predicate.test(i, peek)) {
+            if (c != EOL && (i == 0 && (Character.isJavaIdentifierStart(c)) || i > 0 && Character.isJavaIdentifierPart(c))) {
+                i++;
+            } else {
+                break;
+            }
+        }
+
+        if (i > 0) {
+            String result = peek(0, i);
+            skip(i);
+            readSeparators();
+            return new Reference(result);
+        } else {
+            return null;
+        }
+    }
+
+    private Literal readLiteral() {
+        int i = 0;
+
+        while (true) {
+            char c = peek(i);
+
+            if (c != EOL && (i == 0 && (c == '+' || c == '-') || Character.isDigit(c))) {
                 i++;
             } else {
                 break;
@@ -94,19 +117,26 @@ public class FormulaParser {
         String result = peek(0, i);
         skip(i);
         readSeparators();
-        return result;
+        return new Literal(Long.parseLong(result));
+    }
+
+    private void readSymbol(String symbol) throws ParseException {
+        String read = peek(0, symbol.length());
+        if (!read.equals(symbol)) throw new ParseException("Expected '"+ symbol +"'", current);
+        skip(symbol.length());
+        readSeparators();
     }
 
     private void readSeparators() {
-        char c;
-        while (1 <= (c = peek(0)) && c <= 32) {
+        char c = peek(0);
+        while ( 1 <= c  && c <= 32) {
             skip(1);
+            c = peek(0);
         }
     }
 
-    @FunctionalInterface
-    private interface ParserPredicate {
-        boolean test(int position, Character character);
+    @Override
+    public String toString() {
+        return "Parser on '" + peek(current, 10);
     }
-
 }
