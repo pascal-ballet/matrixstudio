@@ -7,19 +7,19 @@ import java.util.Map;
  */
 public class Literal implements Formula {
 
-    private final Number value;
+    private final Long value;
 
-    public Literal(Number value) {
+    public Literal(Long value) {
         if (value == null) throw new NullPointerException();
         this.value = value;
     }
 
-    public Number getValue() {
+    public Long getValue() {
         return value;
     }
 
     @Override
-    public Number evaluate(Map<String, Number> context) throws EvaluationException {
+    public Long evaluate(Map<String, Long> context) throws EvaluationException {
         return value;
     }
 }

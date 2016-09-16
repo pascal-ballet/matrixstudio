@@ -18,8 +18,8 @@ public class Reference implements Formula {
     }
 
     @Override
-    public Number evaluate(Map<String, Number> context) throws EvaluationException {
-        Number result = context.get(name);
+    public Long evaluate(Map<String, Long> context) throws EvaluationException {
+        Long result = context.get(name);
         if (result == null) throw new EvaluationException("Parameter '" +  name + "' isn't defined");
         return result;
     }

@@ -19,7 +19,7 @@ public class SubFormula implements Formula {
     }
 
     @Override
-    public Number evaluate(Map<String, Number> context) throws EvaluationException {
+    public Long evaluate(Map<String, Long> context) throws EvaluationException {
         return child.evaluate(context);
     }
 }
