@@ -4,10 +4,7 @@ import java.text.ParseException;
 import java.util.Map;
 
 /**
- * Binary formula, one of:
- * <ul>
- * <li></li>
- * </ul>
+ * Binary formula, one of: <code>+, -, *, /, %</code>/
  */
 public class BinaryOperation implements Formula {
     public enum Operation {
@@ -37,7 +34,7 @@ public class BinaryOperation implements Formula {
     private final Formula right;
 
     public BinaryOperation(Operation operation, Formula left, Formula right) {
-        if (left == null || right == null || operation == null) throw new NullPointerException();
+        //if (left == null || right == null || operation == null) throw new NullPointerException();
         this.operation = operation;
         this.left = left;
         this.right = right;
@@ -56,7 +53,7 @@ public class BinaryOperation implements Formula {
     }
 
     @Override
-    public Long evaluate(Map<String, Long> context) throws EvaluationException {
+    public long evaluate(Map<String, Long> context) throws EvaluationException {
         Long leftResult = left.evaluate(context);
         Long rightResult = right.evaluate(context);
         switch (operation) {

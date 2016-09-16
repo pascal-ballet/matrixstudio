@@ -18,7 +18,7 @@ public class Reference implements Formula {
     }
 
     @Override
-    public Long evaluate(Map<String, Long> context) throws EvaluationException {
+    public long evaluate(Map<String, Long> context) throws EvaluationException {
         Long result = context.get(name);
         if (result == null) throw new EvaluationException("Parameter '" +  name + "' isn't defined");
         return result;
