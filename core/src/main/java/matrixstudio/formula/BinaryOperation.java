@@ -1,5 +1,6 @@
 package matrixstudio.formula;
 
+import java.text.ParseException;
 import java.util.Map;
 
 /**
@@ -9,7 +10,26 @@ import java.util.Map;
  * </ul>
  */
 public class BinaryOperation implements Formula {
-    public enum Operation { Plus, Minus, Multiply, Divide, Modulus }
+    public enum Operation {
+        Plus, Minus, Multiply, Divide, Modulus
+    }
+
+    public static Operation fromSymbol(String symbol) throws ParseException {
+        switch (symbol) {
+            case "+":
+                return Operation.Plus;
+            case "-":
+                return Operation.Minus;
+            case "*":
+                return Operation.Multiply;
+            case "/":
+                return Operation.Divide;
+            case "%":
+                return Operation.Modulus;
+            default:
+                throw new ParseException("Unknown operator '"+ symbol +"'", 0);
+        }
+    }
 
     private final Operation operation;
 
@@ -55,4 +75,24 @@ public class BinaryOperation implements Formula {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BinaryOperation that = (BinaryOperation) o;
+
+        if (operation != that.operation) return false;
+        if (!left.equals(that.left)) return false;
+        return right.equals(that.right);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = operation.hashCode();
+        result = 31 * result + left.hashCode();
+        result = 31 * result + right.hashCode();
+        return result;
+    }
 }

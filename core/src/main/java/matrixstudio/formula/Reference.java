@@ -23,4 +23,20 @@ public class Reference implements Formula {
         if (result == null) throw new EvaluationException("Parameter '" +  name + "' isn't defined");
         return result;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Reference reference = (Reference) o;
+
+        return name.equals(reference.name);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }

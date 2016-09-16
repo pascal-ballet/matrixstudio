@@ -22,4 +22,20 @@ public class SubFormula implements Formula {
     public Long evaluate(Map<String, Long> context) throws EvaluationException {
         return child.evaluate(context);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SubFormula that = (SubFormula) o;
+
+        return child.equals(that.child);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return child.hashCode();
+    }
 }
