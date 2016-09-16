@@ -9,8 +9,10 @@ import org.xid.basics.serializer.BoostUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
-
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class Model implements ModelObject, BoostObject {
 
@@ -24,6 +26,11 @@ public class Model implements ModelObject, BoostObject {
 	 */
 	private final List<Matrix> matrixList = new ArrayList<Matrix>();
 
+	/**
+	 * <p>parameters field.</p>
+	 */
+	private final Map<String, String> parameterMap = new LinkedHashMap<>();
+
 	private Scheduler scheduler;
 
 	public Model() {
@@ -31,12 +38,19 @@ public class Model implements ModelObject, BoostObject {
 
 	protected Model(Boost boost) {
 		boost.register(this);
-		for ( Code oneChild : BoostUtil.readObjectList(boost, Code.class) ) {
+        int version = boost.getFileVersion();
+        for ( Code oneChild : BoostUtil.readObjectList(boost, Code.class) ) {
 			codeList.add(oneChild);
 		}
 		for ( Matrix oneChild : BoostUtil.readObjectList(boost, Matrix.class) ) {
 			matrixList.add(oneChild);
 		}
+		if (version >= 3) {
+            int count = boost.readInt();
+            for (int i = 0; i < count; i++) {
+                parameterMap.put(boost.readString(), boost.readString());
+            }
+        }
 		scheduler = boost.readObject(Scheduler.class);
 	}
 
@@ -446,11 +460,45 @@ public class Model implements ModelObject, BoostObject {
 		// no kernel to swap with found
 	}
 
+	public Map<String, String> getParameterMap() {
+        return Collections.unmodifiableMap(parameterMap);
+    }
+
+    public String getParameter(String name) {
+        return parameterMap.get(name);
+    }
+
+
+	public void putParameter(String name, String value) {
+        String oldValue = parameterMap.get(name);
+        if (oldValue == null ? value != null : (oldValue.equals(value) == false)) {
+            getChangeRecorder().recordPutObject(this, "parameter", name, value);
+            parameterMap.put(name, value);
+        }
+    }
+
+    public void deleteParameter(String name) {
+        String oldValue = parameterMap.get(name);
+        if (oldValue != null) {
+            getChangeRecorder().recordRemoveObject(this, "parameter", name, oldValue);
+            parameterMap.remove(name);
+        }
+    }
+
+
 	public void writeToBoost(Boost boost) {
+        int version = boost.getFileVersion();
 		BoostUtil.writeObjectCollection(boost, codeList);
 		BoostUtil.writeObjectCollection(boost, matrixList);
 		boost.writeObject(scheduler);
-	}
+        if (version >= 3) {
+            boost.writeInt(parameterMap.size());
+            for (Entry<String, String> parameter : parameterMap.entrySet()) {
+                boost.writeString(parameter.getKey());
+                boost.writeString(parameter.getValue());
+            }
+        }
+    }
 
 	/**
 	 * Visitor accept method.
