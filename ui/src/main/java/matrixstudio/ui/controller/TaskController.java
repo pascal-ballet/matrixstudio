@@ -22,8 +22,8 @@ public class TaskController extends Controller<Task> {
 
 	private TextField repetitionField;
 
-	private ListField<Kernel> kernelListField;
 	private ChoiceField<Kernel> kernelChoiceField;
+	private ListField<Kernel> kernelListField;
 
 	private TextField positionField;
 	private TextField globalWorkSizeXField;
@@ -43,7 +43,7 @@ public class TaskController extends Controller<Task> {
             }
         });
 
-		kernelListField = new ListField<Kernel>("Kernels", BasicsUI.NONE) {
+        kernelListField = new ListField<Kernel>("Kernels", BasicsUI.NONE) {
 			@Override
 			public String getText(Kernel element) {
 				return element.getName();
@@ -64,7 +64,10 @@ public class TaskController extends Controller<Task> {
             }
         };
 
-        kernelListField.addAction(new Action.Stub("+", Action.STYLE_DEFAULT | Action.STYLE_TRANSACTIONNAL) {
+        CompositeField addKernelField = new CompositeField("Add kernel to task", BasicsUI.GROUP, kernelChoiceField);
+
+
+        kernelChoiceField.addAction(new Action.Stub("+", Action.STYLE_DEFAULT | Action.STYLE_TRANSACTIONNAL) {
 
             @Override
             public String getTooltip() {
@@ -144,6 +147,7 @@ public class TaskController extends Controller<Task> {
         });
 
 
+
         globalWorkSizeXField = new TextField("Global work size X", BasicsUI.NONE);
 		globalWorkSizeXField.setValidator(new Validator.Stub<String>(Diagnostic.ERROR, "Invalid size") {
 			public boolean isValid(String value) {
@@ -167,7 +171,7 @@ public class TaskController extends Controller<Task> {
 		});
 		positionField = new TextField("Position", BasicsUI.READ_ONLY);
 		
-		compositeField = new CompositeField("Task", BasicsUI.GROUP, repetitionField, kernelListField, kernelChoiceField, globalWorkSizeXField, globalWorkSizeYField, globalWorkSizeZField);
+		compositeField = new CompositeField("Task", BasicsUI.GROUP, repetitionField, kernelListField, addKernelField, globalWorkSizeXField, globalWorkSizeYField, globalWorkSizeZField);
 		return compositeField;
 		
 	}
@@ -184,7 +188,6 @@ public class TaskController extends Controller<Task> {
             repetitionField.setValue(repetition);
 
             kernelListField.setValue(getSubject().getKernelList());
-            kernelChoiceField.setValue(kernelListField.getSingleSelection());
 
             List<Kernel> allKernels = getSubject().getScheduler().getModel().getKernelList();
             kernelChoiceField.setRange(allKernels);
@@ -206,10 +209,6 @@ public class TaskController extends Controller<Task> {
         if ( field == repetitionField ) {
             getSubject().setRepetition(repetitionField.getIntValue());
             return true;
-        }
-	    if (field == kernelChoiceField && kernelListField.getSingleSelection() != null) {
-            getSubject().setKernel(kernelListField.getSingleSelectionIndex(), kernelChoiceField.getValue());
-	        return true;
         }
 		if ( field == globalWorkSizeXField ) {
 			getSubject().setGlobalWorkSizeX(globalWorkSizeXField.getIntValue());
