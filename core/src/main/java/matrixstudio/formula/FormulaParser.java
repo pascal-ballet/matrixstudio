@@ -1,6 +1,7 @@
 package matrixstudio.formula;
 
 import java.text.ParseException;
+import java.util.LinkedList;
 
 /**
  * Formula parser
@@ -26,6 +27,7 @@ public class FormulaParser {
     private String peek(int start, int length) {
         int gStart = current + start;
         int gEnd = gStart + length;
+        if (gEnd > expression.length()) gEnd = expression.length();
 
         return expression.substring(gStart, gEnd);
     }
@@ -38,27 +40,53 @@ public class FormulaParser {
         return readFormula();
     }
 
-    private Formula readFormula() throws ParseException {
-        Formula left = readTerminal();
-
-        return readBinary(left);
+    public Formula readFormula() throws ParseException {
+        return readInfixP1();
     }
 
-    /** Reads binary Multiply and Divide */
-    private Formula readBinary(Formula left) throws ParseException {
-        char c = peek(0);
+    private Formula readInfixP1() throws ParseException {
+        Formula left = readInfixP2();
 
-        if (c == '+' || c == '-' || c == '*' || c == '/' || c == '%') {
+
+        char c = peek(0);
+        LinkedList<BinaryOperation> parts = new LinkedList<>();
+        while (c == '+' || c == '-' ) {
             String op = Character.toString(c);
             readSymbol(op);
-            Formula right = readFormula();
-            return new BinaryOperation(BinaryOperation.fromSymbol(op), left, right);
+            Formula part = readInfixP2();
+            parts.add(new BinaryOperation(BinaryOperation.fromSymbol(op), null, part));
+            c = peek(0);
         }
 
-        return left;
-
+        Formula result = left;
+        while(!parts.isEmpty()) {
+            BinaryOperation part = parts.removeFirst();
+            result = new BinaryOperation(part.getOperation(), result, part.getRight());
+        }
+        return result;
     }
 
+    private Formula readInfixP2() throws ParseException {
+        Formula left = readTerminal();
+
+        char c = peek(0);
+        LinkedList<BinaryOperation> parts = new LinkedList<>();
+        while (c == '*' || c == '/' || c == '%' ) {
+            String op = Character.toString(c);
+            readSymbol(op);
+            Formula part = readInfixP2();
+
+            parts.add(new BinaryOperation(BinaryOperation.fromSymbol(op), null, part));
+            c = peek(0);
+        }
+
+        Formula result = left;
+        while(!parts.isEmpty()) {
+            BinaryOperation part = parts.removeFirst();
+            result = new BinaryOperation(part.getOperation(), result, part.getRight());
+        }
+        return result;
+    }
 
 
     private Formula readTerminal() throws ParseException {
@@ -122,7 +150,7 @@ public class FormulaParser {
 
     private void readSymbol(String symbol) throws ParseException {
         String read = peek(0, symbol.length());
-        if (!read.equals(symbol)) throw new ParseException("Expected '"+ symbol +"'", current);
+        if (!read.equals(symbol)) throw new ParseException("Expecting '"+ symbol +"' instead of '"+peek(0, 10) +"'", current);
         skip(symbol.length());
         readSeparators();
     }
@@ -137,6 +165,6 @@ public class FormulaParser {
 
     @Override
     public String toString() {
-        return "Parser on '" + peek(current, 10);
+        return "Parser on ("+ current +") '" + peek(0, 10) + "'";
     }
 }
