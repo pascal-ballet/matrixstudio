@@ -86,6 +86,48 @@ public class FormulaParserTest {
         result = new FormulaParser("1 % a").parse();
         Assert.assertTrue(result.equals(new BinaryOperation(Operation.Modulus, new Literal(1l), new Reference("a"))));
 
+        // left to rigth for parsing
+        result = new FormulaParser("1 + a + b").parse();
+        Assert.assertTrue(result.equals(
+            new BinaryOperation(
+                Operation.Plus,
+                new BinaryOperation(
+                    Operation.Plus,
+                    new Literal(1l),
+                    new Reference("a")
+                ),
+                new Reference("b")
+            )
+        ));
+    }
+
+    @Test
+    public void parseBinaryWithPriorities() throws Exception {
+        Formula result = new FormulaParser("1 + 2 * 3").parse();
+        Assert.assertTrue(result.equals(
+                new BinaryOperation(
+                        Operation.Plus,
+                        new Literal(1l),
+                        new BinaryOperation(
+                                Operation.Multiply,
+                                new Reference("2"),
+                                new Reference("3")
+                        )
+                )
+        ));
+
+        result = new FormulaParser("1 * 2 - 3").parse();
+        Assert.assertTrue(result.equals(
+                new BinaryOperation(
+                        Operation.Minus,
+                        new BinaryOperation(
+                                Operation.Multiply,
+                                new Reference("1"),
+                                new Reference("2")
+                        ),
+                        new Literal(3l)
+                )
+        ));
     }
 
 }
