@@ -58,7 +58,9 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 	private LibraryTabController libraryTabController;
 
 	private BorderField southField;
-	private CompositeField consoleComposite;
+
+    private MultiTabField southEastField;
+    private CompositeField consoleComposite;
 	private ConsoleField consoleField;
 	
 	private CompositeField propertiesComposite;
@@ -118,10 +120,10 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 			}
 		});
 
-		createConsoleTab();
+		createSouthEastTab();
 		createPropertiesTab();
 		
-		southField = new BorderField(BasicsUI.NONE, consoleComposite);
+		southField = new BorderField(BasicsUI.NONE, southEastField);
 		southField.setWest(propertiesComposite, 60);
 		
 		mainField = new BorderField(BasicsUI.NONE, centerField);
@@ -155,9 +157,12 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 		centerField.addTab(libraryTabController, resources.getImage("eclipse/outline_co.gif"), false);
 	}
 	
-	private void createConsoleTab() {
+	private void createSouthEastTab() {
+        southEastField = new MultiTabField();
+
 		consoleField = new ConsoleField();
 		consoleComposite = new CompositeField("Console", consoleField);
+        southEastField.addTab(consoleComposite, resources.getImage("eclipse/console_view.gif"), false);
 	}
 
 	private void createPropertiesTab() {
