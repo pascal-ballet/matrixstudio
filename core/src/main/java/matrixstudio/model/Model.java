@@ -490,7 +490,6 @@ public class Model implements ModelObject, BoostObject {
         int version = boost.getFileVersion();
 		BoostUtil.writeObjectCollection(boost, codeList);
 		BoostUtil.writeObjectCollection(boost, matrixList);
-		boost.writeObject(scheduler);
         if (version >= 3) {
             boost.writeInt(parameterMap.size());
             for (Entry<String, String> parameter : parameterMap.entrySet()) {
@@ -498,6 +497,7 @@ public class Model implements ModelObject, BoostObject {
                 boost.writeString(parameter.getValue());
             }
         }
+		boost.writeObject(scheduler);
     }
 
 	/**
