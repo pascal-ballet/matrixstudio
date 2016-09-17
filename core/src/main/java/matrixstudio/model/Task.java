@@ -426,6 +426,7 @@ public class Task implements ModelObject, BoostObject {
 	public void writeToBoost(Boost boost) {
         int version = boost.getFileVersion();
 		boost.writeObject(scheduler);
+        if (version >= 2) boost.writeInt(repetition);
 		boost.writeInt(globalWorkSizeX);
 		boost.writeInt(globalWorkSizeY);
 		boost.writeInt(globalWorkSizeZ);
