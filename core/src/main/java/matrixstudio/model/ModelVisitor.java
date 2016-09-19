@@ -8,7 +8,7 @@ public interface ModelVisitor {
 	/**
 	 * <p>Empty visitor implementation for package 'model'.</p>
 	 */
-	public static class Stub implements ModelVisitor {
+	class Stub implements ModelVisitor {
 
 		/**
 		 * Empty visit method for Model.
@@ -66,7 +66,14 @@ public interface ModelVisitor {
 			//do nothing
 		}
 
-	}
+		/**
+		 * Empty visit method for Parameter.
+		 */
+        @Override
+        public void visitParameter(Parameter toVisit) {
+            // do nothing
+        }
+    }
 
 	/**
 	 * Visit method for Model.
@@ -114,7 +121,9 @@ public interface ModelVisitor {
 	 * Visit method for MatrixULong.
 	 */
 	void visitMatrixULong(MatrixULong toVisit);
-	
+
+
+	void visitParameter(Parameter toVisit);
 
 }
 

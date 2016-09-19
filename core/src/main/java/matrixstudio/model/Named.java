@@ -5,16 +5,16 @@ import org.xid.basics.serializer.BoostObject;
 
 public interface Named extends ModelObject, BoostObject {
 
-	public String getName();
+	String getName();
 	
 
-	public void setName(String newValue);
+	void setName(String newValue);
 	
 
 	/**
 	 * Visitor accept method.
 	 */
-	public void accept(ModelVisitor visitor);
+	void accept(ModelVisitor visitor);
 	
 
 }

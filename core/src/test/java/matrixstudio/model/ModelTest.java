@@ -21,6 +21,7 @@ public class ModelTest {
         Model loaded = Tools.load(file);
 
         Assert.assertEquals(1, loaded.getMatrixCount());
+        Assert.assertEquals(1, loaded.getParameterCount());
         Assert.assertEquals(1, loaded.getCodeCount());
         Assert.assertEquals(1, loaded.getScheduler().getTaskCount());
 
@@ -28,6 +29,11 @@ public class ModelTest {
 
     private Model createModel() {
         Model model = new Model();
+
+        Parameter p1 = new Parameter();
+        p1.setName("p1");
+        p1.setFormula("10+10");
+        model.addParameter(p1);
 
         Matrix m1 = new MatrixInteger();
         m1.setName("matrix1");

@@ -9,27 +9,24 @@ import org.xid.basics.serializer.BoostUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class Model implements ModelObject, BoostObject {
 
 	/**
 	 * <p>code field.</p>
 	 */
-	private final List<Code> codeList = new ArrayList<Code>();
+	private final List<Code> codeList = new ArrayList<>();
 
 	/**
 	 * <p>matrix field.</p>
 	 */
-	private final List<Matrix> matrixList = new ArrayList<Matrix>();
+	private final List<Matrix> matrixList = new ArrayList<>();
 
-	/**
-	 * <p>parameters field.</p>
-	 */
-	private final Map<String, String> parameterMap = new LinkedHashMap<>();
+    /**
+     * <p>parameter field.</p>
+     */
+    private final List<Parameter> parameterList = new ArrayList<>();
 
 	private Scheduler scheduler;
 
@@ -46,9 +43,8 @@ public class Model implements ModelObject, BoostObject {
 			matrixList.add(oneChild);
 		}
 		if (version >= 3) {
-            int count = boost.readInt();
-            for (int i = 0; i < count; i++) {
-                parameterMap.put(boost.readString(), boost.readString());
+            for ( Parameter oneChild : BoostUtil.readObjectList(boost, Parameter.class) ) {
+                parameterList.add(oneChild);
             }
         }
 		scheduler = boost.readObject(Scheduler.class);
@@ -460,28 +456,141 @@ public class Model implements ModelObject, BoostObject {
 		// no kernel to swap with found
 	}
 
-	public Map<String, String> getParameterMap() {
-        return Collections.unmodifiableMap(parameterMap);
+    /**
+     * <p>Returns all values of parameter.</p>
+     */
+    public List<Parameter> getParameterList() {
+        return Collections.unmodifiableList(parameterList);
     }
 
-    public String getParameter(String name) {
-        return parameterMap.get(name);
+    /**
+     * <p>Gets parameter object count.</p>
+     */
+    public int getParameterCount() {
+        return parameterList.size();
     }
 
+    /**
+     * <p>Gets parameter at given index.</p>
+     */
+    public Parameter getParameter(int index) {
+        if ( index < 0 || index >= getParameterCount() ) { return null; }
+        return parameterList.get(index);
+    }
 
-	public void putParameter(String name, String value) {
-        String oldValue = parameterMap.get(name);
-        if (oldValue == null ? value != null : (oldValue.equals(value) == false)) {
-            getChangeRecorder().recordPutObject(this, "parameter", name, value);
-            parameterMap.put(name, value);
+    /**
+     * <p>Adds an object in parameter.</p>
+     */
+    public void addParameter(Parameter newValue) {
+        addParameter(getParameterCount(), newValue);
+    }
+
+    /**
+     * <p>Adds an object in parameter at given index.</p>
+     */
+    public void addParameter(int index, Parameter newValue) {
+        getChangeRecorder().recordAddObject(this, "parameter", index);
+        parameterList.add(index, newValue);
+    }
+
+    /**
+     * <p>Replaces an object in parameter at given index. Returns the old value.</p>
+     */
+    public Parameter setParameter(int index, Parameter newValue) {
+        Parameter oldValue = parameterList.set(index, newValue);
+        getChangeRecorder().recordRemoveObject(this, "parameter", index, oldValue);
+        getChangeRecorder().recordAddObject(this, "parameter", index);
+        return oldValue;
+    }
+
+    /**
+     * <p>Adds a collection of objects in parameter.</p>
+     */
+    public void addAllParameter(Collection<Parameter> toAddList) {
+        for (Parameter newValue : toAddList) {
+            addParameter(getParameterCount(), newValue);
         }
     }
 
-    public void deleteParameter(String name) {
-        String oldValue = parameterMap.get(name);
-        if (oldValue != null) {
-            getChangeRecorder().recordRemoveObject(this, "parameter", name, oldValue);
-            parameterMap.remove(name);
+    /**
+     * <p>Removes given object from parameter.</p>
+     */
+    public void removeParameter(Parameter value) {
+        int index = parameterList.indexOf(value);
+        if (index >= 0 ) {
+            removeParameter(index);
+        }
+    }
+
+    /**
+     * <p>Removes object from parameter at given index.</p>
+     */
+    public void removeParameter(int index) {
+        Parameter oldValue = parameterList.get(index);
+        getChangeRecorder().recordRemoveObject(this, "parameter", index, oldValue);
+        parameterList.remove(index);
+    }
+
+    /**
+     * <p>Adds object to parameter and sets the corresponding model.</p>
+     */
+    public void addParameterAndOpposite(Parameter newValue) {
+        addParameter(newValue);
+        if ( newValue != null ) {
+            newValue.setModel(this);
+        }
+    }
+
+    /**
+     * <p>Adds a collection of objects to parameter and sets the corresponding model.</p>
+     */
+    public void addAllParameterAndOpposite(Collection<Parameter> toAddList) {
+        for (Parameter newValue : toAddList) {
+            addParameterAndOpposite(getParameterCount(), newValue);
+        }
+    }
+
+    /**
+     * <p>Adds object to parameter at given index and sets the corresponding model.</p>
+     */
+    public void addParameterAndOpposite(int index, Parameter newValue) {
+        addParameter(index, newValue);
+        if ( newValue != null ) {
+            newValue.setModel(this);
+        }
+    }
+
+    /**
+     * <p>Replaces an object in parameter at given index. Returns the old value.</p>
+     */
+    public Parameter setParameterAndOpposite(int index, Parameter newValue) {
+        Parameter oldValue = parameterList.set(index, newValue);
+        getChangeRecorder().recordRemoveObject(this, "parameter", index, oldValue);
+        getChangeRecorder().recordAddObject(this, "parameter", index);
+        if ( newValue != null ) {
+            newValue.setModel(this);
+        }
+        return oldValue;
+    }
+
+    /**
+     * <p>Removes object from parameter and resets the corresponding model.</p>
+     */
+    public void removeParameterAndOpposite(Parameter removed) {
+        removeParameter(removed);
+        if ( removed != null ) {
+            removed.setModel(null);
+        }
+    }
+
+    /**
+     * <p>Removes object at given index from parameter and resets the corresponding model.</p>
+     */
+    public void removeParameterAndOpposite(int index) {
+        Parameter removed = parameterList.get(index);
+        removeParameter(index);
+        if ( removed != null ) {
+            removed.setModel(null);
         }
     }
 
@@ -491,11 +600,7 @@ public class Model implements ModelObject, BoostObject {
 		BoostUtil.writeObjectCollection(boost, codeList);
 		BoostUtil.writeObjectCollection(boost, matrixList);
         if (version >= 3) {
-            boost.writeInt(parameterMap.size());
-            for (Entry<String, String> parameter : parameterMap.entrySet()) {
-                boost.writeString(parameter.getKey());
-                boost.writeString(parameter.getValue());
-            }
+            BoostUtil.writeObjectCollection(boost, parameterList);
         }
 		boost.writeObject(scheduler);
     }

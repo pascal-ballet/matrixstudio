@@ -212,7 +212,9 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 				refreshLibrary();
 				break;
 			}
-			
+
+			refreshModel();
+
 			if (toolkit != null ) toolkit.validateAll();
 		}
 	}
@@ -236,6 +238,11 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 		libraryTabController.setSubject(model);
 		libraryTabController.refreshFields();
 	}
+
+	public void refreshModel() {
+        modelController.setSubject(model);
+        modelController.refreshFields();
+    }
 
     @Override
     public void asynchronousRun(int milliseconds, Runnable runnable) {
