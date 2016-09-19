@@ -5,6 +5,7 @@ import matrixstudio.kernel.Simulator;
 import matrixstudio.kernel.SimulatorContext;
 import matrixstudio.kernel.Tools;
 import matrixstudio.model.Model;
+import matrixstudio.ui.controller.ModelController;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
@@ -58,6 +59,8 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 	private LibraryTabController libraryTabController;
 
 	private BorderField southField;
+
+    private ModelController modelController;
 
     private MultiTabField southEastField;
     private CompositeField consoleComposite;
@@ -159,6 +162,10 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 	
 	private void createSouthEastTab() {
         southEastField = new MultiTabField();
+
+        modelController = new ModelController();
+        modelController.setSubject(model);
+        southEastField.addTab(modelController, resources.getImage("eclipse/file_obj.gif"), false);
 
 		consoleField = new ConsoleField();
 		consoleComposite = new CompositeField("Console", consoleField);

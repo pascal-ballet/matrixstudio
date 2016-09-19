@@ -8,8 +8,12 @@ import org.xid.basics.ui.field.CompositeField;
  * Controller for a model
  */
 public class ModelController extends Controller<Model> {
+
+    private CompositeField compositeField;
+
     @Override
     public CompositeField createFields() {
-        return null;
+        compositeField = new CompositeField("Parameters");
+        return compositeField;
     }
 }
