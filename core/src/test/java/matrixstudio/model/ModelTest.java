@@ -33,22 +33,22 @@ public class ModelTest {
         Parameter p1 = new Parameter();
         p1.setName("p1");
         p1.setFormula("10+10");
-        model.addParameter(p1);
+        model.addParameterAndOpposite(p1);
 
         Matrix m1 = new MatrixInteger();
         m1.setName("matrix1");
-        model.addMatrix(m1);
+        model.addMatrixAndOpposite(m1);
 
         Scheduler scheduler = new Scheduler();
-        model.setScheduler(scheduler);
+        model.setSchedulerAndOpposite(scheduler);
 
         Kernel k1 = new Kernel();
         k1.setName("kernel1");
-        model.addCode(k1);
+        model.addCodeAndOpposite(k1);
 
         Task t1 = new Task();
         t1.addKernel(k1);
-        scheduler.addTask(t1);
+        scheduler.addTaskAndOpposite(t1);
 
         return model;
     }
