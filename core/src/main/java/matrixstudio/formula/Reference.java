@@ -20,7 +20,7 @@ public class Reference implements Formula {
     @Override
     public int evaluate(Map<String, Integer> context) throws EvaluationException {
         Integer result = context.get(name);
-        if (result == null) throw new EvaluationException("Parameter '" +  name + "' isn't defined");
+        if (result == null) throw new EvaluationException("'" +  name + "' isn't defined");
         return result;
     }
 

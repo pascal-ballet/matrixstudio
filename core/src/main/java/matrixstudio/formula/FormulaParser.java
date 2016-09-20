@@ -37,7 +37,9 @@ public class FormulaParser {
     }
 
     public Formula parse() throws ParseException {
-        return readFormula();
+        Formula formula = readFormula();
+        if (peek(0) != EOL) throw new ParseException("Unexpected token '"+ peek(0) +"'", current);
+        return formula;
     }
 
     private Formula readFormula() throws ParseException {
@@ -46,7 +48,6 @@ public class FormulaParser {
 
     private Formula readInfixP1() throws ParseException {
         Formula left = readInfixP2();
-
 
         char c = peek(0);
         LinkedList<BinaryOperation> parts = new LinkedList<>();

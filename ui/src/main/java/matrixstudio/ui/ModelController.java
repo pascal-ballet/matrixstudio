@@ -1,5 +1,6 @@
 package matrixstudio.ui;
 
+import matrixstudio.formula.EvaluationException;
 import matrixstudio.model.Model;
 import matrixstudio.model.Parameter;
 import org.xid.basics.error.Diagnostic;
@@ -13,6 +14,7 @@ import org.xid.basics.ui.field.Field;
 import org.xid.basics.ui.field.ListField;
 import org.xid.basics.ui.field.TextField;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -42,7 +44,12 @@ public class ModelController extends Controller<Model> {
                 StringBuilder text = new StringBuilder();
                 text.append(element.getName());
                 text.append(" (");
-                text.append(element.getFormula());
+                try {
+                    int result = studioContext.getFormulaCache().computeValue(element.getFormula(), getSubject());
+                    text.append(result);
+                } catch (ParseException | EvaluationException e) {
+                    text.append(e.getMessage());
+                }
                 text.append(")");
                 return text.toString();
             }
