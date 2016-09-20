@@ -26,7 +26,8 @@ public class ModelController extends Controller<Model> {
 
     private ListField<Parameter> parametersField;
 
-    private TextField editionField;
+    private TextField nameField;
+    private TextField formulaField;
 
     public ModelController(StudioContext studioContext) {
         this.studioContext = studioContext;
@@ -34,19 +35,17 @@ public class ModelController extends Controller<Model> {
 
     @Override
     public CompositeField createFields() {
-        parametersField = new ListField<Parameter>("Parameters", BasicsUI.ITEM_EDITABLE) {
+        parametersField = new ListField<Parameter>("Parameters", BasicsUI.NONE) {
             @Override
             public String getText(Parameter element) {
-                StringBuilder text = new StringBuilder();
-                text.append(element.getName());
-                text.append(" (");
-                text.append(")");
-                return text.toString();
+                return element.getName();
             }
         };
+        parametersField.setNbLines(3);
 
-        editionField = new TextField("Formula", BasicsUI.NONE);
-        editionField.setValidator(new Validator<String>() {
+        nameField = new TextField("Name", BasicsUI.NONE);
+        formulaField = new TextField("Formula", BasicsUI.NONE);
+        formulaField.setValidator(new Validator<String>() {
 
             String message = null;
 
@@ -106,48 +105,7 @@ public class ModelController extends Controller<Model> {
             }
         });
 
-        parametersField.addAction(new Action.Stub("\u2191", Action.STYLE_BUTTON) {
-
-            @Override
-            public String getTooltip() {
-                return "Move kernel up.";
-            }
-
-            @Override
-            public int getVisibility() {
-                return  parametersField.getSingleSelection() != null &&
-                        parametersField.getSingleSelectionIndex() > 0
-                        ? VISIBILITY_ENABLE : VISIBILITY_DISABLE;
-            }
-
-            @Override
-            public int run(ActionMonitor monitor) {
-                // TODO up
-                return Action.STATUS_OK;
-            }
-        });
-
-        parametersField.addAction(new Action.Stub("\u2193",Action.STYLE_BUTTON) {
-
-            @Override
-            public String getTooltip() {
-                return "Move kernel down.";
-            }
-
-            @Override
-            public int getVisibility() {
-                return  parametersField.getSingleSelection() != null &&
-                        parametersField.getSingleSelectionIndex() < parametersField.getValue().size() - 1
-                        ? VISIBILITY_ENABLE : VISIBILITY_DISABLE;
-            }
-
-            @Override
-            public int run(ActionMonitor monitor) {
-                // TODO down
-                return Action.STATUS_OK;
-            }
-        });
-
+        CompositeField editionField = new CompositeField("Selected parameter", BasicsUI.GROUP, nameField, formulaField);
         compositeField = new CompositeField("Parameters", parametersField, editionField);
 
         return compositeField;
@@ -158,14 +116,18 @@ public class ModelController extends Controller<Model> {
         if (field == parametersField) {
             Parameter selection = parametersField.getSingleSelection();
             if (selection != null) {
-               editionField.setValue(selection.getFormula());
+               formulaField.setValue(selection.getFormula());
             }
         }
 
-        if (field == editionField) {
-            Parameter selection = parametersField.getSingleSelection();
-            if (selection != null) {
-                selection.setFormula(editionField.getValue());
+        Parameter selection = parametersField.getSingleSelection();
+        if (selection != null) {
+            if (field == nameField) {
+                selection.setName(nameField.getValue());
+                return true;
+            }
+            if (field == formulaField) {
+                selection.setFormula(formulaField.getValue());
                 return true;
             }
         }
@@ -183,7 +145,8 @@ public class ModelController extends Controller<Model> {
 
             Parameter selection = parametersField.getSingleSelection();
             if (selection != null) {
-                editionField.setValue(selection.getFormula());
+                nameField.setValue(selection.getName());
+                formulaField.setValue(selection.getFormula());
             }
         }
     }
