@@ -178,10 +178,11 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
 	
 	private boolean isLinkMove(DiagramContext context) {
 		float [] linkRectangle = new float[4];
-		linkRectangle[0] = point[0] + 30f;
-		linkRectangle[1] = point[1] - 25f;
-		linkRectangle[2] = point[0] + 50f;
-		linkRectangle[3] = point[1] - 10f;
+        computeRectangle(linkRectangle);
+		linkRectangle[0] = linkRectangle[2] - 20f;
+		linkRectangle[1] = linkRectangle[1];
+		linkRectangle[2] = linkRectangle[2];
+		linkRectangle[3] = linkRectangle[1] + 20f;
 		return Geometry.rectangleContainsPoint(linkRectangle, context.getClickedMousePoint());
 	}
 	
