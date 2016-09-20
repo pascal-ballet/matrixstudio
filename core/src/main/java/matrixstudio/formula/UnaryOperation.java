@@ -27,8 +27,8 @@ public class UnaryOperation implements Formula {
     }
 
     @Override
-    public long evaluate(Map<String, Long> context) throws EvaluationException {
-        Long result = child.evaluate(context);
+    public int evaluate(Map<String, Integer> context) throws EvaluationException {
+        int result = child.evaluate(context);
         switch (operation) {
             case Minus:
                 result = - result;

@@ -20,19 +20,19 @@ public class FormulaParserTest {
     @Test
     public void parseLiteral() throws Exception {
         Formula result = new FormulaParser("123").parse();
-        Assert.assertTrue(result.equals(new Literal(123l)));
+        Assert.assertTrue(result.equals(new Literal(123)));
 
         result = new FormulaParser("+4567").parse();
-        Assert.assertTrue(result.equals(new Literal(4567l)));
+        Assert.assertTrue(result.equals(new Literal(4567)));
 
         result = new FormulaParser("-8910").parse();
-        Assert.assertTrue(result.equals(new Literal(-8910l)));
+        Assert.assertTrue(result.equals(new Literal(-8910)));
     }
 
     @Test
     public void parseSubFormula() throws Exception {
         Formula result = new FormulaParser("(123)").parse();
-        Assert.assertTrue(result.equals(new SubFormula(new Literal(123l))));
+        Assert.assertTrue(result.equals(new SubFormula(new Literal(123))));
 
         result = new FormulaParser("(otherName + 4 + a)").parse();
         Assert.assertTrue(result.equals(
@@ -41,7 +41,7 @@ public class FormulaParserTest {
                     new BinaryOperation(
                             Operation.Plus,
                             new Reference("otherName"),
-                            new Literal(4l)
+                            new Literal(4)
                         ),
                         new Reference("a")
                     )
@@ -51,13 +51,13 @@ public class FormulaParserTest {
 
 
         result = new FormulaParser("(1-456)").parse();
-        Assert.assertTrue(result.equals(new SubFormula(new BinaryOperation(Operation.Minus, new Literal(1l),new Literal(456l)))));
+        Assert.assertTrue(result.equals(new SubFormula(new BinaryOperation(Operation.Minus, new Literal(1),new Literal(456)))));
 
         result = new FormulaParser("(1 - (a + b))").parse();
         Assert.assertTrue(result.equals(
             new SubFormula(
                 new BinaryOperation(Operation.Minus,
-                    new Literal(1l),
+                    new Literal(1),
                     new SubFormula(
                         new BinaryOperation(
                             Operation.Plus,
@@ -73,19 +73,19 @@ public class FormulaParserTest {
     @Test
     public void parseBinary() throws Exception {
         Formula result = new FormulaParser("1 + a").parse();
-        Assert.assertTrue(result.equals(new BinaryOperation(Operation.Plus, new Literal(1l), new Reference("a"))));
+        Assert.assertTrue(result.equals(new BinaryOperation(Operation.Plus, new Literal(1), new Reference("a"))));
 
         result = new FormulaParser("1 - a").parse();
-        Assert.assertTrue(result.equals(new BinaryOperation(Operation.Minus, new Literal(1l), new Reference("a"))));
+        Assert.assertTrue(result.equals(new BinaryOperation(Operation.Minus, new Literal(1), new Reference("a"))));
 
         result = new FormulaParser("1 * a").parse();
-        Assert.assertTrue(result.equals(new BinaryOperation(Operation.Multiply, new Literal(1l), new Reference("a"))));
+        Assert.assertTrue(result.equals(new BinaryOperation(Operation.Multiply, new Literal(1), new Reference("a"))));
 
         result = new FormulaParser("1 / a").parse();
-        Assert.assertTrue(result.equals(new BinaryOperation(Operation.Divide, new Literal(1l), new Reference("a"))));
+        Assert.assertTrue(result.equals(new BinaryOperation(Operation.Divide, new Literal(1), new Reference("a"))));
 
         result = new FormulaParser("1 % a").parse();
-        Assert.assertTrue(result.equals(new BinaryOperation(Operation.Modulus, new Literal(1l), new Reference("a"))));
+        Assert.assertTrue(result.equals(new BinaryOperation(Operation.Modulus, new Literal(1), new Reference("a"))));
 
         // left to right for parsing
         result = new FormulaParser("1 + a + b").parse();
@@ -94,7 +94,7 @@ public class FormulaParserTest {
                 Operation.Plus,
                 new BinaryOperation(
                     Operation.Plus,
-                    new Literal(1l),
+                    new Literal(1),
                     new Reference("a")
                 ),
                 new Reference("b")
@@ -108,11 +108,11 @@ public class FormulaParserTest {
         Assert.assertTrue(result.equals(
             new BinaryOperation(
                 Operation.Plus,
-                new Literal(1l),
+                new Literal(1),
                 new BinaryOperation(
                     Operation.Multiply,
-                    new Literal(2l),
-                    new Literal(3l)
+                    new Literal(2),
+                    new Literal(3)
                 )
             )
         ));
@@ -123,10 +123,10 @@ public class FormulaParserTest {
                         Operation.Minus,
                         new BinaryOperation(
                                 Operation.Multiply,
-                                new Literal(1l),
-                                new Literal(2l)
+                                new Literal(1),
+                                new Literal(2)
                         ),
-                        new Literal(3l)
+                        new Literal(3)
                 )
         ));
 
@@ -136,14 +136,14 @@ public class FormulaParserTest {
                 Operation.Minus,
                 new BinaryOperation(
                     Operation.Plus,
-                    new Literal(1l),
+                    new Literal(1),
                     new BinaryOperation(
                             Operation.Multiply,
-                            new Literal(2l),
-                            new Literal(2l)
+                            new Literal(2),
+                            new Literal(2)
                     )
                 ),
-                new Literal(3l)
+                new Literal(3)
             )
         ));
     }

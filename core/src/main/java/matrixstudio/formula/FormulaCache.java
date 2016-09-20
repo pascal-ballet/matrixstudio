@@ -29,4 +29,13 @@ public class FormulaCache {
         if (result == null) throw exception;
         return result;
     }
+
+    public Exception isFormulaValid(String formula) {
+        try {
+            parseFormula(formula);
+            return null;
+        } catch (ParseException e) {
+            return e;
+        }
+    }
 }

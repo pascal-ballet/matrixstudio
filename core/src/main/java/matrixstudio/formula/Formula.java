@@ -11,6 +11,6 @@ import java.util.Map;
 public interface Formula {
 
     /** Evaluate formula with given context. */
-    long evaluate(Map<String, Long> context) throws EvaluationException;
+    int evaluate(Map<String, Integer> context) throws EvaluationException;
 
 }

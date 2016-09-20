@@ -12,15 +12,15 @@ import java.util.Map;
  */
 public class FormulaEvaluationTest {
 
-    private final Map<String, Long> context = new HashMap<>();
+    private final Map<String, Integer> context = new HashMap<>();
 
     @Before
     public void setup() {
-        context.put("a", 5l);
-        context.put("b", 7l);
-        context.put("c", 9l);
-        context.put("d", -3l);
-        context.put("e", -5l);
+        context.put("a", 5);
+        context.put("b", 7);
+        context.put("c", 9);
+        context.put("d", -3);
+        context.put("e", -5);
     }
 
     @Test

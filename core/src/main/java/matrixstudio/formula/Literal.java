@@ -7,19 +7,18 @@ import java.util.Map;
  */
 public class Literal implements Formula {
 
-    private final Long value;
+    private final int value;
 
-    public Literal(Long value) {
-        if (value == null) throw new NullPointerException();
+    public Literal(int value) {
         this.value = value;
     }
 
-    public Long getValue() {
+    public int getValue() {
         return value;
     }
 
     @Override
-    public long evaluate(Map<String, Long> context) throws EvaluationException {
+    public int evaluate(Map<String, Integer> context) throws EvaluationException {
         return value;
     }
 
@@ -30,12 +29,12 @@ public class Literal implements Formula {
 
         Literal literal = (Literal) o;
 
-        return value.equals(literal.value);
+        return value == literal.value;
 
     }
 
     @Override
     public int hashCode() {
-        return value.hashCode();
+        return value;
     }
 }

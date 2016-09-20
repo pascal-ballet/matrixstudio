@@ -53,9 +53,9 @@ public class BinaryOperation implements Formula {
     }
 
     @Override
-    public long evaluate(Map<String, Long> context) throws EvaluationException {
-        Long leftResult = left.evaluate(context);
-        Long rightResult = right.evaluate(context);
+    public int evaluate(Map<String, Integer> context) throws EvaluationException {
+        int leftResult = left.evaluate(context);
+        int rightResult = right.evaluate(context);
         switch (operation) {
             case Plus:
                 return leftResult + rightResult;

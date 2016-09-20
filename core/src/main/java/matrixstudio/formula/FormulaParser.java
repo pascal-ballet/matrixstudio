@@ -40,7 +40,7 @@ public class FormulaParser {
         return readFormula();
     }
 
-    public Formula readFormula() throws ParseException {
+    private Formula readFormula() throws ParseException {
         return readInfixP1();
     }
 
@@ -142,10 +142,14 @@ public class FormulaParser {
             }
         }
 
-        String result = peek(0, i);
-        skip(i);
-        readSeparators();
-        return new Literal(Long.parseLong(result));
+        if (i > 0) {
+            String result = peek(0, i);
+            skip(i);
+            readSeparators();
+            return new Literal(Integer.parseInt(result));
+        } else {
+            return null;
+        }
     }
 
     private void readSymbol(String symbol) throws ParseException {
