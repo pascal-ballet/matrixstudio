@@ -1,9 +1,7 @@
-package matrixstudio.ui.controller;
+package matrixstudio.ui;
 
-import matrixstudio.formula.FormulaParser;
 import matrixstudio.model.Model;
 import matrixstudio.model.Parameter;
-import matrixstudio.ui.NameUtils;
 import org.xid.basics.error.Diagnostic;
 import org.xid.basics.error.Validator;
 import org.xid.basics.progress.ActionMonitor;
@@ -22,18 +20,28 @@ import java.text.ParseException;
  */
 public class ModelController extends Controller<Model> {
 
+    private final StudioContext studioContext;
+
     private CompositeField compositeField;
 
     private ListField<Parameter> parametersField;
 
     private TextField editionField;
 
+    public ModelController(StudioContext studioContext) {
+        this.studioContext = studioContext;
+    }
+
     @Override
     public CompositeField createFields() {
         parametersField = new ListField<Parameter>("Parameters", BasicsUI.ITEM_EDITABLE) {
             @Override
             public String getText(Parameter element) {
-                return element.getName();
+                StringBuilder text = new StringBuilder();
+                text.append(element.getName());
+                text.append(" (");
+                text.append(")");
+                return text.toString();
             }
         };
 
@@ -47,7 +55,7 @@ public class ModelController extends Controller<Model> {
                 try {
                     message = null;
                     if (value != null) {
-                        new FormulaParser(editionField.getValue()).parse();
+                        studioContext.getFormulaCache().parseFormula(value);
                     }
                     return true;
                 } catch (ParseException e) {
@@ -172,6 +180,11 @@ public class ModelController extends Controller<Model> {
         } else {
             compositeField.setEnable(true);
             parametersField.setValue(getSubject().getParameterList());
+
+            Parameter selection = parametersField.getSingleSelection();
+            if (selection != null) {
+                editionField.setValue(selection.getFormula());
+            }
         }
     }
 }

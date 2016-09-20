@@ -594,7 +594,6 @@ public class Model implements ModelObject, BoostObject {
         }
     }
 
-
 	public void writeToBoost(Boost boost) {
         int version = boost.getFileVersion();
 		BoostUtil.writeObjectCollection(boost, codeList);
