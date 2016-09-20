@@ -164,6 +164,7 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 	
 	private void createSouthEastTab() {
         southEastField = new MultiTabField();
+        southEastField.setActionExecuter(executer);
 
         modelController = new ModelController(this);
         modelController.setSubject(model);
