@@ -143,12 +143,12 @@ public class FormulaParser {
             }
         }
 
-        if (i > 0) {
+        try {
             String result = peek(0, i);
             skip(i);
             readSeparators();
             return new Literal(Integer.parseInt(result));
-        } else {
+        } catch (NumberFormatException e){
             return null;
         }
     }
