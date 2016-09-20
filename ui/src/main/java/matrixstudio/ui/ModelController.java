@@ -13,7 +13,7 @@ import org.xid.basics.ui.field.Field;
 import org.xid.basics.ui.field.ListField;
 import org.xid.basics.ui.field.TextField;
 
-import java.text.ParseException;
+import java.util.List;
 
 /**
  * Controller for a model
@@ -28,6 +28,7 @@ public class ModelController extends Controller<Model> {
 
     private TextField nameField;
     private TextField formulaField;
+    private CompositeField editionField;
 
     public ModelController(StudioContext studioContext) {
         this.studioContext = studioContext;
@@ -38,10 +39,39 @@ public class ModelController extends Controller<Model> {
         parametersField = new ListField<Parameter>("Parameters", BasicsUI.NONE) {
             @Override
             public String getText(Parameter element) {
-                return element.getName();
+                StringBuilder text = new StringBuilder();
+                text.append(element.getName());
+                text.append(" (");
+                text.append(element.getFormula());
+                text.append(")");
+                return text.toString();
             }
         };
         parametersField.setNbLines(3);
+        parametersField.setValidator(new Validator<List<Parameter>>() {
+            String message = null;
+
+            @Override
+            public boolean isValid(List<Parameter> value) {
+                message = null;
+                for (Parameter parameter : value) {
+                    String formula = parameter.getFormula();
+                    if (formula == null) {
+                        message = ""+parameter.getName()+" is null";
+                    } else {
+                        Exception e = studioContext.getFormulaCache().isFormulaValid(formula);
+                        message = e != null ? parameter.getName()+": " + e.getMessage() : null;
+                    }
+                    if (message != null) return false;
+                }
+                return true;
+            }
+
+            @Override
+            public Diagnostic getDiagnostic() {
+                return new Diagnostic.Stub(Diagnostic.ERROR, message);
+            }
+        });
 
         nameField = new TextField("Name", BasicsUI.NONE);
         formulaField = new TextField("Formula", BasicsUI.NONE);
@@ -51,16 +81,13 @@ public class ModelController extends Controller<Model> {
 
             @Override
             public boolean isValid(String value) {
-                try {
-                    message = null;
-                    if (value != null) {
-                        studioContext.getFormulaCache().parseFormula(value);
-                    }
-                    return true;
-                } catch (ParseException e) {
-                    message = e.getMessage();
-                    return false;
+                if (value == null) {
+                    message = "Formula can't be null";
+                } else {
+                    Exception e = studioContext.getFormulaCache().isFormulaValid(value);
+                    message = e != null ? e.getMessage() : null;
                 }
+                return message == null;
             }
 
             @Override
@@ -68,7 +95,6 @@ public class ModelController extends Controller<Model> {
                 return new Diagnostic.Stub(Diagnostic.ERROR, message);
             }
         });
-
 
         parametersField.addAction(new Action.Stub("+", Action.STYLE_DEFAULT | Action.STYLE_TRANSACTIONNAL) {
 
@@ -82,7 +108,7 @@ public class ModelController extends Controller<Model> {
                 Parameter parameter = new Parameter();
                 parameter.setName(NameUtils.availableName("Parameter1", getSubject().getParameterList()));
                 parameter.setFormula("10");
-                getSubject().addParameter(parameter);
+                getSubject().addParameterAndOpposite(parameter);
                 return Action.STATUS_OK;
             }
         });
@@ -100,12 +126,12 @@ public class ModelController extends Controller<Model> {
 
             @Override
             public int run(ActionMonitor monitor) {
-                // TODO remove
+                getSubject().removeParameterAndOpposite(parametersField.getSingleSelection());
                 return Action.STATUS_OK;
             }
         });
 
-        CompositeField editionField = new CompositeField("Selected parameter", BasicsUI.GROUP, nameField, formulaField);
+        editionField = new CompositeField("Selected parameter", BasicsUI.GROUP, nameField, formulaField);
         compositeField = new CompositeField("Parameters", parametersField, editionField);
 
         return compositeField;
@@ -142,11 +168,16 @@ public class ModelController extends Controller<Model> {
         } else {
             compositeField.setEnable(true);
             parametersField.setValue(getSubject().getParameterList());
+            parametersField.refresh();
 
             Parameter selection = parametersField.getSingleSelection();
+            editionField.setEnable(selection != null);
             if (selection != null) {
                 nameField.setValue(selection.getName());
                 formulaField.setValue(selection.getFormula());
+            } else {
+                nameField.setValue(null);
+                formulaField.setValue(null);
             }
         }
     }
