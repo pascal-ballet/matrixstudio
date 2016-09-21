@@ -138,13 +138,12 @@ public class Simulator implements Runnable {
             releaseCL();
 
             // order matters a lot !
-            if (initMatrices() == false) return false;
-            if (initScheduler() == false) return false;
-
-            if (initCL() == false) return false;
-            if (initCode() == false) return false;
-            if (initKernel() == false) return false;
-            if (initTasks() == false) return false;
+            initMatrices();
+            initScheduler();
+            initCL();
+            initCode();
+            initKernel();
+            initTasks();
 
             log.log("Compilation finished at " + Tools.getDateTime());
             log.log("Compilation successful.");
@@ -161,7 +160,7 @@ public class Simulator implements Runnable {
         return FormulaCache.SHARED.computeValue(formula, getModel());
     }
 
-	private boolean initCode() throws EvaluationException, ParseException {
+	private void initCode() throws EvaluationException, ParseException {
 		
 		// creation of openCL code to compile
     	final Model model = getModel();
@@ -198,47 +197,54 @@ public class Simulator implements Runnable {
         // Creation of openCL program
         program = clCreateProgramWithSource(context, 1, new String[]{ prg.toString() }, null, null);
         if(program == null) {
-            log.error("Impossible to create the program (clCreateProgramWithSource).");
-            return false;
+            throw new CLException("Impossible to create the program (clCreateProgramWithSource).");
         }
         // Build the program
         int err = CL_SUCCESS;
-        try {
-            String opt = null; //new String("-g"); //"-cl-opt-disable"); // Try new String("-g"); to allow the debugging
-            err = clBuildProgram(program, 0, null, opt, null, null);
-        } catch(Exception e) {
-            log.error(DiagnosticUtil.createMessage(e) + ".");
-            return false;
-        }
-        
+        String opt = null; //new String("-g"); //"-cl-opt-disable"); // Try new String("-g"); to allow the debugging
+        err = clBuildProgram(program, 0, null, opt, null, null);
+
         // Retrieves build log
         long logSize[] = new long[1];
         CL.clGetProgramBuildInfo(program, device, CL.CL_PROGRAM_BUILD_LOG, 0, null, logSize);
         byte logData[] = new byte[(int)logSize[0]];
         CL.clGetProgramBuildInfo(program, device, CL.CL_PROGRAM_BUILD_LOG, logSize[0], Pointer.to(logData), null);
         log.warning(new String(logData, 0, logData.length-1));
-        
-        if(err != CL_SUCCESS) {
-            log.error("Compilation error #"+err+" (clBuildProgram)");
-            if(err == CL_INVALID_PROGRAM)        log.error("program is not a valid program object.");
-            if(err == CL_INVALID_VALUE)          log.error("device_list is NULL and num_devices is greater than zero, or if device_list is not NULL and num_devices is zero.");
-            if(err == CL_INVALID_VALUE)          log.error("pfn_notify is NULL but user_data is not NULL.");
-            if(err == CL_INVALID_DEVICE)         log.error("OpenCL devices listed in device_list are not in the list of devices associated with program.");
-            if(err == CL_INVALID_BINARY)         log.error("program is created with clCreateWithProgramWithBinary and devices listed in device_list do not have a valid program binary loaded.");
-            if(err == CL_INVALID_BUILD_OPTIONS)  log.error("the build options specified by options are invalid.");
-            if(err == CL_INVALID_OPERATION)      log.error("the build of a program executable for any of the devices listed in device_list by a previous call to clBuildProgram for program has not completed.");
-            if(err == CL_COMPILER_NOT_AVAILABLE) log.error("program is created with clCreateProgramWithSource and a compiler is not available i.e. CL_DEVICE_COMPILER_AVAILABLE specified in the table of OpenCL Device Queries for clGetDeviceInfo is set to CL_FALSE.");
-            if(err == CL_BUILD_PROGRAM_FAILURE)  log.error("there is a failure to build the program executable. This error will be returned if clBuildProgram does not return until the build has completed.");
-            if(err == CL_INVALID_OPERATION)      log.error("there are kernel objects attached to program.");
-            if(err == CL_OUT_OF_HOST_MEMORY)     log.error("there is a failure to allocate resources required by the OpenCL implementation on the host.");
-            return false;
+
+        switch (err) {
+            case CL_SUCCESS:
+                break;
+
+            case CL_INVALID_PROGRAM:
+                throw new CLException("Invalid program object");
+
+            case CL_INVALID_VALUE:
+                throw new CLException("Device_list is NULL and num_devices is greater than zero, or if device_list is not NULL and num_devices is zero.");
+
+            case CL_INVALID_DEVICE:
+                throw new CLException("OpenCL devices listed in device_list are not in the list of devices associated with program.");
+
+            case CL_INVALID_BINARY:
+                throw new CLException("Program is created with clCreateWithProgramWithBinary and devices listed in device_list do not have a valid program binary loaded.");
+
+            case CL_INVALID_BUILD_OPTIONS:
+                throw new CLException("The build options specified by options are invalid.");
+
+            case CL_INVALID_OPERATION:
+                throw new CLException("The build of a program executable for any of the devices listed in device_list by a previous call to clBuildProgram for program has not completed.");
+
+            case CL_COMPILER_NOT_AVAILABLE:
+                throw new CLException("Program is created with clCreateProgramWithSource and a compiler is not available i.e. CL_DEVICE_COMPILER_AVAILABLE specified in the table of OpenCL Device Queries for clGetDeviceInfo is set to CL_FALSE.");
+
+            case CL_BUILD_PROGRAM_FAILURE:
+                throw new CLException("There is a failure to build the program executable. This error will be returned if clBuildProgram does not return until the build has completed.");
+
+            case CL_OUT_OF_HOST_MEMORY:
+                throw new CLException("There is a failure to allocate resources required by the OpenCL implementation on the host.");
         }
-        
-        return true;
 	}
     
-    private boolean initMatrices() {
-	
+    private void initMatrices() {
 	    // Init of matrices with matrixInit values
 		for(final Matrix matrix : getModel().getMatrixList() ) {
 			matrix.setToInitialValues();
@@ -257,10 +263,9 @@ public class Simulator implements Runnable {
 				matricesPointer[i] = Pointer.to(  ((MatrixFloat)matrix).getMatrix());
 			}
 		}
-		return true;
 	}
 
-	private boolean initCL() {
+	private void initCL() {
          long numBytes[] = new long[1];
 
         // Creation of an OpenCL context on GPU
@@ -268,8 +273,7 @@ public class Simulator implements Runnable {
         cl_platform_id platforms[] = new cl_platform_id[1];
         clGetPlatformIDs(platforms.length, platforms, null);
         if(platforms[0]==null) {
-        	log.error("No OpenCL plateform found. Impossible to compile the code.");
-    		return false;
+        	throw new CLException("No OpenCL plateform found. Impossible to compile the code.");
     	} else {
     		String platformName = CLUtil.getString(platforms[0], CL_PLATFORM_NAME);
     		log.log("Set plateform to " + platformName);
@@ -286,8 +290,7 @@ public class Simulator implements Runnable {
         // checks if device exist
         final List<cl_device_id> hardwareList = CLUtil.selectHardware(scheduler.getDevice());
         if ( hardwareList.isEmpty() ) {
-        	log.error("No suitable OpenCL device found. Impossible to compile the code.");
-        	return false;
+        	throw new CLException("No suitable OpenCL device found. Impossible to compile the code.");
         }
         int order = scheduler.getDeviceOrder();
         if ( order < 0 || order >= hardwareList.size() ) {
@@ -297,8 +300,7 @@ public class Simulator implements Runnable {
         context = clCreateContext(null, 1, new cl_device_id[] { device }, null, null, null);
 
         if (context == null) {
-            log.error("Can't create an openCL context.");
-            return false;
+            throw new CLException("Can't create an openCL context.");
         }
         
         // Get the list of devices associated with the context
@@ -315,12 +317,8 @@ public class Simulator implements Runnable {
         // *******************************
 
         // Create a command-queue
-        try {
-            commandQueue = clCreateCommandQueue(context, device, CL.CL_NONE, null);      
-        } catch(Exception e) {
-            log.error(DiagnosticUtil.createMessage(e) );
-            return false;
-        }
+        commandQueue = clCreateCommandQueue(context, device, CL.CL_NONE, null);
+
         // Initialization of pointers
         
         // Allocate the memory objects for the input- and output data
@@ -337,11 +335,9 @@ public class Simulator implements Runnable {
             if(mat instanceof MatrixFloat)
                 memObjects[t] = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * n, matricesPointer[t], null);
         }
-        
-        return true;
     }
     
-    private boolean initKernel() {
+    private void initKernel() {
     	 // Create the kernels
         clKernelsByName = new HashMap<String, cl_kernel>();
         
@@ -354,15 +350,11 @@ public class Simulator implements Runnable {
         	final String name = kernelList.get(k).getName();
 			
         	log.log("Creating kernel: " + name + ".");
-	        try {
-	            kernels[k] = clCreateKernel(program, name, null);
-	            if(nbSteps == initialStep) {
-	            	clKernelsByName.put(name, kernels[k]);
-	            }
-	        } catch(Exception e) {
-	            log.error(e.getMessage());
-	            return false;
-	        }
+            kernels[k] = clCreateKernel(program, name, null);
+            if(nbSteps == initialStep) {
+                clKernelsByName.put(name, kernels[k]);
+            }
+
 	        int numArg = 0;
 	        clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // rand
 	        clSetKernelArg(kernels[k], numArg++, Sizeof.cl_uint, Pointer.to(new int[]{0})); // t
@@ -384,15 +376,13 @@ public class Simulator implements Runnable {
 	            }
 	        }
         }
-    	return true;
     }
 
-    private boolean initScheduler() {
+    private void initScheduler() {
 		final Scheduler scheduler = getModel().getScheduler();
 		
 		if(scheduler.getTaskCount() <= 0) {
-			log.error("No task to execute.");
-			return false;
+			throw new CLException("No task to execute.");
 		}
 		
 		orderedTasks = new LinkedList<Task>();
@@ -415,8 +405,7 @@ public class Simulator implements Runnable {
 					int postponedCount = postoned.containsKey(task) ? postoned.get(task) : 0;
 					if ( postponedCount >= taskCount ) {
 						// task has been postponed too much times, this is a cycle in scheduler
-						log.error("SchedulerTest contains cycles.");
-						return false;
+                        throw new CLException("SchedulerTest contains cycles.");
 					} else {
 						// previous task isn't ordered yet, postpone task
 						postoned.put(task, postponedCount +1);
@@ -429,10 +418,9 @@ public class Simulator implements Runnable {
 			// task can be scheduled
 			orderedTasks.add(task);
 		}
-		return true;
 	}
 
-    private boolean initTasks() throws EvaluationException, ParseException {
+    private void initTasks() throws EvaluationException, ParseException {
     	globalSizeByTask = new HashMap<>();
     	eventsByTask = new HashMap<>();
     	dependenciesByTask = new HashMap<>();
@@ -475,8 +463,6 @@ public class Simulator implements Runnable {
 				dependenciesByTask.put(ta, deps);
 			}
 		}
-		
-    	return true;
     }
     
     private void releaseCL() {
