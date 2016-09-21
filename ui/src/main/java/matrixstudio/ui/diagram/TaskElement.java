@@ -110,7 +110,12 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
 		GcUtils.drawRoundRectangle(gc, rectangle, 10f, 10f, true);
 		
 		// draws kernel name
-        GcUtils.drawStringAligned(gc, getName(), point[0], point[1]-8f, Geometry.CENTER);
+        if (getModel().getKernelCount() > 0) {
+            GcUtils.drawStringAligned(gc, getName(), point[0], point[1] - 8f, Geometry.CENTER);
+        } else {
+            GcUtils.drawImageAligned(gc, context.getResources().getImage("error_tsk.gif"), point[0] - 40f, point[1] - 14f, Geometry.NORTH_WEST);
+            GcUtils.drawStringAligned(gc, "[empty]", point[0], point[1] - 8f, Geometry.CENTER);
+        }
 
 		Font oldFont = gc.getFont();
 		gc.setFont(smallFont);
@@ -150,22 +155,15 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
             GcUtils.drawImageAligned(gc, context.getResources().getImage("error_tsk.gif"), point[0], point[1]+5f, Geometry.NORTH);
         }
 
-
 		// draws create connection icon.
 		GcUtils.drawImageAligned(gc, context.getResources().getImage("create_connection.gif"), rectangle[2] - 20f, rectangle[1] + 2f, Geometry.NORTH_WEST);
-		
 	}
 
     private String getName() {
         StringBuilder name = new StringBuilder();
-        if (task.getKernelCount() > 0) {
-            for (Kernel kernel : task.getKernelList()) {
-                if (name.length() > 0) name.append(",");
-                name.append(kernel.getName());
-            }
-
-        } else {
-            name.append("[No kernel]");
+        for (Kernel kernel : task.getKernelList()) {
+            if (name.length() > 0) name.append(",");
+            name.append(kernel.getName());
         }
         return name.toString();
     }
