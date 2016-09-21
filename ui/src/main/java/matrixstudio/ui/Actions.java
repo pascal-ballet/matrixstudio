@@ -476,9 +476,9 @@ public class Actions {
 					public void notified(Notification notification) {
 						if ( taskField.getChecked().size() > 0 ) {
 							Task task = taskField.getChecked().get(0);
-							if ( xField.getValue() == null ) xField.setIntValue(task.getGlobalWorkSizeX());
-							if ( yField.getValue() == null ) yField.setIntValue(task.getGlobalWorkSizeY());
-							if ( zField.getValue() == null ) zField.setIntValue(task.getGlobalWorkSizeZ());
+							if ( xField.getValue() == null ) xField.setValue(task.getGlobalWorkSizeX());
+							if ( yField.getValue() == null ) yField.setValue(task.getGlobalWorkSizeY());
+							if ( zField.getValue() == null ) zField.setValue(task.getGlobalWorkSizeZ());
 						}
 					}
 				});
@@ -488,24 +488,21 @@ public class Actions {
 
 				FieldDialog dialog = new FieldDialog(parent, parent.getText(), "Resize multiple tasks", BasicsUI.NONE, mainField);
 				if ( dialog.open() != 0 ) return STATUS_CANCEL;
-				
-				
-                final int xFieldIntValue = xField.getIntValue();
-                final int yFieldIntValue = yField.getIntValue();
-                final int zFieldIntValue = zField.getIntValue();
-				for ( Task task : taskField.getChecked() ) {
+
+
+                for ( Task task : taskField.getChecked() ) {
                     boolean changed = false;
-					if (xField.isEnable() && task.getGlobalWorkSizeX() != xFieldIntValue) {
+					if (xField.isEnable() && task.getGlobalWorkSizeX() != xField.getValue()) {
                         changed = true;
-                        task.setGlobalWorkSizeX(xFieldIntValue);
+                        task.setGlobalWorkSizeX(xField.getValue());
                     }
-					if (yField.isEnable() && task.getGlobalWorkSizeY() != yFieldIntValue) {
+					if (yField.isEnable() && task.getGlobalWorkSizeY() != yField.getValue()) {
                         changed = true;
-                        task.setGlobalWorkSizeY(yFieldIntValue);
+                        task.setGlobalWorkSizeY(yField.getValue());
                     }
-					if (zField.isEnable() && task.getGlobalWorkSizeZ() != zFieldIntValue) {
+					if (zField.isEnable() && task.getGlobalWorkSizeZ() != zField.getValue()) {
                         changed = true;
-                        task.setGlobalWorkSizeZ(zFieldIntValue);
+                        task.setGlobalWorkSizeZ(zField.getValue());
                     }
                     //if (changed) task.initBlank();
 				}

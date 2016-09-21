@@ -1,6 +1,5 @@
 package matrixstudio.ui;
 
-import matrixstudio.formula.FormulaCache;
 import matrixstudio.kernel.CLUtil;
 import matrixstudio.kernel.Simulator;
 import matrixstudio.kernel.SimulatorContext;
@@ -70,8 +69,6 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 	private PropertiesField propertiesField;
 
 	private final Simulator simulator;
-
-    private final FormulaCache formulaCache = new FormulaCache();
 
 	private ActionExecuter executer = new ActionExecuter() {
 		public void executeAction(Action action) {
@@ -166,7 +163,7 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
         southEastField = new MultiTabField();
         southEastField.setActionExecuter(executer);
 
-        modelController = new ModelController(this);
+        modelController = new ModelController();
         modelController.setSubject(model);
         southEastField.addTab(modelController, resources.getImage("eclipse/file_obj.gif"), false);
 
@@ -291,11 +288,6 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
     public Simulator getSimulator() {
 		return simulator;
 	}
-
-    @Override
-    public FormulaCache getFormulaCache() {
-        return formulaCache;
-    }
 
     @Override
     public boolean isCompiled() {

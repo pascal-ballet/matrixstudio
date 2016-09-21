@@ -14,6 +14,8 @@ import java.util.WeakHashMap;
  */
 public class FormulaCache {
 
+    public static FormulaCache SHARED = new FormulaCache();
+
     private Map<String, Formula> formulaMap = new HashMap<>();
     private WeakHashMap<String, ParseException> errorMap = new WeakHashMap<>();
 

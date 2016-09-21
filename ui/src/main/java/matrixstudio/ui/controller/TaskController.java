@@ -31,7 +31,7 @@ public class TaskController extends Controller<Task> {
 	private TextField globalWorkSizeZField;
 
 	private CompositeField compositeField;
-	
+
 	@Override
 	public CompositeField createFields() {
 
@@ -147,29 +147,16 @@ public class TaskController extends Controller<Task> {
         });
 
 
-
         globalWorkSizeXField = new TextField("Global work size X", BasicsUI.NONE);
-		globalWorkSizeXField.setValidator(new Validator.Stub<String>(Diagnostic.ERROR, "Invalid size") {
-			public boolean isValid(String value) {
-				if ( value == null ) return false;
-				return value.matches("[0-9][0-9]*");
-			}
-		});
+        globalWorkSizeXField.setValidator(new FormulaValidator());
+
 		globalWorkSizeYField = new TextField("Global work size Y", BasicsUI.NONE);
-		globalWorkSizeYField.setValidator(new Validator.Stub<String>(Diagnostic.ERROR, "Invalid size") {
-			public boolean isValid(String value) {
-				if ( value == null ) return false;
-				return value.matches("[0-9][0-9]*");
-			}
-		});
-		globalWorkSizeZField = new TextField("Global work size Z", BasicsUI.NONE);
-		globalWorkSizeZField.setValidator(new Validator.Stub<String>(Diagnostic.ERROR, "Invalid size") {
-			public boolean isValid(String value) {
-				if ( value == null ) return false;
-				return value.matches("[0-9][0-9]*");
-			}
-		});
-		positionField = new TextField("Position", BasicsUI.READ_ONLY);
+        globalWorkSizeYField.setValidator(new FormulaValidator());
+
+        globalWorkSizeZField = new TextField("Global work size Z", BasicsUI.NONE);
+        globalWorkSizeZField.setValidator(new FormulaValidator());
+
+        positionField = new TextField("Position", BasicsUI.READ_ONLY);
 		
 		compositeField = new CompositeField("Task", BasicsUI.GROUP, repetitionField, kernelListField, addKernelField, globalWorkSizeXField, globalWorkSizeYField, globalWorkSizeZField);
 		return compositeField;
@@ -184,8 +171,7 @@ public class TaskController extends Controller<Task> {
 		} else {
 			compositeField.setEnable(true);
 
-            String repetition = getSubject().getRepetition() <= 0 ? "" : Integer.toString(getSubject().getRepetition());
-            repetitionField.setValue(repetition);
+            repetitionField.setValue(getSubject().getRepetition());
 
             kernelListField.setValue(getSubject().getKernelList());
 
@@ -195,9 +181,10 @@ public class TaskController extends Controller<Task> {
                 kernelChoiceField.setValue(allKernels.get(0));
             }
 
-			globalWorkSizeXField.setValue(""+getSubject().getGlobalWorkSizeX());
-			globalWorkSizeYField.setValue(""+getSubject().getGlobalWorkSizeY());
-			globalWorkSizeZField.setValue(""+getSubject().getGlobalWorkSizeZ());
+			globalWorkSizeXField.setValue(getSubject().getGlobalWorkSizeX());
+			globalWorkSizeYField.setValue(getSubject().getGlobalWorkSizeY());
+			globalWorkSizeZField.setValue(getSubject().getGlobalWorkSizeZ());
+
 			StringBuilder position = new StringBuilder();
 			position.append(Arrays.toString(getSubject().getPosition()));
 			positionField.setValue(position.toString());
@@ -207,19 +194,19 @@ public class TaskController extends Controller<Task> {
 	@Override
 	public boolean updateSubject(Field field) {
         if ( field == repetitionField ) {
-            getSubject().setRepetition(repetitionField.getIntValue());
+            getSubject().setRepetition(repetitionField.getValue());
             return true;
         }
 		if ( field == globalWorkSizeXField ) {
-			getSubject().setGlobalWorkSizeX(globalWorkSizeXField.getIntValue());
+			getSubject().setGlobalWorkSizeX(globalWorkSizeXField.getValue());
 			return true;
 		}
 		if ( field == globalWorkSizeYField ) {
-			getSubject().setGlobalWorkSizeY(globalWorkSizeYField.getIntValue());
+			getSubject().setGlobalWorkSizeY(globalWorkSizeYField.getValue());
 			return true;
 		}
 		if ( field == globalWorkSizeZField ) {
-			getSubject().setGlobalWorkSizeZ(globalWorkSizeZField.getIntValue());
+			getSubject().setGlobalWorkSizeZ(globalWorkSizeZField.getValue());
 			return true;
 		}
 		return super.updateSubject(field);

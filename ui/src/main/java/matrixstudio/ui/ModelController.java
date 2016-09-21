@@ -1,8 +1,10 @@
 package matrixstudio.ui;
 
 import matrixstudio.formula.EvaluationException;
+import matrixstudio.formula.FormulaCache;
 import matrixstudio.model.Model;
 import matrixstudio.model.Parameter;
+import matrixstudio.ui.controller.FormulaValidator;
 import org.xid.basics.error.Diagnostic;
 import org.xid.basics.error.Validator;
 import org.xid.basics.progress.ActionMonitor;
@@ -22,8 +24,6 @@ import java.util.List;
  */
 public class ModelController extends Controller<Model> {
 
-    private final StudioContext studioContext;
-
     private CompositeField compositeField;
 
     private ListField<Parameter> parametersField;
@@ -31,10 +31,6 @@ public class ModelController extends Controller<Model> {
     private TextField nameField;
     private TextField formulaField;
     private CompositeField editionField;
-
-    public ModelController(StudioContext studioContext) {
-        this.studioContext = studioContext;
-    }
 
     @Override
     public CompositeField createFields() {
@@ -45,7 +41,7 @@ public class ModelController extends Controller<Model> {
                 text.append(element.getName());
                 text.append(" (");
                 try {
-                    int result = studioContext.getFormulaCache().computeValue(element.getFormula(), getSubject());
+                    int result = FormulaCache.SHARED.computeValue(element.getFormula(), getSubject());
                     text.append(result);
                 } catch (ParseException | EvaluationException e) {
                     text.append(e.getMessage());
@@ -66,7 +62,7 @@ public class ModelController extends Controller<Model> {
                     if (formula == null) {
                         message = ""+parameter.getName()+" is null";
                     } else {
-                        Exception e = studioContext.getFormulaCache().isFormulaValid(formula);
+                        Exception e = FormulaCache.SHARED.isFormulaValid(formula);
                         message = e != null ? parameter.getName()+": " + e.getMessage() : null;
                     }
                     if (message != null) return false;
@@ -82,26 +78,7 @@ public class ModelController extends Controller<Model> {
 
         nameField = new TextField("Name", BasicsUI.NONE);
         formulaField = new TextField("Formula", BasicsUI.NONE);
-        formulaField.setValidator(new Validator<String>() {
-
-            String message = null;
-
-            @Override
-            public boolean isValid(String value) {
-                if (value == null) {
-                    message = "Formula can't be null";
-                } else {
-                    Exception e = studioContext.getFormulaCache().isFormulaValid(value);
-                    message = e != null ? e.getMessage() : null;
-                }
-                return message == null;
-            }
-
-            @Override
-            public Diagnostic getDiagnostic() {
-                return new Diagnostic.Stub(Diagnostic.ERROR, message);
-            }
-        });
+        formulaField.setValidator(new FormulaValidator());
 
         parametersField.addAction(new Action.Stub("+", Action.STYLE_DEFAULT | Action.STYLE_TRANSACTIONNAL) {
 

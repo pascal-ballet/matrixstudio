@@ -17,13 +17,13 @@ public class Task implements ModelObject, BoostObject {
 
 	private Scheduler scheduler;
 
-    private int repetition = 1;
+    private String repetition = "1";
 
-	private int globalWorkSizeX = 512;
+	private String globalWorkSizeX = "512";
 
-	private int globalWorkSizeY = 256;
+	private String globalWorkSizeY = "256";
 
-	private int globalWorkSizeZ = 1;
+	private String globalWorkSizeZ = "1";
 
 	private float[] position = new float[] { 50f, 50f };
 
@@ -49,10 +49,16 @@ public class Task implements ModelObject, BoostObject {
         boost.register(this);
         int version = boost.getFileVersion();
         scheduler = boost.readObject(Scheduler.class);
-        repetition = version >= 2 ? boost.readInt() : 1;
-		globalWorkSizeX = boost.readInt();
-		globalWorkSizeY = boost.readInt();
-		globalWorkSizeZ = boost.readInt();
+        repetition = version >= 2 ? version >= 3 ? boost.readString() : Integer.toString(boost.readInt()) : "1";
+        if (version < 3) {
+            globalWorkSizeX = Integer.toString(boost.readInt());
+            globalWorkSizeY = Integer.toString(boost.readInt());
+            globalWorkSizeZ = Integer.toString(boost.readInt());
+        } else {
+            globalWorkSizeX = boost.readString();
+            globalWorkSizeY = boost.readString();
+            globalWorkSizeZ = boost.readString();
+        }
 		position = BoostUtil.readFloatArray(boost);
 		for ( Task oneChild : BoostUtil.readObjectList(boost, Task.class) ) {
 			taskInList.add(oneChild);
@@ -90,14 +96,14 @@ public class Task implements ModelObject, BoostObject {
     /**
      * <p>Gets repetition.</p>
      */
-    public int getRepetition() {
+    public String getRepetition() {
         return repetition;
     }
 
     /**
      * <p>Sets repetition.</p>
      */
-    public void setRepetition(int newValue) {
+    public void setRepetition(String newValue) {
         if (repetition != newValue) {
             getChangeRecorder().recordChangeAttribute(this, "repetition", this.repetition);
             this.repetition= newValue;
@@ -107,14 +113,14 @@ public class Task implements ModelObject, BoostObject {
     /**
 	 * <p>Gets globalWorkSizeX.</p>
 	 */
-	public int getGlobalWorkSizeX() {
+	public String getGlobalWorkSizeX() {
 		return globalWorkSizeX;
 	}
 
 	/**
 	 * <p>Sets globalWorkSizeX.</p>
 	 */
-	public void setGlobalWorkSizeX(int newValue) {
+	public void setGlobalWorkSizeX(String newValue) {
 		if (globalWorkSizeX != newValue) {
 			getChangeRecorder().recordChangeAttribute(this, "globalWorkSizeX", this.globalWorkSizeX);
 			this.globalWorkSizeX= newValue;
@@ -124,14 +130,14 @@ public class Task implements ModelObject, BoostObject {
 	/**
 	 * <p>Gets globalWorkSizeY.</p>
 	 */
-	public int getGlobalWorkSizeY() {
+	public String getGlobalWorkSizeY() {
 		return globalWorkSizeY;
 	}
 
 	/**
 	 * <p>Sets globalWorkSizeY.</p>
 	 */
-	public void setGlobalWorkSizeY(int newValue) {
+	public void setGlobalWorkSizeY(String newValue) {
 		if (globalWorkSizeY != newValue) {
 			getChangeRecorder().recordChangeAttribute(this, "globalWorkSizeY", this.globalWorkSizeY);
 			this.globalWorkSizeY= newValue;
@@ -141,14 +147,14 @@ public class Task implements ModelObject, BoostObject {
 	/**
 	 * <p>Gets globalWorkSizeZ.</p>
 	 */
-	public int getGlobalWorkSizeZ() {
+	public String getGlobalWorkSizeZ() {
 		return globalWorkSizeZ;
 	}
 
 	/**
 	 * <p>Sets globalWorkSizeZ.</p>
 	 */
-	public void setGlobalWorkSizeZ(int newValue) {
+	public void setGlobalWorkSizeZ(String newValue) {
 		if (globalWorkSizeZ != newValue) {
 			getChangeRecorder().recordChangeAttribute(this, "globalWorkSizeZ", this.globalWorkSizeZ);
 			this.globalWorkSizeZ= newValue;
@@ -426,10 +432,12 @@ public class Task implements ModelObject, BoostObject {
 	public void writeToBoost(Boost boost) {
         int version = boost.getFileVersion();
 		boost.writeObject(scheduler);
-        if (version >= 2) boost.writeInt(repetition);
-		boost.writeInt(globalWorkSizeX);
-		boost.writeInt(globalWorkSizeY);
-		boost.writeInt(globalWorkSizeZ);
+        if (version >= 2) {
+            boost.writeString(repetition);
+        }
+		boost.writeString(globalWorkSizeX);
+		boost.writeString(globalWorkSizeY);
+		boost.writeString(globalWorkSizeZ);
 		BoostUtil.writeFloatArray(boost, position);
 		BoostUtil.writeObjectCollection(boost, taskInList);
 		BoostUtil.writeObjectCollection(boost, taskOutList);

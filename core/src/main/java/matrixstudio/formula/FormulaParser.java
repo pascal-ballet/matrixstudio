@@ -37,6 +37,8 @@ public class FormulaParser {
     }
 
     public Formula parse() throws ParseException {
+        if (expression == null) throw new ParseException("Expression is empty", 0);
+
         Formula formula = readFormula();
         if (peek(0) != EOL) throw new ParseException("Unexpected token '"+ peek(0) +"'", current);
         return formula;

@@ -1,5 +1,7 @@
 package matrixstudio.ui.diagram;
 
+import matrixstudio.formula.EvaluationException;
+import matrixstudio.formula.FormulaCache;
 import matrixstudio.model.Kernel;
 import matrixstudio.model.Task;
 import org.eclipse.swt.SWT;
@@ -16,6 +18,7 @@ import org.xid.basics.ui.diagram.interaction.Handle;
 import org.xid.basics.ui.diagram.interaction.InteractionLine;
 import org.xid.basics.ui.diagram.interaction.InteractionObject;
 
+import java.text.ParseException;
 import java.util.List;
 
 
@@ -58,7 +61,11 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
 	private Color getColor(DiagramContext context) {
 		return context.getResources().getColor(backgroundRGB);
 	}
-	
+
+	private int computeFormula(String formula) throws ParseException, EvaluationException {
+        return FormulaCache.SHARED.computeValue(formula, getModel().getScheduler().getModel());
+    }
+
 	public void display(GC gc, DiagramContext context) {
 		
 		if ( smallFont == null ) {
@@ -109,26 +116,41 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
 		gc.setFont(smallFont);
 
         // prints repetition if needed
-        int repetition = task.getRepetition();
-        if (repetition > 1) {
-            gc.setBackground(context.getResources().getSystemColor(SWT.COLOR_WHITE));
-            gc.fillOval((int) rectangle[0] + 3, (int) rectangle[3] - 15, (repetition >= 100) ? 30 : 15, 12);
-            GcUtils.drawStringAligned(gc, Integer.toString(repetition), rectangle[0] + 5f, rectangle[3] - 15f, Geometry.NORTH_WEST);
+        try {
+            int repetition = computeFormula(task.getRepetition());
+            if (repetition > 1) {
+                gc.setBackground(context.getResources().getSystemColor(SWT.COLOR_WHITE));
+                gc.fillOval((int) rectangle[0] + 3, (int) rectangle[3] - 15, (repetition >= 100) ? 30 : 15, 12);
+                GcUtils.drawStringAligned(gc, Integer.toString(repetition), rectangle[0] + 5f, rectangle[3] - 15f, Geometry.NORTH_WEST);
+            }
+        } catch (ParseException | EvaluationException e) {
+            GcUtils.drawImageAligned(gc, context.getResources().getImage("error_tsk.gif"), rectangle[0] + 3, rectangle[3] - 15, Geometry.NORTH_WEST);
         }
 
-		// prints info at bottom
-		final StringBuilder info = new StringBuilder();
-		info.append("(");
-		info.append(task.getGlobalWorkSizeX());
-		info.append(",");
-		info.append(task.getGlobalWorkSizeY());
-		info.append(",");
-		info.append(task.getGlobalWorkSizeZ());
-		info.append(")");
-		GcUtils.drawStringAligned(gc, info.toString(), point[0], point[1]+12f, Geometry.CENTER);
+        try {
+            int gx = computeFormula(task.getGlobalWorkSizeX());
+            int gy = computeFormula(task.getGlobalWorkSizeY());
+            int gz = computeFormula(task.getGlobalWorkSizeZ());
 
-		gc.setFont(oldFont);
-		
+            // prints info at bottom
+            final StringBuilder info = new StringBuilder();
+            info.append("(");
+            info.append(gx);
+            info.append(",");
+            info.append(gy);
+            info.append(",");
+            info.append(gz);
+            info.append(")");
+            GcUtils.drawStringAligned(gc, info.toString(), point[0], point[1]+12f, Geometry.CENTER);
+
+            gc.setFont(oldFont);
+
+
+        } catch (ParseException | EvaluationException e) {
+            GcUtils.drawImageAligned(gc, context.getResources().getImage("error_tsk.gif"), point[0], point[1]+5f, Geometry.NORTH);
+        }
+
+
 		// draws create connection icon.
 		GcUtils.drawImageAligned(gc, context.getResources().getImage("create_connection.gif"), rectangle[2] - 20f, rectangle[1] + 2f, Geometry.NORTH_WEST);
 		

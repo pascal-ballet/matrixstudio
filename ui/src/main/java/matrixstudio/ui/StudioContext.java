@@ -17,7 +17,6 @@
 
 package matrixstudio.ui;
 
-import matrixstudio.formula.FormulaCache;
 import matrixstudio.kernel.Simulator;
 import matrixstudio.kernel.SimulatorContext;
 import org.eclipse.swt.widgets.Shell;
@@ -45,5 +44,4 @@ public interface StudioContext extends SimulatorContext {
 
     void asynchronousRun(int milliseconds, Runnable runnable);
 
-    FormulaCache getFormulaCache();
 }

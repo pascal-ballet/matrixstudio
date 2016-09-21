@@ -1,5 +1,7 @@
 package matrixstudio.kernel;
 
+import matrixstudio.formula.EvaluationException;
+import matrixstudio.formula.FormulaCache;
 import matrixstudio.model.Code;
 import matrixstudio.model.Kernel;
 import matrixstudio.model.Library;
@@ -26,6 +28,7 @@ import org.jocl.cl_program;
 import org.xid.basics.error.DiagnosticUtil;
 import org.xid.basics.progress.ActionMonitor;
 
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -130,24 +133,34 @@ public class Simulator implements Runnable {
 	}
     
     public boolean compileKernelCode() {
-    	releaseCL();
-    
-    	// order matters a lot !
-    	if ( initMatrices() == false ) return false;
-    	if ( initScheduler() == false ) return false;
+        try {
+            releaseCL();
 
-    	if ( initCL() == false ) return false;
-        if ( initCode() == false) return false;
-        if ( initKernel() == false ) return false;
-        if ( initTasks() == false ) return false;
-        
-        log.log("Compilation finished at " + Tools.getDateTime());
-        log.log("Compilation successful.");
-        initialSimulationTime = System.currentTimeMillis();
+            // order matters a lot !
+            if (initMatrices() == false) return false;
+            if (initScheduler() == false) return false;
+
+            if (initCL() == false) return false;
+            if (initCode() == false) return false;
+            if (initKernel() == false) return false;
+            if (initTasks() == false) return false;
+
+            log.log("Compilation finished at " + Tools.getDateTime());
+            log.log("Compilation successful.");
+            initialSimulationTime = System.currentTimeMillis();
+
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return false;
+        }
         return true;        
     }
 
-	private boolean initCode() {
+    private int evaluateFormula(String formula) throws EvaluationException, ParseException {
+        return FormulaCache.SHARED.computeValue(formula, getModel());
+    }
+
+	private boolean initCode() throws EvaluationException, ParseException {
 		
 		// creation of openCL code to compile
     	final Model model = getModel();
@@ -411,37 +424,37 @@ public class Simulator implements Runnable {
 		return true;
 	}
 
-    private boolean initTasks() {
-    	globalSizeByTask = new HashMap<Task, long[]>();
-    	eventsByTask = new HashMap<Task, cl_event>();
-    	dependenciesByTask = new HashMap<Task, cl_event[]>();
+    private boolean initTasks() throws EvaluationException, ParseException {
+    	globalSizeByTask = new HashMap<>();
+    	eventsByTask = new HashMap<>();
+    	dependenciesByTask = new HashMap<>();
 
     	final List<Task> taskList = orderedTasks;
     	
     	allEvents = new cl_event[taskList.size()];
-    	
-		for ( int n=0; n<taskList.size(); n++) {
-			final Task ta = taskList.get(n);
-			
-    		// create global work size array
-    		final int gX = ta.getGlobalWorkSizeX();
-    		final int gY = ta.getGlobalWorkSizeY();
-    		final int gZ = ta.getGlobalWorkSizeZ();
 
-    		if ( gZ > 1 ) {
-				globalSizeByTask.put(ta, new long[] { gX, gY, gZ } );
-    		} else if ( gY > 1 ) {
-    			globalSizeByTask.put(ta, new long[] { gX, gY } );
-    		} else {
-    			globalSizeByTask.put(ta, new long[] { gX } );
-    		}
-	        
-	        // Creates events for each task
-	        final cl_event event = new cl_event();
-	        allEvents[n] = event;
-			eventsByTask.put(ta, event);
-    	}
-		
+        for (int n = 0; n < taskList.size(); n++) {
+            final Task ta = taskList.get(n);
+
+            // create global work size array
+            final int gX = evaluateFormula(ta.getGlobalWorkSizeX());
+            final int gY = evaluateFormula(ta.getGlobalWorkSizeY());
+            final int gZ = evaluateFormula(ta.getGlobalWorkSizeZ());
+
+            if (gZ > 1) {
+                globalSizeByTask.put(ta, new long[]{gX, gY, gZ});
+            } else if (gY > 1) {
+                globalSizeByTask.put(ta, new long[]{gX, gY});
+            } else {
+                globalSizeByTask.put(ta, new long[]{gX});
+            }
+
+            // Creates events for each task
+            final cl_event event = new cl_event();
+            allEvents[n] = event;
+            eventsByTask.put(ta, event);
+        }
+
 		// creates dependencies
 		for ( Task ta : taskList ) {
 			int size = ta.getTaskInCount();
@@ -566,15 +579,15 @@ public class Simulator implements Runnable {
 			pt_WSZ = new int[1];
 		}
 
-    	try {
-    		
-	    	CL.clFlush(commandQueue);
-	    	Scheduler schedule = getModel().getScheduler();
-			
-			// First, we build the kernels parameters
-			for (int tt=0; tt<schedule.getTaskCount(); tt++ ) {
+        CL.clFlush(commandQueue);
+        Scheduler schedule = getModel().getScheduler();
+
+        try {
+
+            // First, we build the kernels parameters
+            for (int tt = 0; tt < schedule.getTaskCount(); tt++) {
                 Task task = schedule.getTask(tt);
-                int repetition = task.getRepetition();
+                int repetition = evaluateFormula(task.getRepetition());
                 if (repetition <= 0) repetition = 1;
 
                 for (int i = 0; i < repetition; i++) {
@@ -587,9 +600,9 @@ public class Simulator implements Runnable {
                         pt_mouseX[0] = mouseX;
                         pt_mouseY[0] = mouseY;
                         pt_mouseBtn[0] = mouseBtn;
-                        pt_WSX[0] = task.getGlobalWorkSizeX();
-                        pt_WSY[0] = task.getGlobalWorkSizeY();
-                        pt_WSZ[0] = task.getGlobalWorkSizeZ();
+                        pt_WSX[0] = evaluateFormula(task.getGlobalWorkSizeX());
+                        pt_WSY[0] = evaluateFormula(task.getGlobalWorkSizeY());
+                        pt_WSZ[0] = evaluateFormula(task.getGlobalWorkSizeZ());
                         // Pass modified arguments that are not pointers (pointers do not need update)
                         int argNum = 0;
                         cl_kernel kernel = clKernelsByName.get(task.getKernel(ki).getName());
@@ -606,32 +619,27 @@ public class Simulator implements Runnable {
                     }
                 }
             }
-			// Enqueue of all the tasks (schedule must be respected)
-			boolean result = false;
-			result = executeAllTasks();
+            // Enqueue of all the tasks (schedule must be respected)
+            executeAllTasks();
 
-			nbSteps++;
-	        return result;
-    	} catch(Exception e) {
-    		log.error("Runtime Error: please check your matrix readings or writings." + DiagnosticUtil.createMessage(e) );
-    		return false;
-    	}
+            nbSteps++;
+
+        } catch (ParseException | EvaluationException e) {
+            log.error(DiagnosticUtil.createMessage(e));
+            return false;
+        }
+        return true;
     }
     
     
-    private boolean executeAllTasks() {
-
-    	boolean result = true;
-    	// enqueue all tasks
+    private void executeAllTasks() throws EvaluationException, ParseException {
     	for ( Task task : orderedTasks ) {
-    		result &= enqueueTask(task);
+    		enqueueTask(task);
     	}
-
-    	return result;
     }
     
-    private boolean enqueueTask(final Task task) {
-        int repetition = task.getRepetition();
+    private void enqueueTask(final Task task) throws EvaluationException, ParseException, CLException {
+        int repetition = evaluateFormula(task.getRepetition());
         if (repetition <= 0) repetition = 1;
 
         for (int i = 0; i < repetition; i++) {
@@ -645,7 +653,6 @@ public class Simulator implements Runnable {
                 final cl_event[] dependencies = dependenciesByTask.get(task);
                 final int num_events_in_wait_list = dependencies == null ? 0 : dependencies.length;
 
-                try {
                     final int error = clEnqueueNDRangeKernel(
                             commandQueue, kernel,
                             dimension, null, global_work_size, null,
@@ -656,16 +663,10 @@ public class Simulator implements Runnable {
                     CL.clFinish(commandQueue);
 
                     if (error != 0) {
-                        log.error("Error in launchTask:" + error + ".");
-                        return false;
+                        throw new CLException("Error in launchTask:" + error + ".", error);
                     }
-                } catch (CLException e) {
-                    log.error(DiagnosticUtil.createMessage(e));
-                    return false;
-                }
             }
         }
-        return true;
     }
       
     public String GetResultCL(List<Matrix> lst_mat) {
@@ -736,10 +737,9 @@ public class Simulator implements Runnable {
 	    	while( isStarted() ) {
 	    		if ( isRunning() ) {
 	    			
-	    			boolean result = executeStep(inputProvider.getMouseX(), inputProvider.getMouseY(), inputProvider.getButton()); 
+	    			executeStep(inputProvider.getMouseX(), inputProvider.getMouseY(), inputProvider.getButton());
 	    			// if step failed, break infinite loop.
-	    			if( result == false ) break;
-	    			
+
 	    			if( nbSteps % refreshStep == 0 ) {
 	    				GetResultCL(getModel().getMatrixList());
 						if(recordingMPEG == true)
