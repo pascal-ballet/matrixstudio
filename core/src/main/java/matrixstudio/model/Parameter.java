@@ -4,7 +4,7 @@ import org.xid.basics.model.ChangeRecorder;
 import org.xid.basics.serializer.Boost;
 
 /**
- * Created by j5r on 19/09/2016.
+ * Parameter for simulation
  */
 public class Parameter implements Named {
 
@@ -77,8 +77,8 @@ public class Parameter implements Named {
 
     public void writeToBoost(Boost boost) {
         boost.writeObject(model);
-        boost.writeString(formula);
         boost.writeString(name);
+        boost.writeString(formula);
     }
 
     /**
