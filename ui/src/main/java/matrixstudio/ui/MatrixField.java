@@ -7,25 +7,34 @@ import matrixstudio.model.MatrixFloat;
 import matrixstudio.model.MatrixInteger;
 import matrixstudio.model.MatrixULong;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.*;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.MouseMoveListener;
+import org.eclipse.swt.events.MouseWheelListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.opengl.GLCanvas;
 import org.eclipse.swt.opengl.GLData;
-import org.eclipse.swt.widgets.*;
-
+import org.eclipse.swt.widgets.Canvas;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GLCapabilities;
 import org.xid.basics.notification.Notification;
 import org.xid.basics.ui.BasicsUI;
 import org.xid.basics.ui.Resources;
 import org.xid.basics.ui.field.AbstractField;
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.*;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -33,8 +42,33 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_FRONT_AND_BACK;
+import static org.lwjgl.opengl.GL11.GL_LINE;
+import static org.lwjgl.opengl.GL11.GL_LINES;
+import static org.lwjgl.opengl.GL11.GL_POLYGON_OFFSET_LINE;
+import static org.lwjgl.opengl.GL11.GL_QUADS;
+import static org.lwjgl.opengl.GL11.GL_STENCIL_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glPolygonMode;
+import static org.lwjgl.opengl.GL11.glPolygonOffset;
+import static org.lwjgl.opengl.GL11.glVertex3f;
+import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
+import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
+import static org.lwjgl.opengl.GL20.glAttachShader;
+import static org.lwjgl.opengl.GL20.glCompileShader;
+import static org.lwjgl.opengl.GL20.glCreateProgram;
+import static org.lwjgl.opengl.GL20.glCreateShader;
+import static org.lwjgl.opengl.GL20.glGetUniformLocation;
+import static org.lwjgl.opengl.GL20.glLinkProgram;
+import static org.lwjgl.opengl.GL20.glShaderSource;
+import static org.lwjgl.opengl.GL20.glUniform3f;
+import static org.lwjgl.opengl.GL20.glUseProgram;
 
 public class MatrixField extends AbstractField implements RendererContext, UserInputProvider {
 
@@ -356,7 +390,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				//gc.fillRectangle(gc.getClipping());
 				renderShader();
 				// don't draw matrix if value is null or if x or y is invalid
-				if ( matrix == null || matrix.getSizeX() <= 0 || matrix.getSizeY() <= 0 ) return;
+				if ( matrix == null || matrix.safeGetSizeXValue() <= 0 || matrix.safeGetSizeYValue() <= 0 ) return;
 				MatrixRenderer renderer = renderers.get((Class<? extends Matrix>) matrix.getClass());
 				if ( renderer != null ) {
 					renderer.render(gc, MatrixField.this, matrix, mouseZ, draw3D, dx3D, dy3D, dz3D, angleX3D, angleY3D, shell3D, gl_canvas,renderMode, program);
@@ -387,9 +421,14 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 		canvas.addMouseMoveListener(new MouseMoveListener() {
 			public void mouseMove(MouseEvent e) {
 				if(matrix == null || canvas == null) return;
-				if(matrix.getSizeX() <= 0 || matrix.getSizeY() <= 0 || matrix.getSizeZ() <= 0) return;
-				mouseX = (e.x * matrix.getSizeX() )/canvas.getSize().x;
-				mouseY = matrix.getSizeY()-(e.y * matrix.getSizeY() )/canvas.getSize().y - 1;
+
+                int xSize = matrix.safeGetSizeXValue();
+                int ySize = matrix.safeGetSizeYValue();
+                int zSize = matrix.safeGetSizeZValue();
+                if(xSize <= 0 || ySize <= 0 || zSize <= 0) return;
+
+				mouseX = (e.x * xSize )/canvas.getSize().x;
+				mouseY = matrix.safeGetSizeYValue()-(e.y * ySize )/canvas.getSize().y - 1;
 				String name = matrix.getName();
 				
 				final StringBuilder builder = new StringBuilder();
@@ -436,7 +475,8 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
                 System.err.println(">" + dz);
                 mouseZ += dz;
                 if(mouseZ < 0) mouseZ = 0;
-                if(mouseZ >= matrix.getSizeZ()) mouseZ = matrix.getSizeZ()-1;
+                int z = matrix.safeGetSizeZValue();
+                if(mouseZ >= z) mouseZ = z-1;
                 canvas.redraw();
             }
         });

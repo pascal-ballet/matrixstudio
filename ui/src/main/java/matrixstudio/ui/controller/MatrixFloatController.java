@@ -31,26 +31,14 @@ public class MatrixFloatController extends Controller<MatrixFloat> {
 			}
 		});
 		widthField = new TextField("Size X", BasicsUI.NONE);
-		widthField.setValidator(new Validator.Stub<String>(Diagnostic.ERROR, "Invalid size") {
-			public boolean isValid(String value) {
-				if ( value == null ) return false;
-				return value.matches("[0-9][0-9]*");
-			}
-		});
+		widthField.setValidator(new FormulaValidator());
+
 		heightField = new TextField("Size Y", BasicsUI.NONE);
-		heightField.setValidator(new Validator.Stub<String>(Diagnostic.ERROR, "Invalid size") {
-			public boolean isValid(String value) {
-				if ( value == null ) return false;
-				return value.matches("[0-9][0-9]*");
-			}
-		});
-		depthField = new TextField("Size Z", BasicsUI.NONE);
-		depthField.setValidator(new Validator.Stub<String>(Diagnostic.ERROR, "Invalid size") {
-			public boolean isValid(String value) {
-				if ( value == null ) return false;
-				return value.matches("[0-9][0-9]*");
-			}
-		});
+        heightField.setValidator(new FormulaValidator());
+
+        depthField = new TextField("Size Z", BasicsUI.NONE);
+        depthField.setValidator(new FormulaValidator());
+
 		isRandomField = new CheckboxField("Random", BasicsUI.NONE);
 		
 		compositeField = new CompositeField("Float Matrix", BasicsUI.GROUP,  nameField, widthField, heightField, depthField, isRandomField);
@@ -65,9 +53,9 @@ public class MatrixFloatController extends Controller<MatrixFloat> {
 		} else {
 			compositeField.setEnable(true);
 			nameField.setValue(getSubject().getName());
-			widthField.setValue(Integer.toString(getSubject().getSizeX()));
-			heightField.setValue(Integer.toString(getSubject().getSizeY()));
-			depthField.setValue(Integer.toString(getSubject().getSizeZ()));
+			widthField.setValue(getSubject().getSizeX());
+			heightField.setValue(getSubject().getSizeY());
+			depthField.setValue(getSubject().getSizeZ());
 			isRandomField.setValue(getSubject().isRandom());
 		}
 	}
@@ -79,17 +67,17 @@ public class MatrixFloatController extends Controller<MatrixFloat> {
 			return true;
 		}
 		if ( field == widthField ) {
-			getSubject().setSizeX(widthField.getIntValue());
+			getSubject().setSizeX(widthField.getValue());
 			getSubject().initBlank();
 			return true;
 		}
 		if ( field == heightField ) {
-			getSubject().setSizeY(heightField.getIntValue());
+			getSubject().setSizeY(heightField.getValue());
 			getSubject().initBlank();
 			return true;
 		}
 		if ( field == depthField ) {
-			getSubject().setSizeZ(depthField.getIntValue());
+			getSubject().setSizeZ(depthField.getValue());
 			getSubject().initBlank();
 			return true;
 		}

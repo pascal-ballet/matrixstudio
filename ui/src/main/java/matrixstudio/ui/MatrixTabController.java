@@ -23,7 +23,7 @@ import org.xid.basics.ui.field.CompositeField;
 import org.xid.basics.ui.field.ListField;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
 import java.io.File;
 
 public class MatrixTabController extends Controller<Model>{
@@ -209,10 +209,12 @@ public class MatrixTabController extends Controller<Model>{
 				Matrix mat = matricesListField.getSingleSelection();
 				// Stretch the image into the matrix size
 				ImageData imgdata = new ImageData(selected);
-				imgdata = imgdata.scaledTo(mat.getSizeX(), mat.getSizeY());
+                int x = mat.safeGetSizeXValue();
+                int y = mat.safeGetSizeYValue();
+                imgdata = imgdata.scaledTo(x, y);
 				// Convert RVB image pixels to values in the matrix (int or float)
-				for(int i=0; i<mat.getSizeX(); i++) {
-					for(int j=0; j<mat.getSizeY(); j++) {
+				for(int i=0; i<x; i++) {
+					for(int j=0; j<y; j++) {
 						if(mat instanceof MatrixInteger) {
 							int value = imgdata.getPixel(i, j);
 							int R = value & 0x0000FF;
@@ -594,8 +596,8 @@ public class MatrixTabController extends Controller<Model>{
 	       if(mat != null) { // Fill the image with the matrix data
 	    	   for(int xx = 0; xx < mpegSizeX; xx++) {
 		    	   for(int yy = 0; yy < mpegSizeY; yy++) {
-		    		    int mxx = (xx*mat.getSizeX()) / mpegSizeX; 
-		    		    int myy = (yy*mat.getSizeY()) / mpegSizeY; 
+		    		    int mxx = (xx*mat.safeGetSizeXValue()) / mpegSizeX;
+		    		    int myy = (yy*mat.safeGetSizeYValue()) / mpegSizeY;
 		    		    int B = (mat.getValueAt(mxx, myy, 0).intValue() >> 16) & 0xFF;
 		    	   		int G = (mat.getValueAt(mxx, myy, 0).intValue() >> 8) & 0xFF;
 		    	   		int R = (mat.getValueAt(mxx, myy, 0).intValue()     ) & 0xFF;
@@ -636,16 +638,20 @@ public class MatrixTabController extends Controller<Model>{
 	public void recordPNG() {
 		for(int m=0; m<matricesListField.getValue().size(); m++) {
 	       // Create the Image to be saved into the PNG
-			Matrix mat = matricesListField.getValue().get(m);
-           java.awt.image.BufferedImage img = new java.awt.image.BufferedImage(mat.getSizeX(),mat.getSizeY(),java.awt.image.BufferedImage.TYPE_3BYTE_BGR);
-           java.awt.Graphics g = img.getGraphics();
+            Matrix mat = matricesListField.getValue().get(m);
 	       // Get the current displayed matrix
     	   String fileName = recordPNGFileProto.getAbsolutePath()+"_"+mat.getName()+"_"+simulator.getNbSteps()+".png";
 	       if(mat != null) { // Fill the image with the matrix data
+               int sizeX = mat.safeGetSizeXValue();
+               int sizeY = mat.safeGetSizeYValue();
+
+               java.awt.image.BufferedImage img = new java.awt.image.BufferedImage(sizeX,sizeY,java.awt.image.BufferedImage.TYPE_3BYTE_BGR);
+               java.awt.Graphics g = img.getGraphics();
+
 	    	   for(int xx = 0; xx < mpegSizeX; xx++) {
 		    	   for(int yy = 0; yy < mpegSizeY; yy++) {
-		    		    int mxx = (xx*mat.getSizeX()) / mpegSizeX; 
-		    		    int myy = (yy*mat.getSizeY()) / mpegSizeY; 
+                       int mxx = (xx* sizeX) / mpegSizeX;
+                       int myy = (yy* sizeY) / mpegSizeY;
 		    		    int B = (mat.getValueAt(mxx, myy, 0).intValue() >> 16) & 0xFF;
 		    	   		int G = (mat.getValueAt(mxx, myy, 0).intValue() >> 8) & 0xFF;
 		    	   		int R = (mat.getValueAt(mxx, myy, 0).intValue()     ) & 0xFF;
@@ -655,13 +661,13 @@ public class MatrixTabController extends Controller<Model>{
 	    	   }
 	    	   g.setColor(Color.CYAN);
 	    	   
+               System.out.println("processing file "+fileName);
+               try {
+                   ImageIO.write(img, "png", new File(fileName));
+               } catch (Exception ex) {
+                   System.out.println(ex.getMessage());
+               }
 	       }
-	       System.out.println("processing file "+fileName);
-	       try {
-	    	   ImageIO.write(img, "png", new File(fileName));
-           } catch (Exception ex) {
-        	   System.out.println(ex.getMessage());
-           }
 		}
 	}
 	

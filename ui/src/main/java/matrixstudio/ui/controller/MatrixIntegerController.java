@@ -31,27 +31,15 @@ public class MatrixIntegerController extends Controller<MatrixInteger> {
 			}
 		});
 		widthField = new TextField("Size X", BasicsUI.NONE);
-		widthField.setValidator(new Validator.Stub<String>(Diagnostic.ERROR, "Invalid size") {
-			public boolean isValid(String value) {
-				if ( value == null ) return false;
-				return value.matches("[0-9][0-9]*");
-			}
-		});
-		heightField = new TextField("Size Y", BasicsUI.NONE);
-		heightField.setValidator(new Validator.Stub<String>(Diagnostic.ERROR, "Invalid size") {
-			public boolean isValid(String value) {
-				if ( value == null ) return false;
-				return value.matches("[0-9][0-9]*");
-			}
-		});
-		depthField = new TextField("Size Z", BasicsUI.NONE);
-		depthField.setValidator(new Validator.Stub<String>(Diagnostic.ERROR, "Invalid size") {
-			public boolean isValid(String value) {
-				if ( value == null ) return false;
-				return value.matches("[0-9][0-9]*");
-			}
-		});
-		isRandomField  = new CheckboxField("Random", BasicsUI.NONE);
+        widthField.setValidator(new FormulaValidator());
+
+        heightField = new TextField("Size Y", BasicsUI.NONE);
+        heightField.setValidator(new FormulaValidator());
+
+        depthField = new TextField("Size Z", BasicsUI.NONE);
+        heightField.setValidator(new FormulaValidator());
+
+        isRandomField  = new CheckboxField("Random", BasicsUI.NONE);
 		
 		compositeField = new CompositeField("Integer Matrix", BasicsUI.GROUP,  nameField, widthField, heightField, depthField, isRandomField);
 		return compositeField;
@@ -79,17 +67,17 @@ public class MatrixIntegerController extends Controller<MatrixInteger> {
 			return true;
 		}
 		if ( field == widthField ) {
-			getSubject().setSizeX(widthField.getIntValue());
+			getSubject().setSizeX(widthField.getValue());
 			getSubject().initBlank();
 			return true;
 		}
 		if ( field == heightField ) {
-			getSubject().setSizeY(heightField.getIntValue());
+			getSubject().setSizeY(heightField.getValue());
 			getSubject().initBlank();
 			return true;
 		}
 		if ( field == depthField ) {
-			getSubject().setSizeZ(depthField.getIntValue());
+			getSubject().setSizeZ(depthField.getValue());
 			getSubject().initBlank();
 			return true;
 		}

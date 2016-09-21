@@ -265,7 +265,7 @@ public class Simulator implements Runnable {
 		}
 	}
 
-	private void initCL() {
+	private void initCL() throws EvaluationException, ParseException {
          long numBytes[] = new long[1];
 
         // Creation of an OpenCL context on GPU
@@ -327,7 +327,7 @@ public class Simulator implements Runnable {
         memObjects = new cl_mem[matrixCount];
         for(int t=0; t<matrixCount; t++) {
             Matrix mat = model.getMatrixList().get(t);
-            int n = mat.getSizeX()*mat.getSizeY()*mat.getSizeZ();
+            int n = mat.getSizeXValue()*mat.getSizeYValue()*mat.getSizeZValue();
             if(mat instanceof MatrixInteger)
                 memObjects[t] = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_COPY_HOST_PTR, Sizeof.cl_int   * n, matricesPointer[t], null);
             if(mat instanceof MatrixULong)
@@ -337,7 +337,7 @@ public class Simulator implements Runnable {
         }
     }
     
-    private void initKernel() {
+    private void initKernel() throws EvaluationException, ParseException {
     	 // Create the kernels
         clKernelsByName = new HashMap<String, cl_kernel>();
         
@@ -370,9 +370,9 @@ public class Simulator implements Runnable {
 	            for(int c=0; c<matrixCount; c++) {
 	            	final Matrix mat = model.getMatrix(c);
 	                clSetKernelArg(kernels[k], numArg++, Sizeof.cl_mem, Pointer.to(memObjects[c])); // Matrix
-	                clSetKernelArg(kernels[k], numArg++, Sizeof.cl_uint, Pointer.to(new int[]{mat.getSizeX()})); // SX
-	                clSetKernelArg(kernels[k], numArg++, Sizeof.cl_uint, Pointer.to(new int[]{mat.getSizeY()})); // SY
-	                clSetKernelArg(kernels[k], numArg++, Sizeof.cl_uint, Pointer.to(new int[]{mat.getSizeZ()})); // SZ
+	                clSetKernelArg(kernels[k], numArg++, Sizeof.cl_uint, Pointer.to(new int[]{mat.getSizeXValue()})); // SX
+	                clSetKernelArg(kernels[k], numArg++, Sizeof.cl_uint, Pointer.to(new int[]{mat.getSizeYValue()})); // SY
+	                clSetKernelArg(kernels[k], numArg++, Sizeof.cl_uint, Pointer.to(new int[]{mat.getSizeZValue()})); // SZ
 	            }
 	        }
         }
@@ -669,16 +669,17 @@ public class Simulator implements Runnable {
         try {
             for(int i=0; i<lst_mat.size(); i++) {
             	Matrix mat = lst_mat.get(i);
+                int size = mat.getSizeXValue() * mat.getSizeYValue() * mat.getSizeZValue();
             	if(mat instanceof MatrixInteger) {
-            		clEnqueueReadBuffer(commandQueue, memObjects[i], CL.CL_TRUE, 0, mat.getSizeX()*mat.getSizeY()*mat.getSizeZ() * Sizeof.cl_int, matricesPointer[i], 0, null, null);
+                    clEnqueueReadBuffer(commandQueue, memObjects[i], CL.CL_TRUE, 0, size * Sizeof.cl_int, matricesPointer[i], 0, null, null);
 					//clFinish(commandQueue);
             	}
             	if(mat instanceof MatrixULong) {
-            		clEnqueueReadBuffer(commandQueue, memObjects[i], CL.CL_TRUE, 0, mat.getSizeX()*mat.getSizeY()*mat.getSizeZ() * Sizeof.cl_ulong, matricesPointer[i], 0, null, null);
+            		clEnqueueReadBuffer(commandQueue, memObjects[i], CL.CL_TRUE, 0, size * Sizeof.cl_ulong, matricesPointer[i], 0, null, null);
 					//clFinish(commandQueue);
             	}
             	if(mat instanceof MatrixFloat) {
-            		clEnqueueReadBuffer(commandQueue, memObjects[i], CL.CL_TRUE, 0, mat.getSizeX()*mat.getSizeY()*mat.getSizeZ() * Sizeof.cl_float, matricesPointer[i], 0, null, null);
+            		clEnqueueReadBuffer(commandQueue, memObjects[i], CL.CL_TRUE, 0, size * Sizeof.cl_float, matricesPointer[i], 0, null, null);
 					//clFinish(commandQueue);
             	}
             }

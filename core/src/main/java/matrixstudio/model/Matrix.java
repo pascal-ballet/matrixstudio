@@ -1,9 +1,13 @@
 package matrixstudio.model;
 
+import matrixstudio.formula.EvaluationException;
+import matrixstudio.formula.FormulaCache;
 import org.xid.basics.model.ChangeRecorder;
 import org.xid.basics.model.ModelObject;
 import org.xid.basics.serializer.Boost;
 import org.xid.basics.serializer.BoostObject;
+
+import java.text.ParseException;
 
 
 public abstract class Matrix implements ModelObject, BoostObject, Named {
@@ -14,13 +18,11 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
 
 	private boolean ndRange = false;
 
-	private int size = 512;
+	private String sizeX = "512";
 
-	private int sizeX = 512;
+	private String sizeY = "256";
 
-	private int sizeY = 256;
-
-	private int sizeZ = 1;
+	private String sizeZ = "1";
 
 	private String name;
 
@@ -28,14 +30,21 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
 	}
 
 	protected Matrix(Boost boost) {
-		boost.register(this);
-		model = boost.readObject(Model.class);
-		random = boost.readBoolean();
-		ndRange = boost.readBoolean();
-		size = boost.readInt();
-		sizeX = boost.readInt();
-		sizeY = boost.readInt();
-		sizeZ = boost.readInt();
+        boost.register(this);
+        int version = boost.getFileVersion();
+        model = boost.readObject(Model.class);
+        random = boost.readBoolean();
+        ndRange = boost.readBoolean();
+        if (version >= 3) {
+            sizeX = boost.readString();
+            sizeY = boost.readString();
+            sizeZ = boost.readString();
+        }else {
+            boost.readInt(); // deprecated size field.
+            sizeX = Integer.toString(boost.readInt());
+            sizeY = Integer.toString(boost.readInt());
+            sizeZ = Integer.toString(boost.readInt());
+        }
 		name = boost.readString();
 	}
 
@@ -91,33 +100,31 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
 	}
 
 	/**
-	 * <p>Gets size.</p>
-	 */
-	public int getSize() {
-		return size;
-	}
-
-	/**
-	 * <p>Sets size.</p>
-	 */
-	public void setSize(int newValue) {
-		if (size != newValue) {
-			getChangeRecorder().recordChangeAttribute(this, "size", this.size);
-			this.size= newValue;
-		}
-	}
-
-	/**
 	 * <p>Gets sizeX.</p>
 	 */
-	public int getSizeX() {
+	public String getSizeX() {
 		return sizeX;
 	}
 
 	/**
+	 * <p>Gets computed sizeX.</p>
+	 */
+	public int getSizeXValue() throws EvaluationException, ParseException {
+		return FormulaCache.SHARED.computeValue(sizeX, getModel());
+	}
+
+	public int safeGetSizeXValue() {
+        try {
+            return getSizeXValue();
+        } catch (ParseException | EvaluationException e) {
+            return 0;
+        }
+    }
+
+	/**
 	 * <p>Sets sizeX.</p>
 	 */
-	public void setSizeX(int newValue) {
+	public void setSizeX(String newValue) {
 		if (sizeX != newValue) {
 			getChangeRecorder().recordChangeAttribute(this, "sizeX", this.sizeX);
 			this.sizeX= newValue;
@@ -127,14 +134,29 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
 	/**
 	 * <p>Gets sizeY.</p>
 	 */
-	public int getSizeY() {
+	public String getSizeY() {
 		return sizeY;
 	}
+
+    /**
+     * <p>Gets computed sizeY.</p>
+     */
+    public int getSizeYValue() throws EvaluationException, ParseException {
+        return FormulaCache.SHARED.computeValue(sizeY, getModel());
+    }
+
+    public int safeGetSizeYValue() {
+        try {
+            return getSizeYValue();
+        } catch (ParseException | EvaluationException e) {
+            return 0;
+        }
+    }
 
 	/**
 	 * <p>Sets sizeY.</p>
 	 */
-	public void setSizeY(int newValue) {
+	public void setSizeY(String newValue) {
 		if (sizeY != newValue) {
 			getChangeRecorder().recordChangeAttribute(this, "sizeY", this.sizeY);
 			this.sizeY= newValue;
@@ -144,14 +166,29 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
 	/**
 	 * <p>Gets sizeZ.</p>
 	 */
-	public int getSizeZ() {
+	public String getSizeZ() {
 		return sizeZ;
 	}
+
+    /**
+     * <p>Gets computed sizeZ.</p>
+     */
+    public int getSizeZValue() throws EvaluationException, ParseException {
+        return FormulaCache.SHARED.computeValue(sizeZ, getModel());
+    }
+
+    public int safeGetSizeZValue() {
+        try {
+            return getSizeZValue();
+        } catch (ParseException | EvaluationException e) {
+            return 0;
+        }
+    }
 
 	/**
 	 * <p>Sets sizeZ.</p>
 	 */
-	public void setSizeZ(int newValue) {
+	public void setSizeZ(String newValue) {
 		if (sizeZ != newValue) {
 			getChangeRecorder().recordChangeAttribute(this, "sizeZ", this.sizeZ);
 			this.sizeZ= newValue;
@@ -180,10 +217,6 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
 		throw new UnsupportedOperationException();
 	}
 
-	public int getLength() {
-		return sizeX * sizeY * sizeZ;
-	}
-
 	public String getCType() {
 		// TODO implement getCType(...)
 		throw new UnsupportedOperationException();
@@ -199,7 +232,7 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
 		throw new UnsupportedOperationException();
 	}
 
-	public void setValueAt(int i, int j, int k, Number v) {
+	public void setValueAt(int i, int j, int k, Number v){
 		// TODO implement setValueAt(...)
 		throw new UnsupportedOperationException();
 	}
@@ -213,10 +246,9 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
 		boost.writeObject(model);
 		boost.writeBoolean(random);
 		boost.writeBoolean(ndRange);
-		boost.writeInt(size);
-		boost.writeInt(sizeX);
-		boost.writeInt(sizeY);
-		boost.writeInt(sizeZ);
+		boost.writeString(sizeX);
+		boost.writeString(sizeY);
+		boost.writeString(sizeZ);
 		boost.writeString(name);
 	}
 

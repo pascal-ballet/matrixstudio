@@ -1,11 +1,13 @@
 package matrixstudio.model;
 
+import matrixstudio.formula.EvaluationException;
 import org.xid.basics.model.ChangeRecorder;
 import org.xid.basics.model.ModelObject;
 import org.xid.basics.serializer.Boost;
 import org.xid.basics.serializer.BoostObject;
 import org.xid.basics.serializer.BoostUtil;
 
+import java.text.ParseException;
 import java.util.Random;
 
 
@@ -59,17 +61,24 @@ public class MatrixFloat extends Matrix implements ModelObject, BoostObject {
 	}
 
 	public void initBlank() {
-		matrixInit = new float[getSizeX()*getSizeY()*getSizeZ()];
-		matrix = new float[getSizeX()*getSizeY()*getSizeZ()];
-		
-		Random random = new Random();
-		for ( int i=0; i<matrix.length; i++) {
-			if(isRandom()) {
-				matrix[i] = random.nextFloat(); matrixInit[i] = matrix[i];
-			} else {
-				matrix[i] = 0; matrixInit[i] = 0;
-			}
-		}
+        try {
+            int size = getSizeXValue() * getSizeYValue() * getSizeZValue();
+            matrixInit = new float[size];
+            matrix = new float[size];
+
+            Random random = new Random();
+            for (int i = 0; i < matrix.length; i++) {
+                if (isRandom()) {
+                    matrix[i] = random.nextFloat();
+                    matrixInit[i] = matrix[i];
+                } else {
+                    matrix[i] = 0;
+                    matrixInit[i] = 0;
+                }
+            }
+        } catch (ParseException | EvaluationException e) {
+            // stop init
+        }
 	}
 
 	public String getCType() {
@@ -82,21 +91,25 @@ public class MatrixFloat extends Matrix implements ModelObject, BoostObject {
 		}
 	}
 
-	public Float getValueAt(int i, int j, int k) {
-		if(i>=0 && j>=0 && k>=0 && i<getSizeX() && j<getSizeY() && k<getSizeZ()) {
-			return matrix[i+getSizeX()*j+getSizeX()*getSizeY()*k];
-		} else {
-			return 0f;
-		}
-	}
+    public Float getValueAt(int i, int j, int k) {
+        int x = safeGetSizeXValue();
+        int y = safeGetSizeYValue();
+        int z = safeGetSizeZValue();
 
-	public void setValueAt(int i, int j, int k, Number v) {
-		matrix[i+getSizeX()*j+getSizeX()*getSizeY()*k] = v.floatValue();
-	}
+        if(i>=0 && j>=0 && k>=0 && i< x && j< y && k< z) {
+            return matrix[i+x*j+y*y*k];
+        } else {
+            return 0f;
+        }
+    }
 
-	public void setInitValueAt(int i, int j, int k, Number v) {
-		matrixInit[i+getSizeX()*j+getSizeX()*getSizeY()*k] = v.floatValue();
-	}
+    public void setValueAt(int i, int j, int k, Number v) {
+        matrix[i+safeGetSizeXValue()*j+safeGetSizeXValue()*safeGetSizeYValue()*k] = v.floatValue();
+    }
+
+    public void setInitValueAt(int i, int j, int k, Number v) {
+        matrixInit[i+safeGetSizeXValue()*j+safeGetSizeXValue()*safeGetSizeYValue()*k] = v.floatValue();
+    }
 
 	public void writeToBoost(Boost boost) {
 		super.writeToBoost(boost);

@@ -4,17 +4,14 @@ import matrixstudio.model.Matrix;
 import matrixstudio.model.MatrixFloat;
 import matrixstudio.model.MatrixInteger;
 import matrixstudio.model.MatrixULong;
-
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
-
 import org.eclipse.swt.opengl.GLCanvas;
-
-import org.eclipse.swt.widgets.*;
+import org.eclipse.swt.widgets.Shell;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Random;
@@ -33,19 +30,21 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 		ImageData imageData = null;
 
         int k = mouseZ; //(int)Math.floor(matrix.getSizeX()/2);
+        int sizeX = matrix.safeGetSizeXValue();
+        int sizeY = matrix.safeGetSizeYValue();
         if ( matrix instanceof MatrixInteger ) {
 			MatrixInteger matrixInteger = (MatrixInteger) matrix;
 			PaletteData palette = new PaletteData(0xFF, 0xFF00, 0xFF0000);
-			imageData = new ImageData(matrix.getSizeX(), matrix.getSizeY(), 32, palette);
-            for (int i=0; i<matrix.getSizeX(); i++) {
-                for ( int j=0; j<matrix.getSizeY(); j++) {
-                    Integer value = matrixInteger.getMatrix()[k*matrix.getSizeX()*matrix.getSizeY() + j*matrix.getSizeX() + i];
+			imageData = new ImageData(sizeX, sizeY, 32, palette);
+            for (int i = 0; i< sizeX; i++) {
+                for (int j = 0; j< sizeY; j++) {
+                    Integer value = matrixInteger.getMatrix()[k* sizeX * sizeY + j* sizeX + i];
                     int r,g,b;
                     r = (value & 255);
                     g = (value >> 8) & 255;
                     b = (value >> 16) & 255;
                     RGB rgb = new RGB(r, g, b);
-                    imageData.setPixel(i, matrix.getSizeY()-j-1, palette.getPixel(rgb));
+                    imageData.setPixel(i, sizeY -j-1, palette.getPixel(rgb));
                 }
             }
 		}
@@ -53,10 +52,10 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 		if ( matrix instanceof MatrixULong ) {
 			MatrixULong matrixULong = (MatrixULong) matrix;
 			PaletteData palette = new PaletteData(0xFF, 0xFF00, 0xFF0000);
-			imageData = new ImageData(matrix.getSizeX(), matrix.getSizeY(), 32, palette);
-            for (int i=0; i<matrix.getSizeX(); i++) {
-				for ( int j=0; j<matrix.getSizeY(); j++) {
-					long value = matrixULong.getMatrix()[k*matrix.getSizeX()*matrix.getSizeY() + j*matrix.getSizeX() + i];
+			imageData = new ImageData(sizeX, sizeY, 32, palette);
+            for (int i = 0; i< sizeX; i++) {
+				for (int j = 0; j< sizeY; j++) {
+					long value = matrixULong.getMatrix()[k* sizeX * sizeY + j* sizeX + i];
 					float h,s,b; 
 					h = 0.0f; // Hue
 					s = 1.0f; // Saturation
@@ -74,7 +73,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 					if(h < 0.32f) h = 0.3f; 
 					if(h > 1.0f) h = 1.0f;
 					RGB rgb = new RGB(h*360.0f, s, b);
-					imageData.setPixel(i, matrix.getSizeY()-j-1, palette.getPixel(rgb));
+					imageData.setPixel(i, sizeY -j-1, palette.getPixel(rgb));
 				}
 			}
 		}
@@ -82,10 +81,10 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 		if ( matrix instanceof MatrixFloat ) {
 			MatrixFloat matrixFloat = (MatrixFloat) matrix;
 			PaletteData palette = new PaletteData(0xFF, 0xFF00, 0xFF0000);
-			imageData = new ImageData(matrix.getSizeX(), matrix.getSizeY(), 32, palette);
-			for (int i=0; i<matrix.getSizeX(); i++) {
-				for ( int j=0; j<matrix.getSizeY(); j++) {
-					Float value = matrixFloat.getMatrix()[k*matrix.getSizeX()*matrix.getSizeY() + j*matrix.getSizeX() + i];
+			imageData = new ImageData(sizeX, sizeY, 32, palette);
+			for (int i = 0; i< sizeX; i++) {
+				for (int j = 0; j< sizeY; j++) {
+					Float value = matrixFloat.getMatrix()[k* sizeX * sizeY + j* sizeX + i];
 					float h,s,b; 
 					h = 0.0f; // Hue
 					s = 1.0f; // Saturation
@@ -101,7 +100,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 					h = value.floatValue() - pe;
 					if(value == 0.0f) { h=0.0f; s=0.0f; b=0.0f;}
 					RGB rgb = new RGB(h*360.0f, s, b);
-					imageData.setPixel(i, matrix.getSizeY()-j-1, palette.getPixel(rgb));
+					imageData.setPixel(i, sizeY -j-1, palette.getPixel(rgb));
 				}
 			}
 		}
@@ -109,7 +108,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 		if ( imageData != null ){
 			Image image = new Image(gc.getDevice(), imageData);
 			Rectangle rect = gc.getClipping();
-			gc.drawImage(image, 0, 0, matrix.getSizeX(), matrix.getSizeY(), 0, 0, rect.width, rect.height);
+			gc.drawImage(image, 0, 0, sizeX, sizeY, 0, 0, rect.width, rect.height);
 			image.dispose();
 		}
 	}
@@ -134,16 +133,16 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 			GL11.glRotatef(angleX3D,1.0f,0.0f,0.0f);
 
 			// Draw the cubes (can be very very very long...) => optimization to find with OpenGL / OpenCL exchange
-			int SX = matrix.getSizeX(), SY = matrix.getSizeY(), SZ = matrix.getSizeZ();
+			int SX = matrix.safeGetSizeXValue(), SY = matrix.safeGetSizeYValue(), SZ = matrix.safeGetSizeZValue();
 			int SX2 = SX/2, SY2 = SY/2, SZ2 = SZ/2;
 			float SXexp1 = (1.0f/SX);
 
 			if(matrix instanceof MatrixInteger) {
                 MatrixInteger matrixInteger = (MatrixInteger) matrix;
-                for (int i = matrix.getSizeX() - 1; i >= 0; i--) {
-                    for (int j = matrix.getSizeY() - 1; j >= 0; j--) {
-                        for (int k = matrix.getSizeZ() - 1; k >= 0; k--) {
-                            Integer value = matrixInteger.getMatrix()[k * SX * SY + j * SX + i];
+                for (int i = SX - 1; i >= 0; i--) {
+                    for (int j = SY - 1; j >= 0; j--) {
+                        for (int k = SZ - 1; k >= 0; k--) {
+                            Integer value = matrixInteger.getValueAt(i, j, k);
                             int r, g, b, a;
                             r = (value & 255);
                             g = (value >> 8) & 255;
@@ -168,9 +167,9 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
             }
             if(matrix instanceof MatrixFloat) {
                 MatrixFloat matrixFloat = (MatrixFloat) matrix;
-                for (int i=matrix.getSizeX()-1; i>=0; i--) {
-                    for ( int j=matrix.getSizeY()-1; j>=0; j--) {
-                        for (int k=matrix.getSizeZ()-1; k>=0; k--) {
+                for (int i=SX-1; i>=0; i--) {
+                    for ( int j=SY-1; j>=0; j--) {
+                        for (int k=SZ-1; k>=0; k--) {
                             Float value = matrixFloat.getMatrix()[k*SX*SY + j*SX + i];
                             float h,s,bf;
                             h = 0.0f; // Hue

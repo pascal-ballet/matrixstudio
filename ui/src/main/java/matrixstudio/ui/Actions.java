@@ -330,9 +330,9 @@ public class Actions {
 					public void notified(Notification notification) {
 						if ( matrixField.getChecked().size() > 0 ) {
 							Matrix matrix = matrixField.getChecked().get(0);
-							if ( xField.getValue() == null ) xField.setIntValue(matrix.getSizeX());
-							if ( yField.getValue() == null ) yField.setIntValue(matrix.getSizeY());
-							if ( zField.getValue() == null ) zField.setIntValue(matrix.getSizeZ());
+							if ( xField.getValue() == null ) xField.setValue(matrix.getSizeX());
+							if ( yField.getValue() == null ) yField.setValue(matrix.getSizeY());
+							if ( zField.getValue() == null ) zField.setValue(matrix.getSizeZ());
 						}
 					}
 				});
@@ -344,22 +344,22 @@ public class Actions {
 				if ( dialog.open() != 0 ) return STATUS_CANCEL;
 
 
-				final int xFieldIntValue = xField.getIntValue();
-				final int yFieldIntValue = yField.getIntValue();
-				final int zFieldIntValue = zField.getIntValue();
+				final String xFieldValue = xField.getValue();
+				final String yFieldValue = yField.getValue();
+				final String zFieldValue = zField.getValue();
 				for ( Matrix matrix : matrixField.getChecked() ) {
 					boolean changed = false;
-					if (xField.isEnable() && matrix.getSizeX() != xFieldIntValue) {
+					if (xField.isEnable() && !matrix.getSizeX().equals(xFieldValue)) {
 						changed = true;
-						matrix.setSizeX(xFieldIntValue);
+						matrix.setSizeX(xFieldValue);
 					}
-					if (yField.isEnable() && matrix.getSizeY() != yFieldIntValue) {
+					if (yField.isEnable() && !matrix.getSizeY().equals(yFieldValue)) {
 						changed = true;
-						matrix.setSizeY(yFieldIntValue);
+						matrix.setSizeY(yFieldValue);
 					}
-					if (zField.isEnable() && matrix.getSizeZ() != zFieldIntValue) {
+					if (zField.isEnable() && !matrix.getSizeZ().equals(zFieldValue)) {
 						changed = true;
-						matrix.setSizeZ(zFieldIntValue);
+						matrix.setSizeZ(zFieldValue);
 					}
 					if (changed) matrix.initBlank();
 				}

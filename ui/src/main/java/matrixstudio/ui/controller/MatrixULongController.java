@@ -31,27 +31,13 @@ public class MatrixULongController extends Controller<MatrixULong> {
 			}
 		});
 		widthField = new TextField("Size X", BasicsUI.NONE);
-		widthField.setValidator(new Validator.Stub<String>(Diagnostic.ERROR, "Invalid size") {
-			public boolean isValid(String value) {
-				if ( value == null ) return false;
-				return value.matches("[0-9][0-9]*");
-			}
-		});
+		widthField.setValidator(new FormulaValidator());
 		heightField = new TextField("Size Y", BasicsUI.NONE);
-		heightField.setValidator(new Validator.Stub<String>(Diagnostic.ERROR, "Invalid size") {
-			public boolean isValid(String value) {
-				if ( value == null ) return false;
-				return value.matches("[0-9][0-9]*");
-			}
-		});
+		heightField.setValidator(new FormulaValidator());
 		depthField = new TextField("Size Z", BasicsUI.NONE);
-		depthField.setValidator(new Validator.Stub<String>(Diagnostic.ERROR, "Invalid size") {
-			public boolean isValid(String value) {
-				if ( value == null ) return false;
-				return value.matches("[0-9][0-9]*");
-			}
-		});
-		isRandomField  = new CheckboxField("Random", BasicsUI.NONE);
+		depthField.setValidator(new FormulaValidator());
+
+        isRandomField  = new CheckboxField("Random", BasicsUI.NONE);
 		
 		compositeField = new CompositeField("ULong Matrix", BasicsUI.GROUP,  nameField, widthField, heightField, depthField, isRandomField);
 		return compositeField;
@@ -79,17 +65,17 @@ public class MatrixULongController extends Controller<MatrixULong> {
 			return true;
 		}
 		if ( field == widthField ) {
-			getSubject().setSizeX(widthField.getIntValue());
+			getSubject().setSizeX(widthField.getValue());
 			getSubject().initBlank();
 			return true;
 		}
 		if ( field == heightField ) {
-			getSubject().setSizeY(heightField.getIntValue());
+			getSubject().setSizeY(heightField.getValue());
 			getSubject().initBlank();
 			return true;
 		}
 		if ( field == depthField ) {
-			getSubject().setSizeZ(depthField.getIntValue());
+			getSubject().setSizeZ(depthField.getValue());
 			getSubject().initBlank();
 			return true;
 		}

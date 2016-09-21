@@ -41,16 +41,18 @@ public class FormulaCache {
 
     public int computeValue(String expression, Model model) throws ParseException, EvaluationException {
         Map<String, Integer> context = new HashMap<>();
-        for (Parameter parameter : model.getParameterList()) {
-            try {
-                Formula formula = parseFormula(parameter.getFormula());
-                int result = formula.evaluate(context);
+        if (model != null) {
+            for (Parameter parameter : model.getParameterList()) {
+                try {
+                    Formula formula = parseFormula(parameter.getFormula());
+                    int result = formula.evaluate(context);
 
-                if (Objects.equals(expression, parameter.getFormula())) return result;
+                    if (Objects.equals(expression, parameter.getFormula())) return result;
 
-                context.put(parameter.getName(), result);
-            } catch (ParseException | EvaluationException e) {
-                continue;
+                    context.put(parameter.getName(), result);
+                } catch (ParseException | EvaluationException e) {
+                    continue;
+                }
             }
         }
 

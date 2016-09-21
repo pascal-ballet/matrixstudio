@@ -47,13 +47,13 @@ public class Tools {
 	/**
 	 * <p>Creates an new model with some basics contents.</p> 
 	 */
-	public static Model createEmptyModel() {
+	public static Model createEmptyModel()  {
 		Model model = new Model();
 		
 		MatrixInteger matrix1 = new MatrixInteger();
 		matrix1.setName("Matrix1");
 		//matrix1.setRandom(true);
-		matrix1.initBlank();
+        matrix1.initBlank();
 		model.addMatrixAndOpposite(matrix1);
 	
 		// Creation of a basic scheduler

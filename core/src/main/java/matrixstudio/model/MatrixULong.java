@@ -1,11 +1,13 @@
 package matrixstudio.model;
 
+import matrixstudio.formula.EvaluationException;
 import org.xid.basics.model.ChangeRecorder;
 import org.xid.basics.model.ModelObject;
 import org.xid.basics.serializer.Boost;
 import org.xid.basics.serializer.BoostObject;
 import org.xid.basics.serializer.BoostUtil;
 
+import java.text.ParseException;
 import java.util.Random;
 
 
@@ -59,14 +61,25 @@ public class MatrixULong extends Matrix implements ModelObject, BoostObject {
 	}
 
 	public void initBlank() {
-		matrixInit = new long[getSizeX()*getSizeY()*getSizeZ()];
-		matrix = new long[getSizeX()*getSizeY()*getSizeZ()];
-		final Random random = new Random();
-		if(isRandom()) {
-			for ( int i=0; i< matrix.length; i++) { matrix[i] = random.nextLong(); matrixInit[i] = matrix[i];}
-		} else {
-			for ( int i=0; i< matrix.length; i++) { matrix[i] = 0l; matrixInit[i] = matrix[i];}
-		}
+        try {
+            int size = getSizeXValue() * getSizeYValue() * getSizeZValue();
+            matrixInit = new long[size];
+            matrix = new long[size];
+            final Random random = new Random();
+            if (isRandom()) {
+                for (int i = 0; i < matrix.length; i++) {
+                    matrix[i] = random.nextLong();
+                    matrixInit[i] = matrix[i];
+                }
+            } else {
+                for (int i = 0; i < matrix.length; i++) {
+                    matrix[i] = 0l;
+                    matrixInit[i] = matrix[i];
+                }
+            }
+        } catch (ParseException | EvaluationException e) {
+            // stop init
+        }
 	}
 
 	public String getCType() {
@@ -80,19 +93,23 @@ public class MatrixULong extends Matrix implements ModelObject, BoostObject {
 	}
 
 	public Number getValueAt(int i, int j, int k) {
-		if(i>=0 && j>=0 && k>=0 && i<getSizeX() && j<getSizeY() && k<getSizeZ()) {
-			return matrix[i+getSizeX()*j+getSizeX()*getSizeY()*k];
+        int x = safeGetSizeXValue();
+        int y = safeGetSizeYValue();
+        int z = safeGetSizeZValue();
+
+        if(i>=0 && j>=0 && k>=0 && i< x && j< y && k< z) {
+			return matrix[i+x*j+y*y*k];
 		} else {
 			return 0f;
 		}
 	}
 
 	public void setValueAt(int i, int j, int k, Number v) {
-		matrix[i+getSizeX()*j+getSizeX()*getSizeY()*k] = v.longValue();
+		matrix[i+safeGetSizeXValue()*j+safeGetSizeXValue()*safeGetSizeYValue()*k] = v.longValue();
 	}
 
 	public void setInitValueAt(int i, int j, int k, Number v) {
-		matrixInit[i+getSizeX()*j+getSizeX()*getSizeY()*k] = v.longValue();
+		matrixInit[i+safeGetSizeXValue()*j+safeGetSizeXValue()*safeGetSizeYValue()*k] = v.longValue();
 	}
 
 	public void writeToBoost(Boost boost) {
