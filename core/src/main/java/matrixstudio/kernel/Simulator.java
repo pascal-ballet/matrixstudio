@@ -10,6 +10,7 @@ import matrixstudio.model.MatrixFloat;
 import matrixstudio.model.MatrixInteger;
 import matrixstudio.model.MatrixULong;
 import matrixstudio.model.Model;
+import matrixstudio.model.Parameter;
 import matrixstudio.model.Scheduler;
 import matrixstudio.model.Task;
 import org.jocl.CL;
@@ -165,9 +166,16 @@ public class Simulator implements Runnable {
 		// creation of openCL code to compile
     	final Model model = getModel();
         final StringBuilder prg = new StringBuilder();
-        
-        // first appends libraries
-        for (Code code : model.getCodeList() ) { 
+
+        // first appends parameters
+        for (Parameter parameter : getModel().getParameterList()) {
+            int value = evaluateFormula(parameter.getFormula());
+            prg.append("__constant const int " + parameter.getName() + " = " + value + ";\n");
+        }
+        prg.append("\n");
+
+        // then appends libraries
+        for (Code code : model.getCodeList() ) {
         	if ( code instanceof Library ) {
         		final String contents = code.getWholeContents();
         		if ( contents != null ) {
