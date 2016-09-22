@@ -10,7 +10,6 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.xid.basics.Basics;
 import org.xid.basics.error.Diagnostic;
-import org.xid.basics.error.NumberValidator;
 import org.xid.basics.error.Validator;
 import org.xid.basics.model.ChangeHandler;
 import org.xid.basics.notification.Notification;
@@ -420,14 +419,14 @@ public class Actions {
                 taskField.setChecked(ui.getModel().getScheduler().getTaskList());
 
                 final TextField xField = new TextField("New Workspace X");
-				xField.setValidator(new NumberValidator(Diagnostic.ERROR, "Invalid X", Basics.NOT_ZERO));
+                xField.setValidator(new FormulaValidator());
 				xField.setEnable(false);
 				final Action.Stub xFieldEnable = new Action.Stub(Action.STYLE_BUTTON | Action.STYLE_BOOLEAN_STATE) {
 					@Override
 					public boolean getState() {
 						return xField.isEnable();
 					}
-					
+
 					@Override
 					public int run(ActionMonitor monitor) {
 						xField.setEnable(!xField.isEnable());
@@ -435,16 +434,16 @@ public class Actions {
 					}
 				};
 				xField.addAction(xFieldEnable);
-				
+
 				final TextField yField = new TextField("New Workspace Y");
-				yField.setValidator(new NumberValidator(Diagnostic.ERROR, "Invalid Y", Basics.NOT_ZERO));
+                yField.setValidator(new FormulaValidator());
 				yField.setEnable(false);
 				final Action.Stub yFieldEnable = new Action.Stub(Action.STYLE_BUTTON | Action.STYLE_BOOLEAN_STATE) {
 					@Override
 					public boolean getState() {
 						return yField.isEnable();
 					}
-					
+
 					@Override
 					public int run(ActionMonitor monitor) {
 						yField.setEnable(!yField.isEnable());
@@ -453,9 +452,9 @@ public class Actions {
 				};
 				yField.addAction(yFieldEnable);
 
-				
+
 				final TextField zField = new TextField("New Workspace Z");
-				zField.setValidator(new NumberValidator(Diagnostic.ERROR, "Invalid Z", Basics.NOT_ZERO));
+                zField.setValidator(new FormulaValidator());
 				zField.setEnable(false);
 				
 				final Action.Stub zFieldEnable = new Action.Stub(Action.STYLE_BUTTON | Action.STYLE_BOOLEAN_STATE) {
