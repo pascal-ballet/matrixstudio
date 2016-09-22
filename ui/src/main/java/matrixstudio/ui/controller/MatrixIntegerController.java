@@ -53,9 +53,9 @@ public class MatrixIntegerController extends Controller<MatrixInteger> {
 		} else {
 			compositeField.setEnable(true);
 			nameField.setValue(getSubject().getName());
-			widthField.setValue(""+getSubject().getSizeX());
-			heightField.setValue(""+getSubject().getSizeY());
-			depthField.setValue(""+getSubject().getSizeZ());
+			widthField.setValue(getSubject().getSizeX());
+			heightField.setValue(getSubject().getSizeY());
+			depthField.setValue(getSubject().getSizeZ());
 			isRandomField.setValue(getSubject().isRandom());
 		}
 	}
