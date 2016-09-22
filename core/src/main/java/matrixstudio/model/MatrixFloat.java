@@ -63,17 +63,19 @@ public class MatrixFloat extends Matrix implements ModelObject, BoostObject {
 	public void initBlank() {
         try {
             int size = getSizeXValue() * getSizeYValue() * getSizeZValue();
-            matrixInit = new float[size];
-            matrix = new float[size];
+            if (matrix == null || matrix.length != size) {
+                matrixInit = new float[size];
+                matrix = new float[size];
 
-            Random random = new Random();
-            for (int i = 0; i < matrix.length; i++) {
-                if (isRandom()) {
-                    matrix[i] = random.nextFloat();
-                    matrixInit[i] = matrix[i];
-                } else {
-                    matrix[i] = 0;
-                    matrixInit[i] = 0;
+                Random random = new Random();
+                for (int i = 0; i < matrix.length; i++) {
+                    if (isRandom()) {
+                        matrix[i] = random.nextFloat();
+                        matrixInit[i] = matrix[i];
+                    } else {
+                        matrix[i] = 0;
+                        matrixInit[i] = 0;
+                    }
                 }
             }
         } catch (ParseException | EvaluationException e) {

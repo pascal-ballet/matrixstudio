@@ -63,18 +63,20 @@ public class MatrixInteger extends Matrix implements ModelObject, BoostObject {
 	public void initBlank() {
         try {
             int size = getSizeXValue() * getSizeYValue() * getSizeZValue();
-            matrixInit = new int[size];
-            matrix = new int[size];
-            final Random random = new Random();
-            if (isRandom()) {
-                for (int i = 0; i < matrix.length; i++) {
-                    matrix[i] = random.nextInt();
-                    matrixInit[i] = matrix[i];
-                }
-            } else {
-                for (int i = 0; i < matrix.length; i++) {
-                    matrix[i] = 0;
-                    matrixInit[i] = matrix[i];
+            if (matrix == null || matrix.length != size) {
+                matrixInit = new int[size];
+                matrix = new int[size];
+                final Random random = new Random();
+                if (isRandom()) {
+                    for (int i = 0; i < matrix.length; i++) {
+                        matrix[i] = random.nextInt();
+                        matrixInit[i] = matrix[i];
+                    }
+                } else {
+                    for (int i = 0; i < matrix.length; i++) {
+                        matrix[i] = 0;
+                        matrixInit[i] = matrix[i];
+                    }
                 }
             }
         } catch (ParseException | EvaluationException e) {

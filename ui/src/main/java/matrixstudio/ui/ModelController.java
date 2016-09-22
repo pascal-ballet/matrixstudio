@@ -2,6 +2,7 @@ package matrixstudio.ui;
 
 import matrixstudio.formula.EvaluationException;
 import matrixstudio.formula.FormulaCache;
+import matrixstudio.model.Matrix;
 import matrixstudio.model.Model;
 import matrixstudio.model.Parameter;
 import matrixstudio.ui.controller.FormulaValidator;
@@ -60,7 +61,7 @@ public class ModelController extends Controller<Model> {
                 for (Parameter parameter : value) {
                     String formula = parameter.getFormula();
                     if (formula == null) {
-                        message = ""+parameter.getName()+" is null";
+                        message = parameter.getName()+" is null";
                     } else {
                         Exception e = FormulaCache.SHARED.isFormulaValid(formula);
                         message = e != null ? parameter.getName()+": " + e.getMessage() : null;
@@ -138,6 +139,10 @@ public class ModelController extends Controller<Model> {
             }
             if (field == formulaField) {
                 selection.setFormula(formulaField.getValue());
+                // initialize matrices in case that their size may change
+                for (Matrix matrix : getSubject().getMatrixList()) {
+                    matrix.initBlank();
+                }
                 return true;
             }
         }
