@@ -3,6 +3,7 @@ package matrixstudio.ui;
 import matrixstudio.model.Kernel;
 import matrixstudio.model.Matrix;
 import matrixstudio.model.Task;
+import matrixstudio.ui.controller.FormulaValidator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.MessageBox;
@@ -273,7 +274,7 @@ public class Actions {
                 matrixField.setChecked(ui.getModel().getMatrixList());
 
 				final TextField xField = new TextField("New X");
-				xField.setValidator(new NumberValidator(Diagnostic.ERROR, "Invalid X", Basics.NOT_ZERO));
+				xField.setValidator(new FormulaValidator());
 				xField.setEnable(false);
 				final Action.Stub xFieldEnable = new Action.Stub(Action.STYLE_BUTTON | Action.STYLE_BOOLEAN_STATE) {
 					@Override
@@ -290,7 +291,7 @@ public class Actions {
 				xField.addAction(xFieldEnable);
 
 				final TextField yField = new TextField("New Y");
-				yField.setValidator(new NumberValidator(Diagnostic.ERROR, "Invalid Y", Basics.NOT_ZERO));
+				yField.setValidator(new FormulaValidator());
 				yField.setEnable(false);
 				final Action.Stub yFieldEnable = new Action.Stub(Action.STYLE_BUTTON | Action.STYLE_BOOLEAN_STATE) {
 					@Override
@@ -308,7 +309,7 @@ public class Actions {
 
 
 				final TextField zField = new TextField("New Z");
-				zField.setValidator(new NumberValidator(Diagnostic.ERROR, "Invalid Z", Basics.NOT_ZERO));
+				zField.setValidator(new FormulaValidator());
 				zField.setEnable(false);
 
 				final Action.Stub zFieldEnable = new Action.Stub(Action.STYLE_BUTTON | Action.STYLE_BOOLEAN_STATE) {
