@@ -212,7 +212,7 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
 		}
 	}
 
-	public void initBlank() {
+	public void initBlank(boolean force) {
 		// TODO implement initBlank(...)
 		throw new UnsupportedOperationException();
 	}

@@ -66,22 +66,22 @@ public class MatrixULongController extends Controller<MatrixULong> {
 		}
 		if ( field == widthField ) {
 			getSubject().setSizeX(widthField.getValue());
-			getSubject().initBlank();
+			getSubject().initBlank(false);
 			return true;
 		}
 		if ( field == heightField ) {
 			getSubject().setSizeY(heightField.getValue());
-			getSubject().initBlank();
+			getSubject().initBlank(false);
 			return true;
 		}
 		if ( field == depthField ) {
 			getSubject().setSizeZ(depthField.getValue());
-			getSubject().initBlank();
+			getSubject().initBlank(false);
 			return true;
 		}
 		if ( field == isRandomField ) {
 			getSubject().setRandom(isRandomField.getValue());
-			getSubject().initBlank();
+			getSubject().initBlank(true);
 			return true;
 		}
 		return super.updateSubject(field);

@@ -23,7 +23,7 @@ import org.xid.basics.ui.field.CompositeField;
 import org.xid.basics.ui.field.ListField;
 
 import javax.imageio.ImageIO;
-import java.awt.Color;
+import java.awt.*;
 import java.io.File;
 
 public class MatrixTabController extends Controller<Model>{
@@ -90,7 +90,7 @@ public class MatrixTabController extends Controller<Model>{
 					public int run(ActionMonitor monitor) {
 						Matrix matrix = new MatrixFloat();
 						matrix.setName(NameUtils.availableName("Matrix1", getSubject().getMatrixList()));
-						matrix.initBlank();
+						matrix.initBlank(false);
 						getSubject().addMatrixAndOpposite(matrix);
 						matricesListField.setSingleSelection(matrix);
 						return Action.STATUS_OK;
@@ -100,7 +100,7 @@ public class MatrixTabController extends Controller<Model>{
 					public int run(ActionMonitor monitor) {
 						Matrix matrix = new MatrixInteger();
 						matrix.setName(NameUtils.availableName("Matrix1", getSubject().getMatrixList()));
-						matrix.initBlank();
+						matrix.initBlank(false);
 						getSubject().addMatrixAndOpposite(matrix);
 						matricesListField.setSingleSelection(matrix);
 						return Action.STATUS_OK;
@@ -110,7 +110,7 @@ public class MatrixTabController extends Controller<Model>{
 					public int run(ActionMonitor monitor) {
 						Matrix matrix = new MatrixULong();
 						matrix.setName(NameUtils.availableName("Matrix1", getSubject().getMatrixList()));
-						matrix.initBlank();
+						matrix.initBlank(false);
 						getSubject().addMatrixAndOpposite(matrix);
 						matricesListField.setSingleSelection(matrix);
 						return Action.STATUS_OK;

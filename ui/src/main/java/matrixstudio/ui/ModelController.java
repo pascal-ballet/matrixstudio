@@ -141,7 +141,7 @@ public class ModelController extends Controller<Model> {
                 selection.setFormula(formulaField.getValue());
                 // initialize matrices in case that their size may change
                 for (Matrix matrix : getSubject().getMatrixList()) {
-                    matrix.initBlank();
+                    matrix.initBlank(false);
                 }
                 return true;
             }

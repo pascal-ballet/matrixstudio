@@ -60,10 +60,10 @@ public class MatrixFloat extends Matrix implements ModelObject, BoostObject {
 		}
 	}
 
-	public void initBlank() {
+	public void initBlank(boolean force) {
         try {
             int size = getSizeXValue() * getSizeYValue() * getSizeZValue();
-            if (matrix == null || matrix.length != size) {
+            if (force || matrix == null || matrix.length != size) {
                 matrixInit = new float[size];
                 matrix = new float[size];
 

@@ -361,7 +361,7 @@ public class Actions {
 						changed = true;
 						matrix.setSizeZ(zFieldValue);
 					}
-					if (changed) matrix.initBlank();
+					if (changed) matrix.initBlank(false);
 				}
 
 				return STATUS_OK;
