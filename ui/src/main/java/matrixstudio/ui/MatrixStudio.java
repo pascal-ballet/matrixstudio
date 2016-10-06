@@ -64,6 +64,7 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
     private MultiTabField southEastField;
     private CompositeField consoleComposite;
 	private ConsoleField consoleField;
+	private int consoleIndex;
 	
 	private CompositeField propertiesComposite;
 	private PropertiesField propertiesField;
@@ -170,6 +171,8 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 		consoleField = new ConsoleField();
 		consoleComposite = new CompositeField("Console", consoleField);
         southEastField.addTab(consoleComposite, resources.getImage("eclipse/console_view.gif"), false);
+
+		consoleIndex = southEastField.indexOf(consoleComposite);
 	}
 
 	private void createPropertiesTab() {
@@ -392,6 +395,8 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 	public void log(final String message) {
 		display.asyncExec(new Runnable() {
 			public void run() {
+				int index = southEastField.getSelected();
+				if (index != consoleIndex) southEastField.setSelected(consoleIndex);
 				consoleField.log(message + "\n");
 				consoleField.scrollToTheEnd();
 			}
