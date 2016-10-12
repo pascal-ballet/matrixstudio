@@ -13,6 +13,7 @@ public class JavaExporterTest {
 
 	@Test
 	public void test() throws IOException {
+		// Exports Toto.mss 
 		Model model = Tools.load(new File("file-test/Toto.mss"));
 		JavaExporter exporter = new JavaExporter(model, "toto", new File("src-gen"));
 		exporter.export();
