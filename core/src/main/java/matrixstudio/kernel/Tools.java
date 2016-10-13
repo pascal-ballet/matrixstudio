@@ -82,18 +82,19 @@ public class Tools {
 	
 	private static final String INSIDE_NAME = "contents.umss";
 	
-	private static JBoost createBoost() {
-		return new MSBoost("MatrixStudio", BOOST_VERSION);
+	private static JBoost createBoost(boolean safeRead) {
+		return new MSBoost("MatrixStudio", BOOST_VERSION, safeRead);
 	}
 	
 	/**
 	 * <p>Loads a file as a MatrixStudio model.</p>
 	 * @param file to load
+	 * @param safeRead only tries to read kernels and libraries to read corrupted files (may not work).
 	 * @return a {@link Model}
 	 * @throws IOException if something goes wrong.
 	 */
-	public static Model load(File file) throws IOException {
-		final JBoost boost = createBoost();
+	public static Model load(File file, boolean safeRead) throws IOException {
+		final JBoost boost = createBoost(safeRead);
 		final ZipInputStream stream = new ZipInputStream(new FileInputStream(file));
 		try {
 			boost.initializeZippedReading(stream, INSIDE_NAME);
@@ -110,7 +111,7 @@ public class Tools {
 	 * @throws IOException if something goes wrong.
 	 */
 	public static void save(Model model, File file) throws IOException {
-		final JBoost boost = createBoost();
+		final JBoost boost = createBoost(false);
 		final ZipOutputStream stream = new ZipOutputStream(new FileOutputStream(file));
 		try {
 			boost.initializeZippedWriting(stream, INSIDE_NAME);

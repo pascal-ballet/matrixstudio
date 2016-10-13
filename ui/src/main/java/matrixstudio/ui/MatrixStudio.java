@@ -316,7 +316,7 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 		modelFile = null;
 	}
 	
-	public boolean loadModel() {
+	public boolean loadModel(boolean safeRead) {
 		final FileDialog dialog = new FileDialog(shell, SWT.OPEN);
 		dialog.setText("Open a simulation.");
         dialog.setFilterExtensions(new String[] { "*.mss", "*.*" });
@@ -333,7 +333,7 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 
 		try {
 			// loads model
-			model = Tools.load(file);
+			model = Tools.load(file, safeRead);
 			modelFile = file;
 		} catch (IOException e) {
 			error("Cannot load simulation from file '"+ file +"': " + e.getMessage());

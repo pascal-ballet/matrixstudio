@@ -1,5 +1,6 @@
 package matrixstudio.model;
 
+import matrixstudio.kernel.MSBoost;
 import org.xid.basics.model.ModelChangeRecorder;
 import org.xid.basics.model.ModelObject;
 import org.xid.basics.serializer.Boost;
@@ -33,21 +34,27 @@ public class Model implements ModelObject, BoostObject {
 	public Model() {
 	}
 
-	protected Model(Boost boost) {
+	protected Model(MSBoost boost) {
 		boost.register(this);
         int version = boost.getFileVersion();
         for ( Code oneChild : BoostUtil.readObjectList(boost, Code.class) ) {
 			codeList.add(oneChild);
 		}
-		for ( Matrix oneChild : BoostUtil.readObjectList(boost, Matrix.class) ) {
-			matrixList.add(oneChild);
+		if (boost.isSafeRead()) {
+			boost.endObject();
+			scheduler = new Scheduler();
+			scheduler.setModel(this);
+		} else {
+			for (Matrix oneChild : BoostUtil.readObjectList(boost, Matrix.class)) {
+				matrixList.add(oneChild);
+			}
+			if (version >= 3) {
+				for (Parameter oneChild : BoostUtil.readObjectList(boost, Parameter.class)) {
+					parameterList.add(oneChild);
+				}
+			}
+			scheduler = boost.readObject(Scheduler.class);
 		}
-		if (version >= 3) {
-            for ( Parameter oneChild : BoostUtil.readObjectList(boost, Parameter.class) ) {
-                parameterList.add(oneChild);
-            }
-        }
-		scheduler = boost.readObject(Scheduler.class);
 	}
 
 	/**

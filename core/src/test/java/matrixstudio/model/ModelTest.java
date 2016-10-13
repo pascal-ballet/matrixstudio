@@ -18,7 +18,7 @@ public class ModelTest {
         File file = File.createTempFile("matrixstudio", ".mss");
         Tools.save(model,file);
 
-        Model loaded = Tools.load(file);
+        Model loaded = Tools.load(file, false);
 
         Assert.assertEquals(1, loaded.getMatrixCount());
         Assert.assertEquals(1, loaded.getParameterCount());

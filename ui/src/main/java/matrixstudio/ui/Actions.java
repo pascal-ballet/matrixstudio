@@ -109,12 +109,23 @@ public class Actions {
 			}				
 			@Override
 			public int run(ActionMonitor monitor) {
-				ui.loadModel();
+				ui.loadModel(false);
 				return Action.STATUS_OK;
 			}
 		});
 
-	
+		addAction("SafeOpenSimulation", new Action.Stub("Safe Open Simulation \u2026", getImage("eclipse/open_edit.gif")){
+			@Override
+			public String getTooltip() {
+				return "Open a simulation in a safe mode.";
+			}
+			@Override
+			public int run(ActionMonitor monitor) {
+				ui.loadModel(true);
+				return Action.STATUS_OK;
+			}
+		});
+
 		KeyCode saveSimulationCode = new KeyCode(KeyCode.MOD1, 's');
 		addAction("SaveSimulation", new Action.Stub("Save Simulation", getImage("eclipse/save_edit.gif"), saveSimulationCode){
 			@Override
@@ -168,15 +179,17 @@ public class Actions {
 					getAction("NewSimulation"), 
 					separator,
 					getAction("OpenSimulation"), 
+					getAction("SafeOpenSimulation"),
 					separator,
 					getAction("SaveSimulation"),
 					getAction("SaveSimulationAs")
 				));
 		} else {
-			addAction("File", new Action.Container("File", 
-					getAction("NewSimulation"), 
+			addAction("File", new Action.Container("File",
+					getAction("NewSimulation"),
 					separator,
-					getAction("OpenSimulation"), 
+					getAction("OpenSimulation"),
+					getAction("SafeOpenSimulation"),
 					separator,
 					getAction("SaveSimulation"),
 					getAction("SaveSimulationAs"),
