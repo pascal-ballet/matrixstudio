@@ -1,6 +1,7 @@
 package matrixstudio.model;
 
 import matrixstudio.formula.EvaluationException;
+import matrixstudio.kernel.MSBoost;
 import org.xid.basics.model.ChangeRecorder;
 import org.xid.basics.model.ModelObject;
 import org.xid.basics.serializer.Boost;
@@ -20,7 +21,7 @@ public class MatrixInteger extends Matrix implements ModelObject, BoostObject {
 	public MatrixInteger() {
 	}
 
-	protected MatrixInteger(Boost boost) {
+	protected MatrixInteger(MSBoost boost) {
 		super(boost);
 		matrix = BoostUtil.readIntArray(boost);
 		matrixInit = BoostUtil.readIntArray(boost);

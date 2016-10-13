@@ -83,7 +83,7 @@ public class Tools {
 	private static final String INSIDE_NAME = "contents.umss";
 	
 	private static JBoost createBoost() {
-		return new JBoost("MatrixStudio", BOOST_VERSION);
+		return new MSBoost("MatrixStudio", BOOST_VERSION);
 	}
 	
 	/**

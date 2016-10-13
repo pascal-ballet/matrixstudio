@@ -1,6 +1,7 @@
 package matrixstudio.model;
 
 import matrixstudio.formula.EvaluationException;
+import matrixstudio.kernel.MSBoost;
 import org.xid.basics.model.ChangeRecorder;
 import org.xid.basics.model.ModelObject;
 import org.xid.basics.serializer.Boost;
@@ -20,7 +21,7 @@ public class MatrixULong extends Matrix implements ModelObject, BoostObject {
 	public MatrixULong() {
 	}
 
-	protected MatrixULong(Boost boost) {
+	protected MatrixULong(MSBoost boost) {
 		super(boost);
 		matrix = BoostUtil.readLongArray(boost);
 		matrixInit = BoostUtil.readLongArray(boost);

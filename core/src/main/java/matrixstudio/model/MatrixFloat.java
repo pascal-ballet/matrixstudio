@@ -1,6 +1,7 @@
 package matrixstudio.model;
 
 import matrixstudio.formula.EvaluationException;
+import matrixstudio.kernel.MSBoost;
 import org.xid.basics.model.ChangeRecorder;
 import org.xid.basics.model.ModelObject;
 import org.xid.basics.serializer.Boost;
@@ -20,7 +21,7 @@ public class MatrixFloat extends Matrix implements ModelObject, BoostObject {
 	public MatrixFloat() {
 	}
 
-	protected MatrixFloat(Boost boost) {
+	protected MatrixFloat(MSBoost boost) {
 		super(boost);
 		matrix = BoostUtil.readFloatArray(boost);
 		matrixInit = BoostUtil.readFloatArray(boost);
