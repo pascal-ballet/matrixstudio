@@ -142,7 +142,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
                 for (int i = SX - 1; i >= 0; i--) {
                     for (int j = SY - 1; j >= 0; j--) {
                         for (int k = SZ - 1; k >= 0; k--) {
-                            Integer value = matrixInteger.getValueAt(i, j, k);
+                            Integer value = matrixInteger.getMatrix()[k*SX*SY + j*SX + i];
                             int r, g, b, a;
                             r = (value & 255);
                             g = (value >> 8) & 255;
@@ -154,17 +154,53 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
                             if (a > 0) {
                                 if (renderMode == 0)
                                     drawPoint(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1);
-								if (renderMode == 1 && a == 255)
-									drawWiredCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, 255, SXexp1, 0.95f);
-								if (renderMode == 2 && a == 255)
-									drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.95f);
+								if (renderMode == 1)
+									drawPoint(i - SX2, j - SY2, k - SZ2, r, g, b, a/10, SXexp1);
+								if (renderMode == 2)
+									drawPoint(i - SX2, j - SY2, k - SZ2, r, g, b, a/100, SXexp1);
 								if (renderMode == 3 && a == 255)
+									drawWiredCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, 255, SXexp1, 0.95f);
+								if (renderMode == 4 && a == 255)
+									drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.95f);
+								if (renderMode == 5 && a == 255)
                                     drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.4f);
                             }
                         }
                     }
                 }
             }
+			if(matrix instanceof MatrixULong) {
+				MatrixULong matrixULong = (MatrixULong) matrix;
+				for (int i = SX - 1; i >= 0; i--) {
+					for (int j = SY - 1; j >= 0; j--) {
+						for (int k = SZ - 1; k >= 0; k--) {
+							long value = matrixULong.getMatrix()[k*SX*SY + j*SX + i];
+							int r, g, b, a;
+							r = (int)(value & 255);
+							g = (int)(value >> 8) & 255;
+							b = (int)(value >> 16) & 255;
+							a = (int)(value >> 24) & 255;
+							if(r == 0 && g == 0 && b == 0) a=0;
+							if( (r > 0 || g > 0 || b > 0) && a == 0) a=50;
+
+							if (a > 0) {
+								if (renderMode == 0)
+									drawPoint(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1);
+								if (renderMode == 1)
+									drawPoint(i - SX2, j - SY2, k - SZ2, r, g, b, a/10, SXexp1);
+								if (renderMode == 2)
+									drawPoint(i - SX2, j - SY2, k - SZ2, r, g, b, a/100, SXexp1);
+								if (renderMode == 3 && a == 255)
+									drawWiredCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, 255, SXexp1, 0.95f);
+								if (renderMode == 4 && a == 255)
+									drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.95f);
+								if (renderMode == 5 && a == 255)
+									drawCube3D(i - SX2, j - SY2, k - SZ2, r, g, b, a, SXexp1, 0.4f);
+							}
+						}
+					}
+				}
+			}
             if(matrix instanceof MatrixFloat) {
                 MatrixFloat matrixFloat = (MatrixFloat) matrix;
                 for (int i=SX-1; i>=0; i--) {

@@ -275,7 +275,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 			public void handleEvent(Event event) {
 				keyDown 	= event.keyCode;
 				if(keyDown == SWT.TAB) {
-					renderMode = (renderMode + 1) % 4; // 0=points, 1=small cubes, 2=full cubes, 3=cubes+lines
+					renderMode = (renderMode + 1) % 6; // [0,2] =points, 3=small cubes, 4=full cubes, 5=cubes+lines
 					canvas.redraw();
 				}
 			}
