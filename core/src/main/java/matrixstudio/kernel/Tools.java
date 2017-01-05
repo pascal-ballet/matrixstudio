@@ -22,7 +22,7 @@ import java.util.zip.ZipOutputStream;
 
 public class Tools {
 
-    public static final int BOOST_VERSION = 3;
+    public static final int BOOST_VERSION = 4;
 
 	public static final Random rnd = new Random();
 	public static final String INITIAL_KERNEL =

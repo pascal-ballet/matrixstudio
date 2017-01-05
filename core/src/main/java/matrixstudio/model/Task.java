@@ -19,6 +19,8 @@ public class Task implements ModelObject, BoostObject {
 
     private String repetition = "1";
 
+	private boolean random = false;
+
 	private String globalWorkSizeX = "512";
 
 	private String globalWorkSizeY = "256";
@@ -50,6 +52,7 @@ public class Task implements ModelObject, BoostObject {
         int version = boost.getFileVersion();
         scheduler = boost.readObject(Scheduler.class);
         repetition = version >= 2 ? version >= 3 ? boost.readString() : Integer.toString(boost.readInt()) : "1";
+		random = version >= 4 ? boost.readBoolean() : false;
         if (version < 3) {
             globalWorkSizeX = Integer.toString(boost.readInt());
             globalWorkSizeY = Integer.toString(boost.readInt());
@@ -109,6 +112,23 @@ public class Task implements ModelObject, BoostObject {
             this.repetition= newValue;
         }
     }
+
+	/**
+	 * <p>Gets random.</p>
+	 */
+	public boolean isRandom() {
+		return random;
+	}
+
+	/**
+	 * <p>Sets random.</p>
+	 */
+	public void setRandom(boolean newValue) {
+		if (random != newValue) {
+			getChangeRecorder().recordChangeAttribute(this, "random", this.random);
+			this.random= newValue;
+		}
+	}
 
     /**
 	 * <p>Gets globalWorkSizeX.</p>
@@ -435,6 +455,7 @@ public class Task implements ModelObject, BoostObject {
         if (version >= 2) {
             boost.writeString(repetition);
         }
+		boost.writeBoolean(random);
 		boost.writeString(globalWorkSizeX);
 		boost.writeString(globalWorkSizeY);
 		boost.writeString(globalWorkSizeZ);

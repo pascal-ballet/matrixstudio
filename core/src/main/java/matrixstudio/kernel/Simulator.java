@@ -30,6 +30,7 @@ import org.xid.basics.error.DiagnosticUtil;
 import org.xid.basics.progress.ActionMonitor;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -584,8 +585,10 @@ public class Simulator implements Runnable {
                 int repetition = evaluateFormula(task.getRepetition());
                 if (repetition <= 0) repetition = 1;
 
-                for (int i = 0; i < repetition; i++) {
 
+
+                for (int i = 0; i < repetition; i++) {
+                    // Execute the kernel(s)
                     for (int ki = 0; ki < task.getKernelCount(); ki++) {
                         rand = Tools.rnd.nextInt(1073741824);
                         // Update parameters
@@ -637,8 +640,24 @@ public class Simulator implements Runnable {
         if (repetition <= 0) repetition = 1;
 
         for (int i = 0; i < repetition; i++) {
+            // Generate a list of successive integers (indexes) if random execution is selected
+            ArrayList<Integer> listIndexes = null;
+            if(task.isRandom() == true) {
+                listIndexes = new ArrayList<Integer>(task.getKernelCount());
+                for (int ii = 0; ii < task.getKernelCount(); ii++) {
+                    listIndexes.add(ii);
+                }
+            }
+            // Execute the kernel(s)
             for (int ki = 0; ki < task.getKernelCount(); ki++) {
-                final cl_kernel kernel = clKernelsByName.get(task.getKernel(ki).getName());
+                // If required, select at random an index of kernel to execute
+                int kerIndex = ki;
+                if(task.isRandom() == true) {
+                    int p = Tools.rnd.nextInt(listIndexes.size());
+                    kerIndex = listIndexes.get(p).intValue();
+                    listIndexes.remove(p);
+                }
+                final cl_kernel kernel = clKernelsByName.get(task.getKernel(kerIndex).getName());
 
                 final long[] global_work_size = globalSizeByTask.get(task);
                 final int dimension = global_work_size.length;

@@ -8,11 +8,7 @@ import org.xid.basics.progress.ActionMonitor;
 import org.xid.basics.ui.BasicsUI;
 import org.xid.basics.ui.action.Action;
 import org.xid.basics.ui.controller.Controller;
-import org.xid.basics.ui.field.ChoiceField;
-import org.xid.basics.ui.field.CompositeField;
-import org.xid.basics.ui.field.Field;
-import org.xid.basics.ui.field.ListField;
-import org.xid.basics.ui.field.TextField;
+import org.xid.basics.ui.field.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +17,7 @@ import java.util.List;
 public class TaskController extends Controller<Task> {
 
 	private TextField repetitionField;
+    private CheckboxField isRandomField;
 
 	private ChoiceField<Kernel> kernelChoiceField;
 	private ListField<Kernel> kernelListField;
@@ -57,14 +54,14 @@ public class TaskController extends Controller<Task> {
 			}
 		});
 
-        kernelChoiceField = new ChoiceField<Kernel>("Kernel", BasicsUI.NONE) {
+        kernelChoiceField = new ChoiceField<Kernel>("Add Kernel", BasicsUI.NONE) {
             @Override
             public String getText(Kernel element) {
                 return element.getName();
             }
         };
 
-        CompositeField addKernelField = new CompositeField("Add kernel to task", BasicsUI.GROUP, kernelChoiceField);
+        //CompositeField addKernelField = new CompositeField("Add kernel to task", BasicsUI.GROUP, kernelChoiceField);
 
 
         kernelChoiceField.addAction(new Action.Stub("+", Action.STYLE_DEFAULT | Action.STYLE_TRANSACTIONNAL) {
@@ -146,6 +143,7 @@ public class TaskController extends Controller<Task> {
             }
         });
 
+        isRandomField  = new CheckboxField("Random exec", BasicsUI.NONE);
 
         globalWorkSizeXField = new TextField("Global work size X", BasicsUI.NONE);
         globalWorkSizeXField.setValidator(new FormulaValidator());
@@ -158,7 +156,8 @@ public class TaskController extends Controller<Task> {
 
         positionField = new TextField("Position", BasicsUI.READ_ONLY);
 		
-		compositeField = new CompositeField("Task", BasicsUI.GROUP, repetitionField, kernelListField, addKernelField, globalWorkSizeXField, globalWorkSizeYField, globalWorkSizeZField);
+		//compositeField = new CompositeField("Task", BasicsUI.GROUP, repetitionField, kernelListField, addKernelField, isRandomField, globalWorkSizeXField, globalWorkSizeYField, globalWorkSizeZField);
+        compositeField = new CompositeField("Task", BasicsUI.GROUP, kernelListField, kernelChoiceField, repetitionField, isRandomField, globalWorkSizeXField, globalWorkSizeYField, globalWorkSizeZField);
 		return compositeField;
 		
 	}
@@ -172,6 +171,7 @@ public class TaskController extends Controller<Task> {
 			compositeField.setEnable(true);
 
             repetitionField.setValue(getSubject().getRepetition());
+            isRandomField.setValue(getSubject().isRandom());
 
             kernelListField.setValue(getSubject().getKernelList());
 
@@ -195,6 +195,10 @@ public class TaskController extends Controller<Task> {
 	public boolean updateSubject(Field field) {
         if ( field == repetitionField ) {
             getSubject().setRepetition(repetitionField.getValue());
+            return true;
+        }
+        if ( field == isRandomField ) {
+            getSubject().setRandom(isRandomField.getValue());
             return true;
         }
 		if ( field == globalWorkSizeXField ) {
