@@ -18,14 +18,17 @@ import java.util.Random;
 
 public class SimpleMatrixRenderer implements MatrixRenderer {
 
+	public static boolean _rendering3d = false;
 	float dx3D,  dy3D,  dz3D;
 	public void render(GC gc, RendererContext context, Matrix matrix, int mouseZ, boolean draw3D, float dx3D, float dy3D, float dz3D, float angleX3D, float angleY3D, Shell shell3D, GLCanvas gl_canvas, int renderMode, int program) {
 		this.dx3D = dx3D;
 		this.dy3D = dy3D;
 		this.dz3D = dz3D;
 
-		if(draw3D == true) {
+		if(draw3D == true && _rendering3d == false) {
+			_rendering3d = true;
 			render3D(matrix, dx3D, dy3D, dz3D, angleX3D, angleY3D, shell3D, gl_canvas, renderMode, program);
+			_rendering3d = false;
 		}
 		ImageData imageData = null;
 
@@ -275,7 +278,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 
 		int nb = a/4; //1000 - (px*px + py*py + pz*pz);
 
-		GL11.glColor4ub((byte)r,(byte)g,(byte)b,(byte)255);//(byte)a);
+		GL11.glColor3f(r/255.0f,g/255.0f,b/255.0f);
 		GL11.glBegin(GL11.GL_POINTS);
 		for(int i=nb; i>=0; i--) {
 			xxx = x + size*rnd.nextFloat() - size/2;
@@ -285,7 +288,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 		}
 		GL11.glEnd();
 
-		if(a == 255) {
+		/*if(a == 255) {
 			// Englobing lines
 			size = SXexp1/2.0f;
 			GL11.glBegin(GL11.GL_LINE_STRIP);
@@ -315,7 +318,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 			GL11.glVertex3f(x - size, y - size, z + size); // 18
 			GL11.glVertex3f(x + size, y - size, z + size); // 19
 			GL11.glEnd();
-		}
+		}*/
 
 
 	}
