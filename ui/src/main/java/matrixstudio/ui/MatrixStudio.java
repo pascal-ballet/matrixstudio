@@ -33,6 +33,8 @@ import java.util.Properties;
 
 public class MatrixStudio implements SimulatorContext, StudioContext {
 
+
+
 	private String version;
 	private String date;
 
@@ -103,7 +105,14 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 			date="unknown";
 		}
 	}
-	
+
+	public boolean GetEmbedded() {
+		return simulator.Embedded;
+	}
+	public void SetEmbedded(boolean b) {
+		simulator.Embedded = b;
+	}
+
 	private boolean compiled=false;
 
 	public CompositeField createFields() {
@@ -315,7 +324,7 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 		model = Tools.createEmptyModel();
 		modelFile = null;
 	}
-	
+
 	public boolean loadModel(boolean safeRead) {
 		final FileDialog dialog = new FileDialog(shell, SWT.OPEN);
 		dialog.setText("Open a simulation.");
@@ -341,6 +350,28 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 		}
 		log("Simulation successfully loaded from file '"+ file +"'.");
 		return true;
+	}
+
+	public String loadModel(String resultFilename) {
+		File file = new File(resultFilename);
+		if( !file.exists() ) {
+			return "Le fichier n'existe PAS.";
+			//return false;
+		}
+
+		currentPath = file.getParent();
+		stopAllExports();
+
+		try {
+			// loads model
+			model = Tools.load(file, false);
+			modelFile = file;
+		} catch (IOException e) {
+			error("Cannot load simulation from file '"+ file +"': " + e.getMessage());
+			return "EXCEPTION in LoadModel:" + e.getMessage();
+		}
+		log("Simulation successfully loaded from file '"+ file +"'.");
+		return "Model loaded";
 	}
 	
 	@Override
@@ -484,19 +515,21 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 		PlatformUtil.registerCocoaNameAboutAndPreference("MatrixStudio", actions.getAction("About"),new Action.Stub());
 		
 		shell.setSize(1024, 768);
-		shell.open();
-		try {
-			while ( !shell.isDisposed() ) {
-				try {
-					if ( !shell.getDisplay().readAndDispatch() ) {
-						shell.getDisplay().sleep();
+		if(simulator.Embedded == false) {
+			shell.open();
+			try {
+				while (!shell.isDisposed()) {
+					try {
+						if (!shell.getDisplay().readAndDispatch()) {
+							shell.getDisplay().sleep();
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
+			} finally {
+				dispose();
 			}
-		} finally {
-			dispose();
 		}
 	}
 

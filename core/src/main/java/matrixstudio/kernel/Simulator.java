@@ -66,6 +66,8 @@ import static org.jocl.CL.clSetKernelArg;
 
 public class Simulator implements Runnable {
 
+    public boolean Embedded = false;
+
 	public boolean recordingMPEG = false; // Must be changed (?) to be displayed in MatrixStudio 
 	public boolean recordingPNG = false; // Must be changed (?) to be displayed in MatrixStudio 
 	
@@ -160,6 +162,8 @@ public class Simulator implements Runnable {
     private int evaluateFormula(String formula) throws EvaluationException, ParseException {
         return FormulaCache.SHARED.computeValue(formula, getModel());
     }
+
+    int toto=0;
 
 	private void initCode() throws EvaluationException, ParseException {
 		

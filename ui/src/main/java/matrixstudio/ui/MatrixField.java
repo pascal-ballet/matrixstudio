@@ -106,7 +106,9 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 		createInfo(parent);
 		createCanvas(parent);
 		createButtonBar(parent);
-		createShell3D();
+		if(simulator.Embedded == false) {
+			createShell3D();
+		}
 	}
 
 	private GLCanvas gl_canvas;
@@ -388,7 +390,9 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				GC gc = e.gc;
 				//gc.setBackground(resources.getSystemColor(SWT.COLOR_BLACK));
 				//gc.fillRectangle(gc.getClipping());
-				renderShader();
+				if(simulator.Embedded == false) {
+					renderShader();
+				}
 				// don't draw matrix if value is null or if x or y is invalid
 				if ( matrix == null || matrix.safeGetSizeXValue() <= 0 || matrix.safeGetSizeYValue() <= 0 ) return;
 				MatrixRenderer renderer = renderers.get((Class<? extends Matrix>) matrix.getClass());
