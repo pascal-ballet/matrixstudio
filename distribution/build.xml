@@ -3,6 +3,7 @@
 	<property file="build.properties" />
 	<mkdir dir="${destination.dir}" />
 
+
 	<!-- default mode is classic -->
 	<property name="mode" value="classic" />
 	
@@ -13,6 +14,8 @@
 	
 	<!-- Version and date for classic builds -->	
 	<property file="../ui/src/main/resources/matrixstudio/ui/version.properties" />
+
+	<property name="ms-version" value="${version}"/>
 
 	<condition property="daily" value="true" else="false">
 		<equals arg1="${mode}" arg2="daily"/>
@@ -46,9 +49,8 @@
 			</fileset>
 		</copy>
 
-        <copy file="../core/build/libs/core-0.8.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
-        <copy file="../ui/build/libs/ui-0.8.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
-        <copy file="../build/libs/matrixstudio-0.8.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
+        <copy file="../core/build/libs/core-${ms-version}.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
+        <copy file="../ui/build/libs/ui-${ms-version}.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
 		<copy file="../libraries/joml-1.7.1/joml-1.7.1.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
 		<copy file="../libraries/jocl-0.1.9/jocl-0.1.9.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
 		<copy file="../libraries/lwjgl-3.0.0b/lwjgl-3.0.0b.jar" todir="${destination.dir}/win64/MatrixStudio/jars"/>
@@ -74,9 +76,8 @@
 			</fileset>
 		</copy>
 
-        <copy file="../core/build/libs/core-0.8.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
-        <copy file="../ui/build/libs/ui-0.8.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
-        <copy file="../build/libs/matrixstudio-0.8.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
+        <copy file="../core/build/libs/core-${ms-version}.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
+        <copy file="../ui/build/libs/ui-${ms-version}.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
 		<copy file="../libraries/joml-1.7.1/joml-1.7.1.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
 		<copy file="../libraries/jocl-0.1.9/jocl-0.1.9.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
 		<copy file="../libraries/lwjgl-3.0.0b/lwjgl-3.0.0b.jar" todir="${destination.dir}/linux-64/MatrixStudio/jars"/>
@@ -107,9 +108,8 @@
 			</fileset>
 		</copy>
 
-        <copy file="../core/build/libs/core-0.8.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
-        <copy file="../ui/build/libs/ui-0.8.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
-        <copy file="../build/libs/matrixstudio-0.8.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
+        <copy file="../core/build/libs/core-${ms-version}.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
+        <copy file="../ui/build/libs/ui-${ms-version}.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
 		<copy file="../libraries/joml-1.7.1/joml-1.7.1.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
 		<copy file="../libraries/jocl-0.1.9/jocl-0.1.9.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
 		<copy file="../libraries/lwjgl-3.0.0b/lwjgl-3.0.0b.jar" todir="${destination.dir}/macosx64/MatrixStudio.app/Contents/MacOS/jars"/>
