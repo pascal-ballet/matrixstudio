@@ -53,7 +53,7 @@ task macosDistribution(dependsOn: 'assemble') {
 
 task macosTar(type: Tar, dependsOn: macosDistribution) {
     from files { new File(buildDir, "distribution/macos") }
-    baseName = 'MatrixStudio-${ext.daily}-macos'
+    baseName = "MatrixStudio-${project.ext.daily ? 'daily' : project.version}-macos"
     destinationDir = new File(buildDir, "distribution")
     extension = 'tar.gz'
     compression = Compression.GZIP
