@@ -22,26 +22,19 @@ dependencies {
     compile project(':ui')
 }
 
-task macosDistribution(dependsOn: 'assemble') {
+File templateDir = new File("template");
+File destDir = new File(buildDir, "distribution");
+File macosTemplateDir = new File(templateDir, "macos")
+File macosDir = new File(destDir, "macos");
+File macosJarDir = new File(macosDir, "MatrixStudio.app/Contents/MacOS/jars")
+
+task macosDistribution(type: Copy, dependsOn: 'assemble') {
+    from fileTree(macosTemplateDir).exclude("/MatrixStudio.app/Contents/MacOS/MatrixStudio")
+    from fileTree(macosTemplateDir).include{"/MatrixStudio.app/Contents/MacOS/MatrixStudio"; fileMode = 0755}
+    into macosDir
+
     doLast {
-        println("Build distribution (daily:" + daily + ")");
-
-        File templateDir = new File("template");
-
-        File destDir = new File(buildDir, "distribution");
-        delete(destDir);
-        destDir.mkdir();
-
-
-        // Prepares platform dependent directories
-        File macosDir = new File(destDir, "macos");
-        File macosJarDir = new File(macosDir, "MatrixStudio.app/Contents/MacOS/jars")
-        copy {
-            from new File(templateDir, "macos")
-            into macosDir
-        }
         configurations.compile.each { lib ->
-            println("Copying ${lib.name}")
             copy {
                 from lib.parent
                 include lib.name
@@ -52,15 +45,13 @@ task macosDistribution(dependsOn: 'assemble') {
 }
 
 task macosTar(type: Tar, dependsOn: macosDistribution) {
-    from files { new File(buildDir, "distribution/macos") }
-    baseName = "MatrixStudio-${project.ext.daily ? 'daily' : project.version}-macos"
-    destinationDir = new File(buildDir, "distribution")
+    from fileTree(macosDir).exclude("/MatrixStudio.app/Contents/MacOS/MatrixStudio")
+    from fileTree(macosDir).include{"/MatrixStudio.app/Contents/MacOS/MatrixStudio"; fileMode = 0755}
+    baseName = "MatrixStudio-${project.ext.daily ? 'daily' : "release"}-macos"
+    destinationDir = destDir
     extension = 'tar.gz'
     compression = Compression.GZIP
 }
 
 task distribution (dependsOn: 'macosTar') {
-    doLast {
-        println("Distribution done")
-    }
 }
