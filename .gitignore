@@ -1,4 +1,5 @@
-distribution/built
+distribution/built/
+ui/src/main/resources/matrixstudio/ui/version.properties
 
 ## IntelliJ ignore
 out
