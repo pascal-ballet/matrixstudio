@@ -58,13 +58,8 @@ task (writeVersion) {
 
 processResources.dependsOn writeVersion
 
-def templateDir = new File("template");
+def rootTemplateDir = new File("template");
 def destDir = new File(buildDir, "distribution");
-
-def macTemplateDir = new File(templateDir, "mac")
-def macDir = new File(destDir, "mac");
-def macExecutable = "MatrixStudio.app/Contents/MacOS/MatrixStudio"
-def macJarPath = "MatrixStudio.app/Contents/MacOS/jars"
 
 def resolvedDependencies(String platform) {
     def configuration = configurations.create("configuration-${platform}")
@@ -81,18 +76,21 @@ def resolvedDependencies(String platform) {
 }
 
 task macDistribution(type: Tar, dependsOn: 'assemble') {
-    String platform = "mac"
+    def platform = "mac"
+
+    def templateDir = new File(rootTemplateDir, platform)
+    def executable = "MatrixStudio.app/Contents/MacOS/MatrixStudio"
+    def jarPath = "MatrixStudio.app/Contents/MacOS/jars"
+
     into (".") {
-        from fileTree(macTemplateDir) {
-            exclude(macExecutable)
-        }
-        from fileTree(macTemplateDir) {
-            include(macExecutable)
+        from fileTree(templateDir) { exclude(executable) }
+        from fileTree(templateDir) {
+            include(executable)
             fileMode = 0755
         }
     }
 
-    into (macJarPath) { from resolvedDependencies(platform)}
+    into (jarPath) { from resolvedDependencies(platform)}
 
     baseName = "MatrixStudio-${project.ext.daily ? 'daily' : "release"}-${platform}"
     destinationDir = destDir
@@ -100,7 +98,43 @@ task macDistribution(type: Tar, dependsOn: 'assemble') {
     compression = Compression.GZIP
 }
 
-task distribution (dependsOn: 'macDistribution')
+task linuxDistribution(type: Tar, dependsOn: 'assemble') {
+    def platform = "linux"
+
+    def templateDir = new File(rootTemplateDir, platform)
+    def executable = "MatrixStudio/MatrixStudio"
+    def jarPath = "MatrixStudio/jars"
+
+    into (".") {
+        from fileTree(templateDir) { exclude(executable) }
+        from fileTree(templateDir) {
+            include(executable)
+            fileMode = 0755
+        }
+    }
+
+    into (jarPath) { from resolvedDependencies(platform)}
+
+    baseName = "MatrixStudio-${project.ext.daily ? 'daily' : "release"}-${platform}"
+    destinationDir = destDir
+    extension = 'tar.gz'
+    compression = Compression.GZIP
+}
+
+task windowsDistribution(type: Zip, dependsOn: 'assemble') {
+    def platform = "windows"
+
+    def templateDir = new File(rootTemplateDir, platform)
+    def jarPath = "MatrixStudio/jars"
+
+    into (".") { from fileTree(templateDir) }
+    into (jarPath) { from resolvedDependencies(platform)}
+
+    baseName = "MatrixStudio-${project.ext.daily ? 'daily' : "release"}-${platform}"
+    destinationDir = destDir
+}
+
+task distribution (dependsOn: ['macDistribution','linuxDistribution', "windowsDistribution"])
 
 apply plugin: 'com.jfrog.bintray'
 

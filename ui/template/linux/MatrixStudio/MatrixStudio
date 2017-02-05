@@ -1,0 +1,6 @@
+#!/bin/sh
+JAVA=java
+BASEDIR=`dirname "$0"`
+VMOPTIONS="-Xmx512m"
+OPTIONS=""
+exec $JAVA $VMOPTIONS -cp "$BASEDIR/jars/*" matrixstudio.ui.MatrixStudio $OPTIONS
