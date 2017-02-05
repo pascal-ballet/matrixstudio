@@ -12,6 +12,11 @@ allprojects {
 
     repositories {
         mavenCentral()
+
+        flatDir {
+            dirs rootProject.file('libraries/swt'),
+            rootProject.file("libraries/basics-1.0.m3")
+        }
     }
 
     dependencies {
@@ -19,70 +24,3 @@ allprojects {
     }
 }
 
-dependencies {
-    compile project(':core')
-    compile project(':ui')
-}
-
-def templateDir = new File("template");
-def destDir = new File(buildDir, "distribution");
-
-def macTemplateDir = new File(templateDir, "mac")
-def macDir = new File(destDir, "mac");
-def macJarDir = new File(macDir, "MatrixStudio.app/Contents/MacOS/jars")
-def macExecutable = "MatrixStudio.app/Contents/MacOS/MatrixStudio"
-
-
-def dependencies(String platform) {
-    return configurations.compile
-}
-
-task macDistribution(type: Tar, dependsOn: 'assemble') {
-    String platform = "mac"
-    into (".") {
-        from fileTree(macTemplateDir) {
-            exclude(macExecutable)
-        }
-        from fileTree(macTemplateDir) {
-            include(macExecutable)
-            fileMode = 0755
-        }
-    }
-    into (macJarDir) { from dependencies(platform)}
-
-    baseName = "MatrixStudio-${project.ext.daily ? 'daily' : "release"}-${platform}"
-    destinationDir = destDir
-    extension = 'tar.gz'
-    compression = Compression.GZIP
-}
-
-task distribution (dependsOn: 'macDistribution')
-
-bintrayUpload.dependsOn distribution
-
-apply plugin:'com.jfrog.bintray'
-
-String versionName = project.ext.daily ? 'daily' : version
-bintray {
-    user = 'jeancharles-roger'
-    key = '2fd0426217375506e6b5b77087a72a96cf7ba5f1'
-
-    filesSpec {
-        from files(destDir) { include("/MatrixStudio-*") }
-        into "matrixstudio/${versionName}"
-    }
-    publish = true
-    override = true
-
-    pkg {
-        repo = 'generic'
-        name = 'matrixstudio'
-        userOrg = 'jeancharles-roger'
-        githubRepo = 'jeancharles-roger/matrixstudio'
-        githubReleaseNotesFile = "ChangeLog.md"
-
-        version {
-            name = versionName
-        }
-    }
-}

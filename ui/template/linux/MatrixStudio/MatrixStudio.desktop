@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=MatrixStudio
+Type=Application
+Comment=
+Exec=MatrixStudio.sh
+Path=.
+Icon=MatrixStudio.png
+Categories=Application;
