@@ -108,8 +108,8 @@ bintrayUpload.dependsOn 'ui:distribution'
 
 String versionName = project.ext.daily ? 'daily' : version
 bintray {
-    user = 'jeancharles-roger'
-    key = '2fd0426217375506e6b5b77087a72a96cf7ba5f1'
+    user = System.getEnv("BINTRAY_USER")
+    key = System.getEnv("BINTRAY_KEY")
 
     filesSpec {
         from files(new File(buildDir, "distribution")) { include("/MatrixStudio-*") }
