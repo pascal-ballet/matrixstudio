@@ -104,12 +104,12 @@ task distribution (dependsOn: 'macDistribution')
 
 apply plugin: 'com.jfrog.bintray'
 
-bintrayUpload.dependsOn 'ui:distribution'
+bintrayUpload.dependsOn distribution
 
 String versionName = project.ext.daily ? 'daily' : version
 bintray {
-    user = System.getEnv("BINTRAY_USER")
-    key = System.getEnv("BINTRAY_KEY")
+    user = System.getenv("BINTRAY_USER")
+    key = System.getenv("BINTRAY_KEY")
 
     filesSpec {
         from files(new File(buildDir, "distribution")) { include("/MatrixStudio-*") }
