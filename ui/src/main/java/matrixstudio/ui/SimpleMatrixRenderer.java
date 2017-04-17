@@ -39,17 +39,31 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 			MatrixInteger matrixInteger = (MatrixInteger) matrix;
 			PaletteData palette = new PaletteData(0xFF, 0xFF00, 0xFF0000);
 			imageData = new ImageData(sizeX, sizeY, 32, palette);
-            for (int i = 0; i< sizeX; i++) {
-                for (int j = 0; j< sizeY; j++) {
-                    Integer value = matrixInteger.getMatrix()[k* sizeX * sizeY + j* sizeX + i];
-                    int r,g,b;
-                    r = (value & 255);
-                    g = (value >> 8) & 255;
-                    b = (value >> 16) & 255;
-                    RGB rgb = new RGB(r, g, b);
-                    imageData.setPixel(i, sizeY -j-1, palette.getPixel(rgb));
-                }
-            }
+			if(matrixInteger.isARGB() == false) {
+				for (int i = 0; i < sizeX; i++) {
+					for (int j = 0; j < sizeY; j++) {
+						Integer value = matrixInteger.getMatrix()[k * sizeX * sizeY + j * sizeX + i];
+						int r, g, b;
+						g = (value >> 8) & 255;
+						r = (value & 255);
+						b = (value >> 16) & 255;
+						RGB rgb = new RGB(r, g, b);
+						imageData.setPixel(i, sizeY - j - 1, palette.getPixel(rgb));
+					}
+				}
+			} else {
+				for (int i = 0; i < sizeX; i++) {
+					for (int j = 0; j < sizeY; j++) {
+						Integer value = matrixInteger.getMatrix()[k * sizeX * sizeY + j * sizeX + i];
+						int r, g, b;
+						g = (value >> 8) & 255;
+						b = (value & 255);
+						r = (value >> 16) & 255;
+						RGB rgb = new RGB(r, g, b);
+						imageData.setPixel(i, sizeY - j - 1, palette.getPixel(rgb));
+					}
+				}
+			}
 		}
 		
 		if ( matrix instanceof MatrixULong ) {

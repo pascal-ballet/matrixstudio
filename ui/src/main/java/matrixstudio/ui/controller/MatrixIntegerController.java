@@ -18,6 +18,7 @@ public class MatrixIntegerController extends Controller<MatrixInteger> {
 	private TextField heightField;
 	private TextField depthField;
 	private CheckboxField isRandomField;
+	private CheckboxField isARGB;
 	private CompositeField compositeField;
 	
 	@Override
@@ -39,9 +40,10 @@ public class MatrixIntegerController extends Controller<MatrixInteger> {
         depthField = new TextField("Size Z", BasicsUI.NONE);
         heightField.setValidator(new FormulaValidator());
 
-        isRandomField  = new CheckboxField("Random", BasicsUI.NONE);
-		
-		compositeField = new CompositeField("Integer Matrix", BasicsUI.GROUP,  nameField, widthField, heightField, depthField, isRandomField);
+        isRandomField  	= new CheckboxField("Random", BasicsUI.NONE);
+		isARGB  		= new CheckboxField("ARGB", BasicsUI.NONE);
+
+		compositeField = new CompositeField("Integer Matrix", BasicsUI.GROUP,  nameField, widthField, heightField, depthField, isRandomField, isARGB);
 		return compositeField;
 	}
 
@@ -57,6 +59,7 @@ public class MatrixIntegerController extends Controller<MatrixInteger> {
 			heightField.setValue(getSubject().getSizeY());
 			depthField.setValue(getSubject().getSizeZ());
 			isRandomField.setValue(getSubject().isRandom());
+			isARGB.setValue(getSubject().isARGB());
 		}
 	}
 	
@@ -84,6 +87,10 @@ public class MatrixIntegerController extends Controller<MatrixInteger> {
 		if ( field == isRandomField ) {
 			getSubject().setRandom(isRandomField.getValue());
 			getSubject().initBlank(true);
+			return true;
+		}
+		if ( field == isARGB ) {
+			getSubject().setARGB(isARGB.getValue());
 			return true;
 		}
 		return super.updateSubject(field);
