@@ -497,7 +497,7 @@ public class Simulator implements Runnable {
         }
     }
     
-    private void reset() {
+    public void reset() {
     	
     	// Re-init the current matrix to the initial values
 		for(final Matrix matrix : getModel().getMatrixList() ) {
