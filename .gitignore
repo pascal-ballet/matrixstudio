@@ -6,10 +6,15 @@ out
 *.iml
 .idea
 
+## Eclipse ignore
+*.classpath
+*.project
+**/bin/*
+**/.settings/*
+
 ## Gradle ignore
 **/build/
 .gradle
-
 
 ## Crash log
 *.log
