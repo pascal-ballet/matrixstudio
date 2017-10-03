@@ -9,3 +9,5 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+notifications:
+    slack: minibilles:2dXpzGnWFnhbU9WrAEwIPn7g
