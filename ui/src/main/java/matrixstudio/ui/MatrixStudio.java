@@ -1,5 +1,10 @@
 package matrixstudio.ui;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.Properties;
 import matrixstudio.kernel.CLUtil;
 import matrixstudio.kernel.Simulator;
 import matrixstudio.kernel.SimulatorContext;
@@ -24,16 +29,8 @@ import org.xid.basics.ui.field.ConsoleField;
 import org.xid.basics.ui.field.MultiTabField;
 import org.xid.basics.ui.field.PropertiesField;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Properties;
-
 
 public class MatrixStudio implements SimulatorContext, StudioContext {
-
-
 
 	private String version;
 	private String date;
