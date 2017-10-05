@@ -1,13 +1,5 @@
 package matrixstudio.kernel;
 
-import matrixstudio.model.Kernel;
-import matrixstudio.model.Library;
-import matrixstudio.model.MatrixInteger;
-import matrixstudio.model.Model;
-import matrixstudio.model.Scheduler;
-import matrixstudio.model.Task;
-import org.xid.basics.serializer.JBoost;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -19,6 +11,13 @@ import java.util.Random;
 import java.util.regex.Pattern;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import matrixstudio.model.Kernel;
+import matrixstudio.model.Library;
+import matrixstudio.model.MatrixInteger;
+import matrixstudio.model.Model;
+import matrixstudio.model.Scheduler;
+import matrixstudio.model.Task;
+import org.xid.basics.serializer.JBoost;
 
 public class Tools {
 
@@ -111,13 +110,18 @@ public class Tools {
 	 * @throws IOException if something goes wrong.
 	 */
 	public static void save(Model model, File file) throws IOException {
+		// saves model to tempory file
+		File tmpFile = File.createTempFile("matrixstudio", "mss");
 		final JBoost boost = createBoost(false);
-		final ZipOutputStream stream = new ZipOutputStream(new FileOutputStream(file));
+		final ZipOutputStream stream = new ZipOutputStream(new FileOutputStream(tmpFile));
 		try {
 			boost.initializeZippedWriting(stream, INSIDE_NAME);
 			boost.writeObject(model);
 		} finally {
 			boost.close();
 		}
+
+		// no error occurred, copy the temp file to given file
+		tmpFile.renameTo(file);
 	}
 }
