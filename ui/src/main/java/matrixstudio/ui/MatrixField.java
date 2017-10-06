@@ -213,7 +213,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 	}
 
 	private void renderShader() {
-		glUseProgram(program);
+		/*GL** glUseProgram(program);
 
 		long thisTime = System.nanoTime();
 		float dt = (thisTime - lastTime) / 1E9f;
@@ -232,14 +232,14 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 		glUniform3f(colorLocation, 0.0f, 0.0f, 0.0f);
 		renderCube();
 		glDisable(GL_POLYGON_OFFSET_LINE);
-
+		*/
 		//glUseProgram(0); // No more shader (to uncomment in the future?)
 
 	}
 
 	////////////////////////////////////////
 	private void createShell3D() {
-
+		/*GL**
 		// Create a basic SWT window
 		shell3D = new Shell();
         shell3D.setText("Matrix Studio 3D View");
@@ -338,15 +338,15 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 
 		});
 		gl_canvas.setCurrent();
-
+		*/
 		// LWJGL init
-		GLCapabilities swtCapabilities = GL.createCapabilities();
+		/*GL** GLCapabilities swtCapabilities = GL.createCapabilities();
 		if (!swtCapabilities.GL_ARB_shader_objects)
 			throw new UnsupportedOperationException("This demo requires the ARB_shader_objects extension");
 		if (!swtCapabilities.GL_ARB_vertex_shader)
 			throw new UnsupportedOperationException("This demo requires the ARB_vertex_shader extension");
 		if (!swtCapabilities.GL_ARB_fragment_shader)
-			throw new UnsupportedOperationException("This demo requires the ARB_fragment_shader extension");
+			throw new UnsupportedOperationException("This demo requires the ARB_fragment_shader extension");*/
 		// OpenGL init
         //material colors
         float[] matambient={0.1f,0.1f,0.1f,0f};
@@ -355,30 +355,30 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 
         ByteBuffer temp = ByteBuffer.allocateDirect(16);
         temp.order(ByteOrder.nativeOrder());
-		GL11.glMaterialfv(GL11.GL_FRONT, GL11.GL_AMBIENT,   (FloatBuffer)temp.asFloatBuffer().put(matambient).flip());   // 0.2f, 0.2f, 0.2f, 1f
-        GL11.glMaterialfv(GL11.GL_FRONT, GL11.GL_DIFFUSE,   (FloatBuffer)temp.asFloatBuffer().put(matdiffuse).flip());  // 0.8f, 0.8f, 0.8f, 1f
-        GL11.glMaterialfv(GL11.GL_FRONT, GL11.GL_EMISSION,  (FloatBuffer)temp.asFloatBuffer().put(matemission).flip());   // 0,0,0,1
+		//GL** GL11.glMaterialfv(GL11.GL_FRONT, GL11.GL_AMBIENT,   (FloatBuffer)temp.asFloatBuffer().put(matambient).flip());   // 0.2f, 0.2f, 0.2f, 1f
+        //GL** GL11.glMaterialfv(GL11.GL_FRONT, GL11.GL_DIFFUSE,   (FloatBuffer)temp.asFloatBuffer().put(matdiffuse).flip());  // 0.8f, 0.8f, 0.8f, 1f
+        //GL** GL11.glMaterialfv(GL11.GL_FRONT, GL11.GL_EMISSION,  (FloatBuffer)temp.asFloatBuffer().put(matemission).flip());   // 0,0,0,1
 
-        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-        GL11.glEnable(GL11.GL_DEPTH_TEST); // Enables Depth Testing
+        //GL** GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+        //GL** GL11.glEnable(GL11.GL_DEPTH_TEST); // Enables Depth Testing
 
-        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        //GL** GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        //GL** GL11.glMatrixMode(GL11.GL_PROJECTION);
 
         // Background color
-        GL11.glClearColor(0.0f, 0.0f, 0.2f, 0.0f);
-		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
+		//GL** GL11.glClearColor(0.0f, 0.0f, 0.2f, 0.0f);
+		//GL** GL11.glClear(GL11.GL_COLOR_BUFFER_BIT);
 
 
 		/// SHADERS
-		initOpenGLAndRenderInAnotherThread();
+		//GL** initOpenGLAndRenderInAnotherThread();
 
 
 
 
-        shell3D.setSize(800,800);
+		//GL** shell3D.setSize(800,800);
 
-		shell3D.open();
+		//GL** shell3D.open();
 ///		gl_canvas.swapBuffers();
 	}
 

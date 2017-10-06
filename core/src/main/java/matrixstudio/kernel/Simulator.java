@@ -587,7 +587,7 @@ public class Simulator implements Runnable {
             for (int tt = 0; tt < schedule.getTaskCount(); tt++) {
                 Task task = schedule.getTask(tt);
                 int repetition = evaluateFormula(task.getRepetition());
-                if (repetition <= 0) repetition = 1;
+                if (repetition < 0) repetition = 0;
 
 
 

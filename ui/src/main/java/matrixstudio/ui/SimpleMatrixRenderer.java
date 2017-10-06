@@ -25,7 +25,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 		this.dy3D = dy3D;
 		this.dz3D = dz3D;
 
-		if(draw3D == true && _rendering3d == false) {
+		if(shell3D != null && draw3D == true && _rendering3d == false) {
 			_rendering3d = true;
 			render3D(matrix, dx3D, dy3D, dz3D, angleX3D, angleY3D, shell3D, gl_canvas, renderMode, program);
 			_rendering3d = false;
