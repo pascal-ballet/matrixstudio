@@ -14,8 +14,10 @@ allprojects {
         mavenCentral()
 
         flatDir {
-            dirs rootProject.file('libraries/swt'),
-            rootProject.file("libraries/basics-1.0.m3")
+            dirs (
+                rootProject.file('libraries/swt'),
+                rootProject.file("libraries/basics-1.0.m3")
+            )
         }
     }
 
