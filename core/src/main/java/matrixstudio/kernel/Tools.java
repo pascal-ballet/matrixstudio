@@ -122,6 +122,8 @@ public class Tools {
 		}
 
 		// no error occurred, copy the temp file to given file
-		tmpFile.renameTo(file);
+		if (!tmpFile.renameTo(file)) {
+			throw new IOException("Couldn't write file '"+ file + "'");
+		}
 	}
 }
