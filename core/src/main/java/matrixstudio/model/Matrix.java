@@ -1,13 +1,12 @@
 package matrixstudio.model;
 
+import fr.minibilles.basics.model.ChangeRecorder;
+import fr.minibilles.basics.model.ModelObject;
+import fr.minibilles.basics.serializer.Boost;
+import fr.minibilles.basics.serializer.BoostObject;
+import java.text.ParseException;
 import matrixstudio.formula.EvaluationException;
 import matrixstudio.formula.FormulaCache;
-import org.xid.basics.model.ChangeRecorder;
-import org.xid.basics.model.ModelObject;
-import org.xid.basics.serializer.Boost;
-import org.xid.basics.serializer.BoostObject;
-
-import java.text.ParseException;
 
 
 public abstract class Matrix implements ModelObject, BoostObject, Named {

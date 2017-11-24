@@ -1,12 +1,12 @@
 package matrixstudio.ui.diagram;
 
+import fr.minibilles.basics.geometry.Geometry;
+import fr.minibilles.basics.ui.diagram.DiagramContext;
+import fr.minibilles.basics.ui.diagram.Element;
+import fr.minibilles.basics.ui.diagram.gc.GC;
+import fr.minibilles.basics.ui.diagram.gc.GcUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.xid.basics.geometry.Geometry;
-import org.xid.basics.ui.diagram.DiagramContext;
-import org.xid.basics.ui.diagram.Element;
-import org.xid.basics.ui.diagram.gc.GC;
-import org.xid.basics.ui.diagram.gc.GcUtils;
 
 
 public class LimitElement extends Element.Stub implements Element {

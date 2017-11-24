@@ -1,11 +1,10 @@
 package matrixstudio.model;
 
-import org.xid.basics.model.ChangeRecorder;
-import org.xid.basics.model.ModelObject;
-import org.xid.basics.serializer.Boost;
-import org.xid.basics.serializer.BoostObject;
-import org.xid.basics.serializer.BoostUtil;
-
+import fr.minibilles.basics.model.ChangeRecorder;
+import fr.minibilles.basics.model.ModelObject;
+import fr.minibilles.basics.serializer.Boost;
+import fr.minibilles.basics.serializer.BoostObject;
+import fr.minibilles.basics.serializer.BoostUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

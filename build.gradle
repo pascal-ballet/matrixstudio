@@ -11,14 +11,7 @@ allprojects {
     version = '1.0.0'
 
     repositories {
-        mavenCentral()
-
-        flatDir {
-            dirs (
-                rootProject.file('libraries/swt'),
-                rootProject.file("libraries/basics-1.0.m3")
-            )
-        }
+        jcenter()
     }
 
     dependencies {

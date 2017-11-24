@@ -1,13 +1,13 @@
 package matrixstudio.ui.controller;
 
+import fr.minibilles.basics.error.Diagnostic;
+import fr.minibilles.basics.error.Validator;
+import fr.minibilles.basics.ui.BasicsUI;
+import fr.minibilles.basics.ui.controller.Controller;
+import fr.minibilles.basics.ui.field.CompositeField;
+import fr.minibilles.basics.ui.field.Field;
+import fr.minibilles.basics.ui.field.TextField;
 import matrixstudio.model.Kernel;
-import org.xid.basics.error.Diagnostic;
-import org.xid.basics.error.Validator;
-import org.xid.basics.ui.BasicsUI;
-import org.xid.basics.ui.controller.Controller;
-import org.xid.basics.ui.field.CompositeField;
-import org.xid.basics.ui.field.Field;
-import org.xid.basics.ui.field.TextField;
 
 
 public class KernelController extends Controller<Kernel> {

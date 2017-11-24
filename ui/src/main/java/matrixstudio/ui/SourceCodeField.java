@@ -1,5 +1,14 @@
 package matrixstudio.ui;
 
+import fr.minibilles.basics.notification.Notification;
+import fr.minibilles.basics.ui.BasicsUI;
+import fr.minibilles.basics.ui.Resources;
+import fr.minibilles.basics.ui.field.AbstractField;
+import fr.minibilles.basics.ui.field.text.FindAndReplaceShell;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import matrixstudio.model.Code;
 import matrixstudio.model.Kernel;
 import matrixstudio.model.Library;
@@ -22,16 +31,6 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.xid.basics.notification.Notification;
-import org.xid.basics.ui.BasicsUI;
-import org.xid.basics.ui.Resources;
-import org.xid.basics.ui.field.AbstractField;
-import org.xid.basics.ui.field.text.FindAndReplaceShell;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class SourceCodeField extends AbstractField implements RendererContext {

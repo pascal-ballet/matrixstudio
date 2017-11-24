@@ -1,16 +1,16 @@
 package matrixstudio.ui;
 
+import fr.minibilles.basics.progress.ActionMonitor;
+import fr.minibilles.basics.ui.BasicsUI;
+import fr.minibilles.basics.ui.action.Action;
+import fr.minibilles.basics.ui.controller.Controller;
+import fr.minibilles.basics.ui.field.BorderField;
+import fr.minibilles.basics.ui.field.CompositeField;
+import fr.minibilles.basics.ui.field.Field;
+import fr.minibilles.basics.ui.field.ListField;
 import matrixstudio.kernel.Simulator;
 import matrixstudio.model.Library;
 import matrixstudio.model.Model;
-import org.xid.basics.progress.ActionMonitor;
-import org.xid.basics.ui.BasicsUI;
-import org.xid.basics.ui.action.Action;
-import org.xid.basics.ui.controller.Controller;
-import org.xid.basics.ui.field.BorderField;
-import org.xid.basics.ui.field.CompositeField;
-import org.xid.basics.ui.field.Field;
-import org.xid.basics.ui.field.ListField;
 
 public class LibraryTabController extends Controller<Model> {
 

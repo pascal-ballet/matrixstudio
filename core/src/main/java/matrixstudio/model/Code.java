@@ -1,14 +1,13 @@
 package matrixstudio.model;
 
-import matrixstudio.kernel.Tools;
-import org.xid.basics.model.ChangeRecorder;
-import org.xid.basics.model.ModelObject;
-import org.xid.basics.serializer.Boost;
-import org.xid.basics.serializer.BoostObject;
-
+import fr.minibilles.basics.model.ChangeRecorder;
+import fr.minibilles.basics.model.ModelObject;
+import fr.minibilles.basics.serializer.Boost;
+import fr.minibilles.basics.serializer.BoostObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
+import matrixstudio.kernel.Tools;
 
 
 public abstract class Code implements ModelObject, BoostObject, Named {

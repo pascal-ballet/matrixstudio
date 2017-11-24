@@ -1,5 +1,9 @@
 package matrixstudio.ui;
 
+import fr.minibilles.basics.notification.Notification;
+import fr.minibilles.basics.ui.BasicsUI;
+import fr.minibilles.basics.ui.Resources;
+import fr.minibilles.basics.ui.field.AbstractField;
 import java.util.HashMap;
 import java.util.Map;
 import matrixstudio.kernel.Simulator;
@@ -21,10 +25,6 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.xid.basics.notification.Notification;
-import org.xid.basics.ui.BasicsUI;
-import org.xid.basics.ui.Resources;
-import org.xid.basics.ui.field.AbstractField;
 
 public class MatrixField extends AbstractField implements RendererContext, UserInputProvider {
 

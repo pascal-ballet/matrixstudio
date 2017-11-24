@@ -1,18 +1,17 @@
 package matrixstudio.ui.controller;
 
+import fr.minibilles.basics.ui.BasicsUI;
+import fr.minibilles.basics.ui.controller.Controller;
+import fr.minibilles.basics.ui.field.ChoiceField;
+import fr.minibilles.basics.ui.field.CompositeField;
+import fr.minibilles.basics.ui.field.Field;
+import java.util.Arrays;
+import java.util.List;
 import matrixstudio.kernel.CLUtil;
 import matrixstudio.model.Device;
 import matrixstudio.model.Scheduler;
 import org.jocl.CL;
 import org.jocl.cl_device_id;
-import org.xid.basics.ui.BasicsUI;
-import org.xid.basics.ui.controller.Controller;
-import org.xid.basics.ui.field.ChoiceField;
-import org.xid.basics.ui.field.CompositeField;
-import org.xid.basics.ui.field.Field;
-
-import java.util.Arrays;
-import java.util.List;
 
 
 public class SchedulerController extends Controller<Scheduler> {

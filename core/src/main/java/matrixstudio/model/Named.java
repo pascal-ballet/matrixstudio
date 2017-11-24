@@ -1,7 +1,7 @@
 package matrixstudio.model;
 
-import org.xid.basics.model.ModelObject;
-import org.xid.basics.serializer.BoostObject;
+import fr.minibilles.basics.model.ModelObject;
+import fr.minibilles.basics.serializer.BoostObject;
 
 public interface Named extends ModelObject, BoostObject {
 

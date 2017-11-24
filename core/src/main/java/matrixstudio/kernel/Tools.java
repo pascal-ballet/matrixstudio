@@ -1,5 +1,6 @@
 package matrixstudio.kernel;
 
+import fr.minibilles.basics.serializer.JBoost;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -17,7 +18,6 @@ import matrixstudio.model.MatrixInteger;
 import matrixstudio.model.Model;
 import matrixstudio.model.Scheduler;
 import matrixstudio.model.Task;
-import org.xid.basics.serializer.JBoost;
 
 public class Tools {
 

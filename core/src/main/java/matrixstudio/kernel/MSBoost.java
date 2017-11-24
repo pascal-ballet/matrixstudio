@@ -1,6 +1,6 @@
 package matrixstudio.kernel;
 
-import org.xid.basics.serializer.JBoost;
+import fr.minibilles.basics.serializer.JBoost;
 
 /**
  */

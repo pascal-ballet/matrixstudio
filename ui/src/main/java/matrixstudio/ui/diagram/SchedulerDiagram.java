@@ -1,5 +1,16 @@
 package matrixstudio.ui.diagram;
 
+import fr.minibilles.basics.geometry.Geometry;
+import fr.minibilles.basics.progress.ActionMonitor;
+import fr.minibilles.basics.ui.Resources;
+import fr.minibilles.basics.ui.action.Action;
+import fr.minibilles.basics.ui.diagram.Diagram;
+import fr.minibilles.basics.ui.diagram.DiagramContext;
+import fr.minibilles.basics.ui.diagram.DiagramController;
+import fr.minibilles.basics.ui.diagram.Element;
+import fr.minibilles.basics.ui.diagram.gc.GC;
+import fr.minibilles.basics.ui.diagram.gc.GcUtils;
+import java.util.List;
 import matrixstudio.model.Scheduler;
 import matrixstudio.model.Task;
 import matrixstudio.ui.MSResources;
@@ -7,18 +18,6 @@ import matrixstudio.ui.StudioContext;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Canvas;
-import org.xid.basics.geometry.Geometry;
-import org.xid.basics.progress.ActionMonitor;
-import org.xid.basics.ui.Resources;
-import org.xid.basics.ui.action.Action;
-import org.xid.basics.ui.diagram.Diagram;
-import org.xid.basics.ui.diagram.DiagramContext;
-import org.xid.basics.ui.diagram.DiagramController;
-import org.xid.basics.ui.diagram.Element;
-import org.xid.basics.ui.diagram.gc.GC;
-import org.xid.basics.ui.diagram.gc.GcUtils;
-
-import java.util.List;
 
 
 public class SchedulerDiagram extends Diagram<Scheduler> {

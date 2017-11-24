@@ -1,5 +1,22 @@
 package matrixstudio.ui;
 
+import fr.minibilles.basics.Basics;
+import fr.minibilles.basics.error.Diagnostic;
+import fr.minibilles.basics.error.Validator;
+import fr.minibilles.basics.model.ChangeHandler;
+import fr.minibilles.basics.notification.Notification;
+import fr.minibilles.basics.notification.NotificationListener;
+import fr.minibilles.basics.progress.ActionMonitor;
+import fr.minibilles.basics.ui.BasicsUI;
+import fr.minibilles.basics.ui.action.Action;
+import fr.minibilles.basics.ui.action.KeyCode;
+import fr.minibilles.basics.ui.dialog.FieldDialog;
+import fr.minibilles.basics.ui.field.CompositeField;
+import fr.minibilles.basics.ui.field.ListField;
+import fr.minibilles.basics.ui.field.TextField;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import matrixstudio.model.Kernel;
 import matrixstudio.model.Matrix;
 import matrixstudio.model.Task;
@@ -8,24 +25,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-import org.xid.basics.Basics;
-import org.xid.basics.error.Diagnostic;
-import org.xid.basics.error.Validator;
-import org.xid.basics.model.ChangeHandler;
-import org.xid.basics.notification.Notification;
-import org.xid.basics.notification.NotificationListener;
-import org.xid.basics.progress.ActionMonitor;
-import org.xid.basics.ui.BasicsUI;
-import org.xid.basics.ui.action.Action;
-import org.xid.basics.ui.action.KeyCode;
-import org.xid.basics.ui.dialog.FieldDialog;
-import org.xid.basics.ui.field.CompositeField;
-import org.xid.basics.ui.field.ListField;
-import org.xid.basics.ui.field.TextField;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 
 public class Actions {

@@ -1,17 +1,21 @@
 package matrixstudio.ui.controller;
 
-import matrixstudio.model.Kernel;
-import matrixstudio.model.Task;
-import org.xid.basics.error.Diagnostic;
-import org.xid.basics.error.Validator;
-import org.xid.basics.progress.ActionMonitor;
-import org.xid.basics.ui.BasicsUI;
-import org.xid.basics.ui.action.Action;
-import org.xid.basics.ui.controller.Controller;
-import org.xid.basics.ui.field.*;
-
+import fr.minibilles.basics.error.Diagnostic;
+import fr.minibilles.basics.error.Validator;
+import fr.minibilles.basics.progress.ActionMonitor;
+import fr.minibilles.basics.ui.BasicsUI;
+import fr.minibilles.basics.ui.action.Action;
+import fr.minibilles.basics.ui.controller.Controller;
+import fr.minibilles.basics.ui.field.CheckboxField;
+import fr.minibilles.basics.ui.field.ChoiceField;
+import fr.minibilles.basics.ui.field.CompositeField;
+import fr.minibilles.basics.ui.field.Field;
+import fr.minibilles.basics.ui.field.ListField;
+import fr.minibilles.basics.ui.field.TextField;
 import java.util.Arrays;
 import java.util.List;
+import matrixstudio.model.Kernel;
+import matrixstudio.model.Task;
 
 
 public class TaskController extends Controller<Task> {

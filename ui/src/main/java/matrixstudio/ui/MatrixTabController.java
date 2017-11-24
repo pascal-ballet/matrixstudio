@@ -1,5 +1,17 @@
 package matrixstudio.ui;
 
+import fr.minibilles.basics.notification.Notification;
+import fr.minibilles.basics.notification.NotificationListener;
+import fr.minibilles.basics.progress.ActionMonitor;
+import fr.minibilles.basics.ui.BasicsUI;
+import fr.minibilles.basics.ui.action.Action;
+import fr.minibilles.basics.ui.controller.Controller;
+import fr.minibilles.basics.ui.field.BorderField;
+import fr.minibilles.basics.ui.field.CompositeField;
+import fr.minibilles.basics.ui.field.ListField;
+import java.awt.*;
+import java.io.File;
+import javax.imageio.ImageIO;
 import matrixstudio.kernel.MjpegEncoder;
 import matrixstudio.kernel.Simulator;
 import matrixstudio.model.Matrix;
@@ -12,19 +24,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.FileDialog;
-import org.xid.basics.notification.Notification;
-import org.xid.basics.notification.NotificationListener;
-import org.xid.basics.progress.ActionMonitor;
-import org.xid.basics.ui.BasicsUI;
-import org.xid.basics.ui.action.Action;
-import org.xid.basics.ui.controller.Controller;
-import org.xid.basics.ui.field.BorderField;
-import org.xid.basics.ui.field.CompositeField;
-import org.xid.basics.ui.field.ListField;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.io.File;
 
 public class MatrixTabController extends Controller<Model>{
 

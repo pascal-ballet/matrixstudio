@@ -1,8 +1,8 @@
 package matrixstudio.ui.controller;
 
+import fr.minibilles.basics.error.Diagnostic;
+import fr.minibilles.basics.error.Validator;
 import matrixstudio.formula.FormulaCache;
-import org.xid.basics.error.Diagnostic;
-import org.xid.basics.error.Validator;
 
 /**
  * Validator for formula

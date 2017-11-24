@@ -3,16 +3,30 @@ import java.text.SimpleDateFormat
 project.ext.lwjglVersion = "3.0.0b"
 project.ext.jomlVersion = "1.7.1"
 
+jar.baseName = "matrixstudio-ui"
+
+static def arch() {
+    def arch = System.getProperty('os.arch')
+    switch (arch) {
+        case "x86": case "amd": return "32"
+        case "x86_64": case "amd64": return "64"
+    }
+    return arch
+}
+
+static def platform() {
+    return System.getProperty('os.name').toLowerCase().split()[0]
+}
+
 def allDependenciesForPlatform(String platform) {
     def dependencies = []
 
     dependencies += project(':core')
 
-    dependencies += ':basics'
-    dependencies += ':basics-ui'
-    dependencies += 'org.jocl:jocl:0.1.9'
+    dependencies += "fr.minibilles.basics:core:1.0.0"
+    dependencies += "fr.minibilles.basics:ui-${platform}:1.0.0"
+    dependencies += "org.jocl:jocl:0.1.9"
 
-    dependencies += ":swt-${platform}"
     /*
     switch(platform) {
         case 'windows':
@@ -34,8 +48,7 @@ def allDependenciesForPlatform(String platform) {
 
 dependencies {
     // to add new dependencies for compile add them in allDependenciesForPlatform method
-    def platform = System.getProperty('os.name').toLowerCase().split()[0]
-    for (def dependency : allDependenciesForPlatform(platform)) {
+    for (def dependency : allDependenciesForPlatform(platform() + arch())) {
         compile dependency
     }
 }
@@ -71,9 +84,9 @@ def resolvedDependencies(String platform) {
 }
 
 task macDistribution(type: Tar, dependsOn: 'assemble') {
-    def platform = "mac"
+    def platform = "mac64"
 
-    def templateDir = new File(rootTemplateDir, platform)
+    def templateDir = new File(rootTemplateDir, "mac")
     def executable = "MatrixStudio.app/Contents/MacOS/MatrixStudio"
     def jarPath = "MatrixStudio.app/Contents/MacOS/jars"
 
@@ -93,10 +106,10 @@ task macDistribution(type: Tar, dependsOn: 'assemble') {
     compression = Compression.GZIP
 }
 
-task linuxDistribution(type: Tar, dependsOn: 'assemble') {
-    def platform = "linux"
+task linux64Distribution(type: Tar, dependsOn: 'assemble') {
+    def platform = "linux64"
 
-    def templateDir = new File(rootTemplateDir, platform)
+    def templateDir = new File(rootTemplateDir, "linux")
     def executable = "MatrixStudio/MatrixStudio"
     def jarPath = "MatrixStudio/jars"
 
@@ -116,10 +129,10 @@ task linuxDistribution(type: Tar, dependsOn: 'assemble') {
     compression = Compression.GZIP
 }
 
-task windowsDistribution(type: Zip, dependsOn: 'assemble') {
-    def platform = "windows"
+task windows32Distribution(type: Zip, dependsOn: 'assemble') {
+    def platform = "windows32"
 
-    def templateDir = new File(rootTemplateDir, platform)
+    def templateDir = new File(rootTemplateDir, "windows")
     def jarPath = "MatrixStudio/jars"
 
     into (".") { from fileTree(templateDir) }
@@ -129,7 +142,20 @@ task windowsDistribution(type: Zip, dependsOn: 'assemble') {
     destinationDir = destDir
 }
 
-task distribution (dependsOn: ['macDistribution','linuxDistribution', "windowsDistribution"])
+task windows64Distribution(type: Zip, dependsOn: 'assemble') {
+    def platform = "windows64"
+
+    def templateDir = new File(rootTemplateDir, "windows")
+    def jarPath = "MatrixStudio/jars"
+
+    into (".") { from fileTree(templateDir) }
+    into (jarPath) { from resolvedDependencies(platform)}
+
+    baseName = "MatrixStudio-${project.ext.daily ? 'daily' : "release"}-${platform}"
+    destinationDir = destDir
+}
+
+task distribution (dependsOn: ['macDistribution','linux64Distribution', "windows32Distribution", "windows64Distribution"])
 
 apply plugin: 'com.jfrog.bintray'
 

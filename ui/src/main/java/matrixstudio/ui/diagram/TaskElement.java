@@ -1,5 +1,15 @@
 package matrixstudio.ui.diagram;
 
+import fr.minibilles.basics.geometry.Geometry;
+import fr.minibilles.basics.ui.diagram.DiagramContext;
+import fr.minibilles.basics.ui.diagram.Element;
+import fr.minibilles.basics.ui.diagram.gc.GC;
+import fr.minibilles.basics.ui.diagram.gc.GcUtils;
+import fr.minibilles.basics.ui.diagram.interaction.Handle;
+import fr.minibilles.basics.ui.diagram.interaction.InteractionLine;
+import fr.minibilles.basics.ui.diagram.interaction.InteractionObject;
+import java.text.ParseException;
+import java.util.List;
 import matrixstudio.formula.EvaluationException;
 import matrixstudio.formula.FormulaCache;
 import matrixstudio.model.Kernel;
@@ -9,17 +19,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
-import org.xid.basics.geometry.Geometry;
-import org.xid.basics.ui.diagram.DiagramContext;
-import org.xid.basics.ui.diagram.Element;
-import org.xid.basics.ui.diagram.gc.GC;
-import org.xid.basics.ui.diagram.gc.GcUtils;
-import org.xid.basics.ui.diagram.interaction.Handle;
-import org.xid.basics.ui.diagram.interaction.InteractionLine;
-import org.xid.basics.ui.diagram.interaction.InteractionObject;
-
-import java.text.ParseException;
-import java.util.List;
 
 
 public class TaskElement extends Element.Stub implements Element, RectangleElement {

@@ -1,7 +1,7 @@
 package matrixstudio.model;
 
-import org.xid.basics.model.ChangeRecorder;
-import org.xid.basics.serializer.Boost;
+import fr.minibilles.basics.model.ChangeRecorder;
+import fr.minibilles.basics.serializer.Boost;
 
 /**
  * Parameter for simulation

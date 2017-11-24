@@ -1,6 +1,6 @@
 package matrixstudio.ui;
 
-import org.xid.basics.ui.Resources;
+import fr.minibilles.basics.ui.Resources;
 
 public interface RendererContext {
 
