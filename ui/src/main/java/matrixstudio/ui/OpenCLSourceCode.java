@@ -1,12 +1,11 @@
 package matrixstudio.ui;
 
-import org.eclipse.swt.SWT;
-import org.xid.basics.ui.field.text.SourceCode;
-import org.xid.basics.ui.field.text.SourceCodeElement;
-
+import fr.minibilles.basics.ui.field.text.SourceCode;
+import fr.minibilles.basics.ui.field.text.SourceCodeElement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
+import org.eclipse.swt.SWT;
 
 public class OpenCLSourceCode extends SourceCode {
 

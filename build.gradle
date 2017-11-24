@@ -6,19 +6,13 @@ allprojects {
     apply plugin: 'java'
 
     ext.daily = true
+    ext.basics_version = "1.0.1"
 
     group 'org.matrixstudio'
     version = '1.0.0'
 
     repositories {
-        mavenCentral()
-
-        flatDir {
-            dirs (
-                rootProject.file('libraries/swt'),
-                rootProject.file("libraries/basics-1.0.m3")
-            )
-        }
+        jcenter()
     }
 
     dependencies {

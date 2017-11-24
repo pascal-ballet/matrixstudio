@@ -1,11 +1,11 @@
 package matrixstudio.ui.controller;
 
+import fr.minibilles.basics.ui.BasicsUI;
+import fr.minibilles.basics.ui.controller.Controller;
+import fr.minibilles.basics.ui.field.CompositeField;
 import matrixstudio.kernel.Simulator;
 import matrixstudio.model.Matrix;
 import matrixstudio.ui.MatrixField;
-import org.xid.basics.ui.BasicsUI;
-import org.xid.basics.ui.controller.Controller;
-import org.xid.basics.ui.field.CompositeField;
 
 
 public class MatrixController extends Controller<Matrix> {

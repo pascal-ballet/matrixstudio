@@ -7,14 +7,15 @@ out
 .idea
 
 ## Eclipse ignore
-*.classpath
-*.project
-**/bin/*
-**/.settings/*
+**/bin
+**/.settings
+.classpath
+.project
 
 ## Gradle ignore
 **/build/
 .gradle
+
 
 ## Crash log
 *.log

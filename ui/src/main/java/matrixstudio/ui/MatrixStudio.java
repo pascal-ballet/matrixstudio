@@ -1,5 +1,19 @@
 package matrixstudio.ui;
 
+import fr.minibilles.basics.model.ChangeRecorder;
+import fr.minibilles.basics.notification.Notification;
+import fr.minibilles.basics.notification.NotificationListener;
+import fr.minibilles.basics.progress.ActionMonitor;
+import fr.minibilles.basics.ui.BasicsUI;
+import fr.minibilles.basics.ui.PlatformUtil;
+import fr.minibilles.basics.ui.action.Action;
+import fr.minibilles.basics.ui.action.ActionExecuter;
+import fr.minibilles.basics.ui.dialog.FieldShellToolkit;
+import fr.minibilles.basics.ui.field.BorderField;
+import fr.minibilles.basics.ui.field.CompositeField;
+import fr.minibilles.basics.ui.field.ConsoleField;
+import fr.minibilles.basics.ui.field.MultiTabField;
+import fr.minibilles.basics.ui.field.PropertiesField;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,23 +28,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.xid.basics.model.ChangeRecorder;
-import org.xid.basics.notification.Notification;
-import org.xid.basics.notification.NotificationListener;
-import org.xid.basics.progress.ActionMonitor;
-import org.xid.basics.ui.BasicsUI;
-import org.xid.basics.ui.PlatformUtil;
-import org.xid.basics.ui.action.Action;
-import org.xid.basics.ui.action.ActionExecuter;
-import org.xid.basics.ui.dialog.FieldShellToolkit;
-import org.xid.basics.ui.field.BorderField;
-import org.xid.basics.ui.field.CompositeField;
-import org.xid.basics.ui.field.ConsoleField;
-import org.xid.basics.ui.field.MultiTabField;
-import org.xid.basics.ui.field.PropertiesField;
 
 
 public class MatrixStudio implements SimulatorContext, StudioContext {
+
+
 
 	private String version;
 	private String date;

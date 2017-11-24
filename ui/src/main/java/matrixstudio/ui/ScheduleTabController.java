@@ -1,17 +1,16 @@
 package matrixstudio.ui;
 
+import fr.minibilles.basics.notification.Notification;
+import fr.minibilles.basics.notification.NotificationListener;
+import fr.minibilles.basics.ui.BasicsUI;
+import fr.minibilles.basics.ui.controller.Controller;
+import fr.minibilles.basics.ui.diagram.Element;
+import fr.minibilles.basics.ui.field.CompositeField;
+import fr.minibilles.basics.ui.field.DiagramField;
+import java.util.List;
 import matrixstudio.model.Model;
 import matrixstudio.model.Scheduler;
 import matrixstudio.ui.diagram.SchedulerDiagram;
-import org.xid.basics.notification.Notification;
-import org.xid.basics.notification.NotificationListener;
-import org.xid.basics.ui.BasicsUI;
-import org.xid.basics.ui.controller.Controller;
-import org.xid.basics.ui.diagram.Element;
-import org.xid.basics.ui.field.CompositeField;
-import org.xid.basics.ui.field.DiagramField;
-
-import java.util.List;
 
 public class ScheduleTabController extends Controller<Model> {
 
