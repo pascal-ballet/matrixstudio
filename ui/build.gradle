@@ -12,28 +12,23 @@ def allDependenciesForPlatform(String platform) {
     dependencies += ':basics-ui'
     dependencies += 'org.jocl:jocl:0.1.9'
 
-    dependencies += "org.lwjgl:lwjgl:${lwjglVersion}"
-    dependencies += "org.joml:joml:${jomlVersion}"
-
     dependencies += ":swt-${platform}"
+    /*
     switch(platform) {
         case 'windows':
-            dependencies += "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-windows"
             break
 
         case 'linux':
-            dependencies += "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-linux"
             break
 
         case 'mac':
             dependencies += ':basics-ui-cocoa'
-            dependencies += "org.lwjgl:lwjgl-platform:${lwjglVersion}:natives-osx"
             break
 
         default:
             throw new Exception('Unknown OS')
     }
-
+    */
     return dependencies
 }
 
