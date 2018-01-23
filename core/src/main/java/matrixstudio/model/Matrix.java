@@ -17,6 +17,8 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
 
 	private boolean ARGB = false;
 
+	private boolean rainbow = false;
+
 	private boolean ndRange = false;
 
 	private String sizeX = "512";
@@ -42,6 +44,9 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
             sizeZ = boost.readString();
 			if(version >= 5) {
 				ARGB = boost.readBoolean();
+			}
+			if(version >= 6) {
+				rainbow = boost.readBoolean();
 			}
         }else {
             boost.readInt(); // deprecated size field.
@@ -100,6 +105,23 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
 		if (ARGB != newValue) {
 			getChangeRecorder().recordChangeAttribute(this, "ARGB", this.ARGB);
 			this.ARGB= newValue;
+		}
+	}
+
+	/**
+	 * <p>Gets rainbow.</p>
+	 */
+	public boolean isRainbow() {
+		return rainbow;
+	}
+
+	/**
+	 * <p>Sets rainbow.</p>
+	 */
+	public void setRainbow(boolean newValue) {
+		if (rainbow != newValue) {
+			getChangeRecorder().recordChangeAttribute(this, "rainbow", this.rainbow);
+			this.rainbow = newValue;
 		}
 	}
 
@@ -271,6 +293,7 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
 		boost.writeString(sizeY);
 		boost.writeString(sizeZ);
 		boost.writeBoolean(ARGB);
+		boost.writeBoolean(rainbow);
 		boost.writeString(name);
 	}
 

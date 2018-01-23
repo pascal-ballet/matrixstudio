@@ -21,7 +21,7 @@ import matrixstudio.model.Task;
 
 public class Tools {
 
-    public static final int BOOST_VERSION = 5;
+    public static final int BOOST_VERSION = 6;
 
 	public static final Random rnd = new Random();
 	public static final String INITIAL_KERNEL =

@@ -31,6 +31,11 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 						g = (value >> 8) & 255;
 						r = (value & 255);
 						b = (value >> 16) & 255;
+						if(matrixInteger.isRainbow() == true) {
+							g = (g *5843) & 255;
+							r = (r * 5843) & 255;
+							b = (b * 5843) & 255;
+						}
 						RGB rgb = new RGB(r, g, b);
 						imageData.setPixel(i, sizeY - j - 1, palette.getPixel(rgb));
 					}
