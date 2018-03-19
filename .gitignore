@@ -16,5 +16,6 @@ out
 **/build/
 .gradle
 
+
 ## Crash log
 *.log

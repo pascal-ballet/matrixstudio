@@ -32,6 +32,8 @@ import org.eclipse.swt.widgets.Shell;
 
 public class MatrixStudio implements SimulatorContext, StudioContext {
 
+
+
 	private String version;
 	private String date;
 
