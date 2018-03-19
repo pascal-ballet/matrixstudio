@@ -120,7 +120,7 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
 	 */
 	public void setRainbow(boolean newValue) {
 		if (rainbow != newValue) {
-			getChangeRecorder().recordChangeAttribute(this, "rainbow", this.rainbow);
+			getChangeRecorder().recordChangeAttribute(this, "Rainbow", this.rainbow);
 			this.rainbow = newValue;
 		}
 	}

@@ -112,7 +112,7 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
         if (getModel().getKernelCount() > 0) {
             GcUtils.drawStringAligned(gc, getName(), point[0], point[1] - 8f, Geometry.CENTER);
         } else {
-            GcUtils.drawImageAligned(gc, context.getResources().getImage("error_tsk.gif"), point[0] - 40f, point[1] - 14f, Geometry.NORTH_WEST);
+            //GcUtils.drawImageAligned(gc, context.getResources().getImage("error_tsk.gif"), point[0] - 40f, point[1] - 14f, Geometry.NORTH_WEST);
             GcUtils.drawStringAligned(gc, "[empty]", point[0], point[1] - 8f, Geometry.CENTER);
         }
 
