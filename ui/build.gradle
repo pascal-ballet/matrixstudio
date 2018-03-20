@@ -71,10 +71,11 @@ task macDistribution(type: Tar, dependsOn: 'assemble') {
     def platform = "mac64"
 
     def templateDir = new File(rootTemplateDir, "mac")
-    def executable = "MatrixStudio.app/Contents/MacOS/MatrixStudio"
-    def jarPath = "MatrixStudio.app/Contents/MacOS/jars"
+    def appPath = "MatrixStudio.app"
+    def executable = "${appPath}/Contents/MacOS/MatrixStudio"
+    def jarPath = "${appPath}/Contents/MacOS/jars"
 
-    into (".") {
+    into (appPath) {
         from fileTree(templateDir) { exclude(executable) }
         from fileTree(templateDir) {
             include(executable)
@@ -94,10 +95,11 @@ task linux64Distribution(type: Tar, dependsOn: 'assemble') {
     def platform = "linux64"
 
     def templateDir = new File(rootTemplateDir, "linux")
-    def executable = "MatrixStudio/MatrixStudio"
-    def jarPath = "MatrixStudio/jars"
+    def appPath = "MatrixStudio"
+    def executable = "${appPath}/MatrixStudio"
+    def jarPath = "${appPath}/jars"
 
-    into (".") {
+    into (appPath) {
         from fileTree(templateDir) { exclude(executable) }
         from fileTree(templateDir) {
             include(executable)
@@ -117,9 +119,10 @@ task windows32Distribution(type: Zip, dependsOn: 'assemble') {
     def platform = "windows32"
 
     def templateDir = new File(rootTemplateDir, "windows")
-    def jarPath = "MatrixStudio/jars"
+    def appPath = "MatrixStudio"
+    def jarPath = "${appPath}/jars"
 
-    into (".") { from fileTree(templateDir) }
+    into (appPath) { from fileTree(templateDir) }
     into (jarPath) { from resolvedDependencies(platform)}
 
     baseName = "MatrixStudio-${project.ext.daily ? 'daily' : "release"}-${platform}"
@@ -130,9 +133,10 @@ task windows64Distribution(type: Zip, dependsOn: 'assemble') {
     def platform = "windows64"
 
     def templateDir = new File(rootTemplateDir, "windows")
-    def jarPath = "MatrixStudio/jars"
+    def appPath = "MatrixStudio"
+    def jarPath = "${appPath}/jars"
 
-    into (".") { from fileTree(templateDir) }
+    into (appPath) { from fileTree(templateDir) }
     into (jarPath) { from resolvedDependencies(platform)}
 
     baseName = "MatrixStudio-${project.ext.daily ? 'daily' : "release"}-${platform}"
