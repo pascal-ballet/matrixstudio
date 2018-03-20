@@ -161,7 +161,7 @@ bintray {
         repo = 'generic'
         name = 'matrixstudio'
         userOrg = 'jeancharles-roger'
-        githubRepo = 'jeancharles-roger/matrixstudio'
+        githubRepo = 'pascal-ballet/matrixstudio'
         githubReleaseNotesFile = "ChangeLog.md"
 
         version {
