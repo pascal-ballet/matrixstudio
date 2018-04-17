@@ -20,11 +20,24 @@ Download daily builds (3D):
 
 ## Getting started
 
-You can start MatrixStudio with:
+If you want to use Matrix Studio, just download the distribution for your platform on using on of the links above.
 
+If you want to tinker with the code: fork or clone the repository:
+```sh
+git clone https://github.com/pascal-ballet/matrixstudio.git
+```
+
+Then you can run Matrix Studio with:
+ 
 ```gradle
+cd matrixstudio
 ./gradlew run
 ```
+
+It's easy too import the project in any IDE that supports gradle (IntelliJ, Eclipse with BuildShip and Netbeans with the gradle plugin).
+
+To run Matrix Studio from the IDE, the main class is `matrixstudio.ui.MatrixStudio`.
+If you're using a mac, you must add `-XstartOnFirstThread` on the JVM arguments ([reference](https://www.eclipse.org/swt/macosx/)).
 
 ## Authors
 
