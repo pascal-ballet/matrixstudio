@@ -1,6 +1,6 @@
 # Matrix Studio
 
-[![Build Status](https://travis-ci.org/jeancharles-roger/matrixstudio.svg?branch=master)](https://travis-ci.org/jeancharles-roger/matrixstudio)
+[![Build Status](https://travis-ci.org/pascal-ballet/matrixstudio.svg?branch=master)](https://travis-ci.org/jeancharles-roger/matrixstudio)
 [![Join the chat at https://gitter.im/jeancharles-roger/matrixstudio](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jeancharles-roger/matrixstudio?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Matrix Studio is an Integrated Development Environment to develop OpenCL software. 
