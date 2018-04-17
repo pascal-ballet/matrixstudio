@@ -2,6 +2,6 @@
 jar.baseName = "matrixstudio-core"
 
 dependencies {
-    compile "fr.minibilles.basics:core:${basics_version}"
+    compile "fr.minibilles.basics:basics-core:${basics_version}"
     compile group: 'org.jocl', name: 'jocl', version: '0.1.9'
 }

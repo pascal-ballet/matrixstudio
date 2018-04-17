@@ -32,8 +32,8 @@ def allDependenciesForPlatform(String platform) {
 
     dependencies += project(':core')
 
-    dependencies += "fr.minibilles.basics:core:${basics_version}"
-    dependencies += "fr.minibilles.basics:ui-${platform}:${basics_version}"
+    dependencies += "fr.minibilles.basics:basics-core:${basics_version}"
+    dependencies += "fr.minibilles.basics:basics-ui-${platform}:${basics_version}"
     dependencies += "org.jocl:jocl:0.1.9"
 
     return dependencies
