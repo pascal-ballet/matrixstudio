@@ -1,5 +1,14 @@
 import java.text.SimpleDateFormat
 
+
+apply plugin: 'application'
+mainClassName = 'matrixstudio.ui.MatrixStudio'
+
+if (platform() == "mac") {
+    applicationDefaultJvmArgs = ["-XstartOnFirstThread"]
+}
+
+
 project.ext.lwjglVersion = "3.0.0b"
 project.ext.jomlVersion = "1.7.1"
 

@@ -18,6 +18,13 @@ Download daily builds (3D):
 - [Windows version](https://bintray.com/jeancharles-roger/generic/download_file?file_path=matrixstudio%2Fdaily%2FMatrixStudio-daily-windows-1.0.0.zip)
 - [Linux version](https://bintray.com/jeancharles-roger/generic/download_file?file_path=matrixstudio%2Fdaily%2FMatrixStudio-daily-linux-1.0.0.tar.gz)
 
+## Getting started
+
+You can start MatrixStudio with:
+
+```gradle
+./gradlew run
+```
 
 ## Authors
 
