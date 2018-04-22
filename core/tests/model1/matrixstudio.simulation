@@ -14,8 +14,8 @@
     (scheduler
         (tasks
             (task (position 100 200) (out 1 2) (kernel Kernel1))
-            (task (position 300 100) (int 0) (out 3) (kernel Kernel2))
-            (task (position 300 300) (int 0) (out 3) (kernel Kernel2))
+            (task (position 300 100) (in 0) (out 3) (kernel Kernel2))
+            (task (position 300 300) (in 0) (out 3) (kernel Kernel2))
             (task (position 500 200) (in 1 2) (kernel Kernel1))
         )
     )
