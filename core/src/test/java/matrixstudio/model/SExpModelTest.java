@@ -16,5 +16,9 @@ public class SExpModelTest {
 		Assert.assertEquals("Library", model.getCode(0).getName());
 		Assert.assertEquals("Kernel1", model.getCode(1).getName());
 		Assert.assertEquals("Kernel2", model.getCode(2).getName());
+
+		Assert.assertEquals(4, model.getScheduler().getTaskCount());
+		Assert.assertEquals(2, model.getScheduler().getTask(0).getTaskOutCount());
+		Assert.assertEquals(2, model.getScheduler().getTask(3).getTaskInCount());
 	}
 }
