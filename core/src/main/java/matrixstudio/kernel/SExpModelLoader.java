@@ -16,6 +16,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import javax.imageio.ImageIO;
 import matrixstudio.model.Code;
 import matrixstudio.model.Device;
@@ -146,7 +147,6 @@ public class SExpModelLoader {
 			throw new IOException(message.toString());
 		}
 
-
 		//return casted result.
 		//If result isn't of klass, it throws a ClassCastException.
 		return result == null ? null : klass.cast(result);
@@ -178,7 +178,7 @@ public class SExpModelLoader {
 			if ( "code".equals(type) ) {
 				for (int i=1; i<currentSexp.getChildCount(); i++ ) {
 					Code child = create(Code.class, currentSexp.getChild(i));
-					result.addCode(child);
+					result.addCodeAndOpposite(child);
 				}
 			} else
 			if ( "scheduler".equals(type) ) {
@@ -232,7 +232,7 @@ public class SExpModelLoader {
 		return result;
 	}
 
-	protected String readMatrix(SExp sexp, Matrix matrix) throws IOException {
+	protected <T extends Matrix> T readMatrix(SExp sexp, T matrix, BiConsumer<T, BufferedImage> initializer) throws IOException {
 		int current = 1;
 		String source = null;
 		int count = sexp.getChildCount();
@@ -270,20 +270,33 @@ public class SExpModelLoader {
 			}
 			current += 1;
 		}
-		return source;
-	}
-
-	protected MatrixInteger createMatrixInteger(SExp sexp) throws IOException {
-		MatrixInteger result = new MatrixInteger();
-		String source = readMatrix(sexp, result);
 
 		if (source != null) {
 			BufferedImage image = ImageIO.read(resolve(source).toFile());
+			String previousX = matrix.getSizeX();
+			String previousY = matrix.getSizeY();
+
+			matrix.setSizeX(Integer.toString(image.getWidth()));
+			matrix.setSizeY(Integer.toString(image.getHeight()));
+
+			matrix.initBlank(true);
+			initializer.accept(matrix, image);
+
+			matrix.setSizeX(previousX);
+			matrix.setSizeY(previousY);
+		} else {
+			matrix.initBlank(true);
+		}
+		context.push(matrix);
+		context.pop(matrix);
+
+		return matrix;
+	}
+
+	protected MatrixInteger createMatrixInteger(SExp sexp) throws IOException {
+		return readMatrix(sexp, new MatrixInteger(), (matrix, image) -> {
 			int x = image.getWidth();
 			int y = image.getHeight();
-			result.setSizeX(Integer.toString(x));
-			result.setSizeY(Integer.toString(y));
-			result.initBlank(true);
 			for (int i = 0; i < x; i++) {
 				for (int j = 0; j < y; j++) {
 					int value = image.getRGB(i, j);
@@ -291,68 +304,39 @@ public class SExpModelLoader {
 					int G = (value & 0x00FF00) >> 8;
 					int B = (value & 0xFF0000) >> 16;
 					int val = (R << 16) + (G << 8) + B;
-					result.setValueAt(i, j, 0, val);
-					result.setInitValueAt(i, j, 0, val);
+					matrix.setValueAt(i, j, 0, val);
+					matrix.setInitValueAt(i, j, 0, val);
 				}
 			}
-		} else {
-			result.initBlank(true);
-		}
-		context.push(result);
-		context.pop(result);
-		return result;
+		});
 	}
 
 	protected MatrixFloat createMatrixFloat(SExp sexp) throws IOException {
-		MatrixFloat result = new MatrixFloat();
-		String source = readMatrix(sexp, result);
-
-		if (source != null) {
-			BufferedImage image = ImageIO.read(resolve(source).toFile());
+		return readMatrix(sexp, new MatrixFloat(), (matrix, image) -> {
 			int x = image.getWidth();
 			int y = image.getHeight();
-			result.setSizeX(Integer.toString(x));
-			result.setSizeY(Integer.toString(y));
-			result.initBlank(true);
 			for(int i=0; i<x; i++) {
 				for (int j = 0; j < y; j++) {
 					int value = image.getRGB(i, j);
-					result.setValueAt(i, j, 0, value/256f);
-					result.setInitValueAt(i, j, 0, value/256f);
+					matrix.setValueAt(i, j, 0, value/256f);
+					matrix.setInitValueAt(i, j, 0, value/256f);
 				}
 			}
-		} else {
-			result.initBlank(true);
-		}
-		context.push(result);
-		context.pop(result);
-		return result;
+		});
 	}
 
 	protected MatrixULong createMatrixLong(SExp sexp) throws IOException {
-		MatrixULong result = new MatrixULong();
-		String source = readMatrix(sexp, result);
-
-		if (source != null) {
-			BufferedImage image = ImageIO.read(resolve(source).toFile());
+		return readMatrix(sexp, new MatrixULong(), (matrix, image) -> {
 			int x = image.getWidth();
 			int y = image.getHeight();
-			result.setSizeX(Integer.toString(x));
-			result.setSizeY(Integer.toString(y));
-			result.initBlank(true);
 			for(int i=0; i<x; i++) {
 				for (int j = 0; j < y; j++) {
 					int value = image.getRGB(i, j);
-					result.setValueAt(i, j, 0, value/256f);
-					result.setInitValueAt(i, j, 0, value/256f);
+					matrix.setValueAt(i, j, 0, value/256f);
+					matrix.setInitValueAt(i, j, 0, value/256f);
 				}
 			}
-		} else {
-			result.initBlank(true);
-		}
-		context.push(result);
-		context.pop(result);
-		return result;
+		});
 	}
 
 	protected String readCode(SExp sexp, Code code) throws IOException {
@@ -469,7 +453,7 @@ public class SExpModelLoader {
 			if ( "device".equals(type) ) {
 				result.setDevice(S.sexpToEnum(Device.class, currentSexp));
 			} else
-			if ( "deviceorder".equals(type) ) {
+			if ( "order".equals(type) ) {
 				result.setDeviceOrder(S.sexpToInt(currentSexp));
 			} else
 			{

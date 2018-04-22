@@ -11,7 +11,8 @@ public class ModelReferencer implements Referencer {
 
 	private final Map<Object, String> references = new HashMap<Object, String>();
 
-	private int taskCount = 0;
+	/** Starts task count at 1 since 0 is considered null */
+	private int taskCount = 1;
 
 	@Override
 	public boolean pushContext(Object object) {
