@@ -86,13 +86,13 @@ public class Tools {
 	}
 	
 	/**
-	 * <p>Loads a file as a MatrixStudio model.</p>
-	 * @param file to load
+	 * <p>Loads a file '.mss' as a MatrixStudio model.</p>
+	 * @param file to file
 	 * @param safeRead only tries to read kernels and libraries to read corrupted files (may not work).
 	 * @return a {@link Model}
 	 * @throws IOException if something goes wrong.
 	 */
-	public static Model load(File file, boolean safeRead) throws IOException {
+	public static Model loadMssFile(File file, boolean safeRead) throws IOException {
 		final JBoost boost = createBoost(safeRead);
 		final ZipInputStream stream = new ZipInputStream(new FileInputStream(file));
 		try {
@@ -105,11 +105,11 @@ public class Tools {
 	
 	/**
 	 * <p>Saves a MatrixStudio model to a file.</p>
-	 * @param model to save
-	 * @param file where to save
+	 * @param model to file
+	 * @param file where to file
 	 * @throws IOException if something goes wrong.
 	 */
-	public static void save(Model model, File file) throws IOException {
+	public static void saveMssFile(Model model, File file) throws IOException {
 		// saves model to tempory file
 		File tmpFile = File.createTempFile("matrixstudio", "mss");
 		final JBoost boost = createBoost(false);

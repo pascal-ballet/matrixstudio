@@ -341,10 +341,10 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 
 		try {
 			// loads model
-			model = Tools.load(file, safeRead);
+			model = Tools.loadMssFile(file, safeRead);
 			modelFile = file;
 		} catch (IOException e) {
-			error("Cannot load simulation from file '"+ file +"': " + e.getMessage());
+			error("Cannot loadMssFile simulation from file '"+ file +"': " + e.getMessage());
 			return false;
 		}
 		log("Simulation successfully loaded from file '"+ file +"'.");
@@ -363,10 +363,10 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 
 		try {
 			// loads model
-			model = Tools.load(file, false);
+			model = Tools.loadMssFile(file, false);
 			modelFile = file;
 		} catch (IOException e) {
-			error("Cannot load simulation from file '"+ file +"': " + e.getMessage());
+			error("Cannot loadMssFile simulation from file '"+ file +"': " + e.getMessage());
 			return "EXCEPTION in LoadModel:" + e.getMessage();
 		}
 		log("Simulation successfully loaded from file '"+ file +"'.");
@@ -380,7 +380,7 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 		
 		File file = modelFile;
 		if (forceDialog || modelFile == null ) {
-			// selects a file where to save
+			// selects a file where to saveMssFile
 			final FileDialog dialog = new FileDialog(shell, SWT.SAVE);
 	        dialog.setText("Save the simulation as...");
 	        dialog.setFilterExtensions(new String[] { "*.mss", "*.*" });
@@ -400,10 +400,10 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 		
 		try {
 			// saves model
-			Tools.save(model, file);
+			Tools.saveMssFile(model, file);
 			modelFile = file;
 		} catch (IOException e) {
-			error("Cannot save simulation to file '"+ file +"': " + e.getMessage());
+			error("Cannot saveMssFile simulation to file '"+ file +"': " + e.getMessage());
 			return false;
 		}
 		log("Simulation successfully saved to file '"+ file + "'.");

@@ -487,7 +487,7 @@ public class MatrixTabController extends Controller<Model>{
 						startRecordMPEG(file);
 						studioContext.log("Animation will be saved to file '" + resultFilename + "'.");
 					} catch (Exception e) {
-						studioContext.log("Can't save animation to file '" + resultFilename + "'.\n" + " Exception:" + e.getMessage());
+						studioContext.log("Can't saveMssFile animation to file '" + resultFilename + "'.\n" + " Exception:" + e.getMessage());
 						e.printStackTrace();
 					}
 					return Action.STATUS_OK;					
@@ -537,7 +537,7 @@ public class MatrixTabController extends Controller<Model>{
 						startRecordPNG(file);
 						studioContext.log("Images will be saved to file '" + resultFilename + "_matrixName_timeStep.png'.");
 					} catch (Exception e) {
-						studioContext.log("Can't save animation to file '" + resultFilename + "'.\n" + " Exception:" + e.getMessage());
+						studioContext.log("Can't saveMssFile animation to file '" + resultFilename + "'.\n" + " Exception:" + e.getMessage());
 						e.printStackTrace();
 					}
 					return Action.STATUS_OK;					
