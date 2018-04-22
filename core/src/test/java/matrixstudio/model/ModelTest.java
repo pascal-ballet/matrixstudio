@@ -1,13 +1,12 @@
 package matrixstudio.model;
 
+import java.io.File;
 import matrixstudio.kernel.Tools;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
-
 /**
- * Tests load and save models
+ * Tests loadMssFile and saveMssFile models
  */
 public class ModelTest {
 
@@ -16,9 +15,9 @@ public class ModelTest {
         Model model = createModel();
 
         File file = File.createTempFile("matrixstudio", ".mss");
-        Tools.save(model,file);
+        Tools.saveMssFile(model,file);
 
-        Model loaded = Tools.load(file, false);
+        Model loaded = Tools.loadMssFile(file, false);
 
         Assert.assertEquals(1, loaded.getMatrixCount());
         Assert.assertEquals(1, loaded.getParameterCount());

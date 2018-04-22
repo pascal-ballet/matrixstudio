@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -102,7 +103,36 @@ public class Tools {
 			boost.close();
 		}
 	}
-	
+
+	/**
+	 * <p>Loads a file 'matrixstudio.simulation' as a MatrixStudio model.</p>
+	 * @param path from path
+	 * @return a {@link Model}
+	 * @throws IOException if something goes wrong.
+	 */
+	public static Model loadMatrixStudioSimulationFile(Path path) throws IOException {
+		SExpModelLoader loader = new SExpModelLoader(path);
+		return loader.readModel();
+	}
+
+	/**
+	 * <p>Loads a file as a MatrixStudio model using '.mss' or
+	 * 'matrixstudio.simulation' depending on the path extension.</p>
+	 * @param path file path to load
+	 * @return a model
+	 * @throws IOException if something goes wrong
+	 */
+	public static Model load(Path path) throws IOException {
+		String filename = path.getFileName().toString();
+		if (filename.endsWith(".mss")) {
+			return loadMssFile(path.toFile(), false);
+		} else if (filename.equals("matrixstudio.simulation")) {
+			return loadMatrixStudioSimulationFile(path);
+		} else {
+			throw new IOException("Unknown file type '"+ path +"'");
+		}
+	}
+
 	/**
 	 * <p>Saves a MatrixStudio model to a file.</p>
 	 * @param model to file
