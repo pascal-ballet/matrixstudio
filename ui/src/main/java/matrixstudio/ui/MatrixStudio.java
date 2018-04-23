@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 import matrixstudio.kernel.CLUtil;
+import matrixstudio.kernel.SExpModel;
 import matrixstudio.kernel.Simulator;
 import matrixstudio.kernel.SimulatorContext;
 import matrixstudio.kernel.Tools;
@@ -329,7 +330,7 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 	public boolean loadModel(boolean safeRead) {
 		final FileDialog dialog = new FileDialog(shell, SWT.OPEN);
 		dialog.setText("Open a simulation.");
-        dialog.setFilterExtensions(new String[] { "matrixstudio.simulation", "*.mss", "*.*" });
+        dialog.setFilterExtensions(new String[] { SExpModel.MATRIXSTUDIO_SIMULATION, "*.mss", "*.*" });
         dialog.setFilterNames(new String[] { "Matrix Studio Simulation", "Old Matrix Studio Simulation", "Other files" });
         dialog.setFilterPath(currentPath.toString());
         String resultFilename = dialog.open();
@@ -362,27 +363,33 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 			// selects a file where to file
 			final FileDialog dialog = new FileDialog(shell, SWT.SAVE);
 	        dialog.setText("Save the simulation as...");
-	        dialog.setFilterExtensions(new String[] { "*.mss", "*.*" });
-	        dialog.setFilterNames(new String[] { "Matrix Studio Simulation", "Other files" });
-	        dialog.setFilterPath(currentPath.toString());
+	        dialog.setFilterExtensions(new String[] { SExpModel.MATRIXSTUDIO_SIMULATION, "*.mss", "*.*" });
+			dialog.setFilterNames(new String[] { "Matrix Studio Simulation", "Old Matrix Studio Simulation", "Other files" });
+			dialog.setFilterPath(currentPath.toString());
 	        
 	        String resultFilename = dialog.open();
 	        if ( resultFilename == null ) return false;
-	        
-	        if( !resultFilename.endsWith(".mss") ) {
-	        	resultFilename = resultFilename.concat(".mss");
-	        }
-	        
+
 	        path = Paths.get(resultFilename);
+	        if (dialog.getFilterIndex() == 0) {
+				if (Files.isDirectory(path)) {
+					path = path.resolve(SExpModel.MATRIXSTUDIO_SIMULATION);
+				} else {
+					path = path.getParent().resolve(SExpModel.MATRIXSTUDIO_SIMULATION);
+				}
+			} else if( dialog.getFilterIndex() == 1 && !resultFilename.endsWith(".mss") ) {
+	        	path = path.getParent().resolve(path.getFileName().toString() + ".mss");
+	        }
+
 	        currentPath = path.getParent();
 		}
 		
 		try {
 			// saves model
-			Tools.saveMssFile(model, path.toFile());
+			Tools.save(model, path);
 			modelPath = path;
 		} catch (IOException e) {
-			error("Cannot file simulation to file '"+ path +"': " + e.getMessage());
+			error("Cannot save simulation to file '"+ path +"': " + e.getMessage());
 			return false;
 		}
 		log("Simulation successfully saved to file '"+ path + "'.");

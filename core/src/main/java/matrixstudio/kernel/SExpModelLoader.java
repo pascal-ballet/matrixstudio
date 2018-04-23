@@ -31,8 +31,11 @@ import matrixstudio.model.Parameter;
 import matrixstudio.model.Scheduler;
 import matrixstudio.model.Task;
 
+
+import static matrixstudio.kernel.SExpModel.MATRIXSTUDIO_SIMULATION;
+
 /**
- * {@link SExpModelLoader} is able to loadMssFile a model from a given directory.
+ * {@link SExpModelLoader} is able to load a model from a given directory.
  * <p>
  * The loader will search for a file <code>matrixstudio.simulation</code> which
  * contains all the simulation description and the path to all the external
@@ -42,8 +45,6 @@ import matrixstudio.model.Task;
  * directory.
  */
 public class SExpModelLoader {
-
-	protected static final String MATRIXSTUDIO_SIMULATION = "matrixstudio.simulation";
 
 	protected final VariableResolver resolver = new VariableResolver.Mapped();
 

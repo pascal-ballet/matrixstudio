@@ -159,4 +159,33 @@ public class Tools {
 			throw new IOException("Couldn't write file '"+ file + "'");
 		}
 	}
+
+	/**
+	 * <p>Save model to a file 'matrixstudio.simulation'.</p>
+	 * @param path to path
+	 * @param model the {@link Model} to save
+	 * @throws IOException if something goes wrong.
+	 */
+	public static void saveMatrixStudioSimulationFile(Model model, Path path) throws IOException {
+		SExpModelSaver saver = new SExpModelSaver(model, path);
+		saver.saveModel();
+	}
+
+	/**
+	 * <p>Saves MatrixStudio model to a file using '.mss' or
+	 * 'matrixstudio.simulation' depending on the path extension.</p>
+	 * @param path file path to save
+	 * @param model a model to save
+	 * @throws IOException if something goes wrong
+	 */
+	public static void save(Model model, Path path) throws IOException {
+		String filename = path.getFileName().toString();
+		if (filename.endsWith(".mss")) {
+			saveMssFile(model, path.toFile());
+		} else if (filename.equals("matrixstudio.simulation")) {
+			saveMatrixStudioSimulationFile(model, path);
+		} else {
+			throw new IOException("Unknown file type '"+ path +"'");
+		}
+	}
 }
