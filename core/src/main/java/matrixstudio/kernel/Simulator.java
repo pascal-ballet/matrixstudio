@@ -49,12 +49,16 @@ public class Simulator implements Runnable {
 		int getButton();
 		int getMouseX();
 		int getMouseY();
+		int getMouseZ();
+                int getKey();
 	}
 	
 	private final UserInputProvider emptyProvider = new UserInputProvider() {
 		public int getButton() { return 0; }
 		public int getMouseX() { return -1; }
 		public int getMouseY() { return -1; }
+		public int getMouseZ() { return 0; }
+		public int getKey() { return 0; }
 	};
 	
 	/** Logger */
@@ -339,7 +343,9 @@ public class Simulator implements Runnable {
 	        clSetKernelArg(kernels[k], numArg++, Sizeof.cl_uint, Pointer.to(new int[]{0})); // t
 	        clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // mouseX
 	        clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // mouseY
+	        clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // mouseZ
 	        clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // mouseBtn
+	        clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // key
 
 			clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // workSizeX
 			clSetKernelArg(kernels[k], numArg++, Sizeof.cl_int, Pointer.to(new int[]{0})); // workSizeY
@@ -533,12 +539,14 @@ public class Simulator implements Runnable {
 	int[] pt_steps;
 	int[] pt_mouseX;
 	int[] pt_mouseY;
+	int[] pt_mouseZ;
 	int[] pt_mouseBtn;
+	int[] pt_key;
 	int[] pt_WSX;
 	int[] pt_WSY;
 	int[] pt_WSZ;
 
-    public boolean executeStep(int mouseX, int mouseY, int mouseBtn) {
+    public boolean executeStep(int mouseX, int mouseY, int mouseZ, int mouseBtn, int key) {
 		int rand = 0xFF;
 		if(pt_init == false) {
 			pt_init = true;
@@ -546,7 +554,9 @@ public class Simulator implements Runnable {
 			pt_steps = new int[1];
 			pt_mouseX = new int[1];
 			pt_mouseY = new int[1];
+			pt_mouseZ = new int[1];
 			pt_mouseBtn = new int[1];
+			pt_key = new int[1];
 			pt_WSX = new int[1];
 			pt_WSY = new int[1];
 			pt_WSZ = new int[1];
@@ -570,11 +580,13 @@ public class Simulator implements Runnable {
                     for (int ki = 0; ki < task.getKernelCount(); ki++) {
                         rand = Tools.rnd.nextInt(1073741824);
                         // Update parameters
-                        pt_rand[0] = rand;
-                        pt_steps[0] = nbSteps;
-                        pt_mouseX[0] = mouseX;
-                        pt_mouseY[0] = mouseY;
-                        pt_mouseBtn[0] = mouseBtn;
+                        pt_rand[0]      = rand;
+                        pt_steps[0]     = nbSteps;
+                        pt_mouseX[0]    = mouseX;
+                        pt_mouseY[0]    = mouseY;
+                        pt_mouseZ[0]    = mouseZ;
+                        pt_mouseBtn[0]  = mouseBtn;
+                        pt_key[0]       = key;
                         pt_WSX[0] = evaluateFormula(task.getGlobalWorkSizeX());
                         pt_WSY[0] = evaluateFormula(task.getGlobalWorkSizeY());
                         pt_WSZ[0] = evaluateFormula(task.getGlobalWorkSizeZ());
@@ -586,7 +598,9 @@ public class Simulator implements Runnable {
                         clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_steps));
                         clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_mouseX));
                         clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_mouseY));
+                        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_mouseZ));
                         clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_mouseBtn));
+                        clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_key));
 
                         clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_WSX));
                         clSetKernelArg(kernel, argNum++, Sizeof.cl_uint, Pointer.to(pt_WSY));
@@ -729,7 +743,7 @@ public class Simulator implements Runnable {
 	    	while( isStarted() ) {
 	    		if ( isRunning() ) {
 	    			
-	    			executeStep(inputProvider.getMouseX(), inputProvider.getMouseY(), inputProvider.getButton());
+	    			executeStep(inputProvider.getMouseX(), inputProvider.getMouseY(), inputProvider.getMouseZ(), inputProvider.getButton(), inputProvider.getKey());
 	    			// if step failed, break infinite loop.
 
 	    			if( nbSteps % refreshStep == 0 ) {

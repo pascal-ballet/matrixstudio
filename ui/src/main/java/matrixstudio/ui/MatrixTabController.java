@@ -342,7 +342,7 @@ public class MatrixTabController extends Controller<Model>{
 				
 				if(studioContext.isCompiled()==true) {
 					if(recordingMPEG == true) recordMPEG();
-					if ( simulator.executeStep(0, 0, 0) ) {
+					if ( simulator.executeStep(0, 0, 0, 0, 0) ) {
 						simulator.GetResultCL(getSubject().getMatrixList());
 					} else {
 						simulator.stop();

@@ -44,7 +44,7 @@ public class Kernel extends Code implements ModelObject, BoostObject {
 		proto.append("__kernel void ");
 		proto.append(getName());
 		proto.append("(\n\t");
-		proto.append("uint rand, uint step, uint mouseX, uint mouseY, uint mouseBtn,\n\t");
+		proto.append("uint rand, uint step, uint mouseX, uint mouseY, uint mouseZ, uint mouseBtn, int key,\n\t");
 		proto.append("uint workSizeX, uint workSizeY, uint workSizeZ");
 		for ( Matrix matrix : getModel().getMatrixList() ) {
 			proto.append(",\n\t__global ");
