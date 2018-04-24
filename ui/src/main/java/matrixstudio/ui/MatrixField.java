@@ -168,7 +168,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
                 canvas.addKeyListener(new KeyAdapter() {
                     @Override
                     public void keyPressed(KeyEvent e) {
-                        key = e.character;
+                        key = e.keyCode;
                     }
                     @Override
                     public void keyReleased(KeyEvent e) {
