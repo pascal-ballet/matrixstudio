@@ -11,5 +11,6 @@ import org.eclipse.swt.graphics.Image;
 public interface MatrixRenderer {
 
 	void render(GC gc, RendererContext context, Matrix matrix, int mouseZ);
+	void render3D(GC gc, RendererContext context, Matrix matrix);
 	
 }
