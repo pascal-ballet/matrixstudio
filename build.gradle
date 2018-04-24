@@ -20,5 +20,3 @@ allprojects {
     }
 }
 
-apply plugin: 'application'
-mainClassName = "matrixstudio.ui.MatrixStudio"
