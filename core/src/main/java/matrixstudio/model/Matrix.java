@@ -21,9 +21,9 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
 
 	private boolean ndRange = false;
 
-	private String sizeX = "512";
+	private String sizeX = "10";
 
-	private String sizeY = "256";
+	private String sizeY = "10";
 
 	private String sizeZ = "1";
 

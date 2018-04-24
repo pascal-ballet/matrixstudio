@@ -82,7 +82,8 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				if (mouseZ >= sz) mouseZ = sz - 1;
 				if (mouseZ < 0) mouseZ = 0;
 				if (renderer != null) {
-					renderer.render(gc, MatrixField.this, matrix, mouseZ);
+					//renderer.render(gc, MatrixField.this, matrix, mouseZ);
+                                        renderer.render3D(gc, MatrixField.this, matrix);
 				}
 
 				// Draw information texts about current simulation (time, execution state and recording state).
