@@ -13,6 +13,8 @@ import matrixstudio.model.MatrixFloat;
 import matrixstudio.model.MatrixInteger;
 import matrixstudio.model.MatrixULong;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
@@ -38,6 +40,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 	private int mouseY = -1;
 	private int mouseZ = 0;
 	private int button = 0;
+	private int key = 0;
 
 	public MatrixField(Simulator simulator, String label, int style) {
 		super(label, style);
@@ -75,6 +78,9 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				if (matrix == null || matrix.safeGetSizeXValue() <= 0 || matrix.safeGetSizeYValue() <= 0)
 					return;
 				MatrixRenderer renderer = renderers.get((Class<? extends Matrix>) matrix.getClass());
+				int sz = matrix.safeGetSizeZValue();
+				if (mouseZ >= sz) mouseZ = sz - 1;
+				if (mouseZ < 0) mouseZ = 0;
 				if (renderer != null) {
 					renderer.render(gc, MatrixField.this, matrix, mouseZ);
 				}
@@ -82,10 +88,10 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				// Draw information texts about current simulation (time, execution state and recording state).
 				gc.setForeground(resources.getSystemColor(SWT.COLOR_CYAN));
 				if (simulator.getInitialSimulationTime() < 0)
-					gc.drawString("Step=" + simulator.getNbSteps() + "   Time=0", 0, 0, true);
+					gc.drawString("Step=" + simulator.getNbSteps() + "   Time=0" + "   Z="+mouseZ, 0, 0, true);
 				else
 					gc.drawString("Step=" + simulator.getNbSteps() + "   Time="
-							+ (System.currentTimeMillis() - simulator.getInitialSimulationTime()) / 1000, 0, 0, true);
+							+ (System.currentTimeMillis() - simulator.getInitialSimulationTime()) / 1000 + "   Z="+mouseZ, 0, 0, true);
 				if (simulator.isStarted() == false) {
 					gc.drawString("STOP", 0, 16, true);
 				}
@@ -101,6 +107,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 					gc.setForeground(resources.getSystemColor(SWT.COLOR_RED));
 					gc.drawString("REC", 0, 32, true);
 				}
+                                displayMouseInfo();
 
 			}
 		});
@@ -118,25 +125,8 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 
 				mouseX = (e.x * xSize) / canvas.getSize().x;
 				mouseY = matrix.safeGetSizeYValue() - (e.y * ySize) / canvas.getSize().y - 1;
-				String name = matrix.getName();
 
-				final StringBuilder builder = new StringBuilder();
-				builder.append(name);
-				builder.append("[");
-				builder.append(mouseX);
-				builder.append(",");
-				builder.append(mouseY);
-				builder.append(",");
-				builder.append(mouseZ);
-				builder.append("] = ");
-				final Number valueAt = matrix.getValueAt(mouseX, mouseY, mouseZ);
-				builder.append(valueAt);
-				if (valueAt instanceof Integer) {
-					builder.append("\n0x");
-					builder.append(Integer.toHexString(valueAt.intValue()).toUpperCase());
-				}
-
-				tooltip = builder.toString();
+                                displayMouseInfo();
 
 			}
 		});
@@ -158,27 +148,42 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 
 		canvas.addMouseWheelListener(new MouseWheelListener() {
 			@Override
-			public void mouseScrolled(MouseEvent mouseEvent) {
+			public void mouseScrolled(MouseEvent mouseEvent) {                       
 				if (matrix == null || canvas == null)
 					return;
 				int dz = mouseEvent.count;
-				System.err.println(">" + dz);
+                                if(dz > 0) dz = 1;
+                                if(dz < 0) dz = -1;
 				mouseZ += dz;
-				if (mouseZ < 0)
-					mouseZ = 0;
-				int z = matrix.safeGetSizeZValue();
-				if (mouseZ >= z)
-					mouseZ = z - 1;
+                                
+				int sz = matrix.safeGetSizeZValue();
+				if (mouseZ >= sz)   mouseZ = sz - 1;
+				if (mouseZ < 0)     mouseZ = 0;
+
 				canvas.redraw();
+                                displayMouseInfo();
 			}
 		});
 
+                canvas.addKeyListener(new KeyAdapter() {
+                    @Override
+                    public void keyPressed(KeyEvent e) {
+                        key = e.character;
+                    }
+                    @Override
+                    public void keyReleased(KeyEvent e) {
+                        key = 0;
+                    }
+                });
+                
 		canvas.addListener(SWT.MouseExit, new Listener() {
 
 			public void handleEvent(Event event) {
 				button = 0;
 				mouseX = -1;
 				mouseY = -1;
+				mouseZ = 0;
+                                key = 0;
 			}
 		});
 
@@ -194,6 +199,28 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 		canvas.setLayoutData(data);
 	}
 
+        private void displayMouseInfo() {
+            String name = matrix.getName();
+
+            final StringBuilder builder = new StringBuilder();
+            builder.append(name);
+            builder.append("[");
+            builder.append(mouseX);
+            builder.append(",");
+            builder.append(mouseY);
+            builder.append(",");
+            builder.append(mouseZ);
+            builder.append("] = ");
+            final Number valueAt = matrix.getValueAt(mouseX, mouseY, mouseZ);
+            builder.append(valueAt);
+            if (valueAt instanceof Integer) {
+                    builder.append("\n0x");
+                    builder.append(Integer.toHexString(valueAt.intValue()).toUpperCase());
+            }
+
+            tooltip = builder.toString();
+        }
+        
 	public boolean grabExcessVerticalSpace() {
 		return true;
 	}
@@ -243,4 +270,13 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 	public int getMouseY() {
 		return mouseY;
 	}
+
+	public int getMouseZ() {
+		return mouseZ;
+	}
+
+        public int getKey() {
+		return key;
+	}
+        
 }	
