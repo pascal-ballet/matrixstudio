@@ -147,31 +147,31 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 
                     //           **************************** // Points de depart du ray-cast (point vise)
                     //
-                    //                      010011220001             // Matrice 3D a visualiser dans la retine
-                    //                      112200X10012             // X est le centre de la Matrice 3D a visualiser
-                    //                      001001222511                 ^
-                    //                                                                |
-                    //															   dRecul
-                    //                                                               v
-                    //                         ***********            // Retine : Points d'arrivee du ray-cast
-                    //                                                               ^
-                    //                                                            dFocal
-                    //                                                               v
-                    //                                 *                      // Point de focus
+                    //                   010011220001           // Matrice 3D a visualiser dans la retine
+                    //                   112200X10012           // X est le centre de la Matrice 3D a visualiser
+                    //                   001001222511                 ^
+                    //                                                   |
+                    //						      dRecul
+                    //                                                   v
+                    //                   ***********            // Retine : Points d'arrivee du ray-cast
+                    //                                                   ^
+                    //                                                dFocal
+                    //                                                   v
+                    //                        *                 // Point de focus
 
 
                     // Parametres de Camera
                     // ************************
                     float dFocal = 100.0f ;
-                    float dRecul = 10.0f - SY/2.0f; // 10.0f est le recul pr defaut : a changer par un attribut;
-                    float agrandi = 1.0f ; // Mise a l'echelle de la Matrice 3D a afficher (non teste !)
-                    float profondeur = 400.0f; // Pour tout voir, doit etre assez grand pour englober dFocal+dRecul+max(SX,SY,SZ)
+                    float dRecul = SX; // SX est le recul pr defaut : a changer par un attribut;
+                    float agrandi = 1.0f ;  // Mise a l'echelle de la Matrice 3D a afficher (non teste !)
+                    float profondeur = 2.0f*dRecul ; // Pour tout voir, doit etre assez grand pour englober dFocal+dRecul+max(SX,SY,SZ)
                     float grain = 0.5f; // Plus grain est proche de zero, plus le rendu sera precis (mais aussi plus lent de maniere proportionnelle. Si grain = 0.1f l'execution sera 10x plus lent que grain = 1.0f)
 
                     // Angle de vue
                     // **************
-                    int t = (int)(System.currentTimeMillis() % 1000);
-                    float angleY = (t*6.28f/1000.0f-SX/2.0f) / 100.0f  ; //11.0f correcpond a angleY : a changer par un attribut ;
+                    int t = (int)(System.currentTimeMillis() % 10000);
+                    float angleY = (t*6.28f/10000.0f-SX/2.0f) / 1.0f  ; //11.0f correcpond a angleY : a changer par un attribut ;
 
                     // Centre de la matrice a visualiser
                     // ***********************
@@ -227,12 +227,12 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
                     dx = -dx; dy = -dy; dz = -dz;
 
                     // Couleur de fond
-                    float Rf = 0.5f; // Red final (initialise a la couleur de fond)
-                    float Gf = 0.6f; // Green final (initialise a la couleur de fond)
-                    float Bf = 0.4f; // Blue final (initialise a la couleur de fond)
+                    float Rf = 1.0f; // Red final (initialise a la couleur de fond)
+                    float Gf = 1.0f; // Green final (initialise a la couleur de fond)
+                    float Bf = 1.0f; // Blue final (initialise a la couleur de fond)
 
                     int i_old=0, j_old=0, k_old=0;
-                    float R=0.0f,G=0.0f,B=0.0f,A=0.0f;
+                    float R=0.0f, G=0.0f, B=0.0f, A=0.0f;
                        
                     for(float pas = 0.0f; pas < profondeur; pas += grain ) {
                             float xx = (xDepart + dx*pas)/agrandi, yy = (yDepart + dy*pas)/agrandi, zz = (zDepart + dz*pas) / agrandi ;
@@ -241,18 +241,18 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
                                     i_old = i; j_old = j; k_old = k;
                                     if( i>=0 && j >= 0 && k >= 0 && i < SX && j < SY && k < SZ) {
                                             int pix3D = (matrixInteger.getMatrix()[k * SX * SY + j * SX + i]);
-                                            R = ((float) (  (pix3D & 0x000000FF)         ))   / 256.0f  ;
-                                            G = ((float) (  (pix3D & 0x0000FF00) >> 8    ))   / 256.0f  ;
-                                            B = ((float) (  (pix3D & 0x00FF0000) >> 16   ))   / 256.0f ;
-                                            A = ((float) (  (pix3D >> 24) & 0xFF)  )   / 256.0f ; // OPACITE
+                                            R = ((float) (  (pix3D     )  & 0xFF)  ) / 256.0f  ;
+                                            G = ((float) (  (pix3D >> 8)  & 0xFF)  ) / 256.0f  ;
+                                            B = ((float) (  (pix3D >> 16) & 0xFF)  ) / 256.0f ;
+                                            A = ((float) (  (pix3D >> 24) & 0xFF)  ) / 256.0f ; // OPACITE
                                             Rf = Rf * (1.0f - A) + R*A;       // Si A vaut 1 => R gagne totalement ; si opac vaut 0 => Rf n'est pas affecte
                                             Gf = Gf * (1.0f - A) + G*A;       // Si A vaut 1 => R gagne totalement ; si opac vaut 0 => Rf n'est pas affecte
                                             Bf = Bf * (1.0f - A) + B*A;       // Si A vaut 1 => R gagne totalement ; si opac vaut 0 => Rf n'est pas affecte
                                     } else {
                                             if (  (i == -1 && j == -1)   ||  (i == -1 && k == -1)   ||  (j == -1 && k == -1)  ) { // Trace des axes x,y et z
-                                                    Rf = 1.0f;       // Si opac vaut 1 => R gagne totalement ; si opac vaut 0 => Rf n'est pas affecte
-                                                    Gf = 1.0f;       // Si opac vaut 1 => R gagne totalement ; si opac vaut 0 => Rf n'est pas affecte
-                                                    Bf = 1.0f;       // Si opac vaut 1 => R gagne totalement ; si opac vaut 0 => Rf n'est pas affecte
+                                                    Rf = 0.0f;       // Si opac vaut 1 => R gagne totalement ; si opac vaut 0 => Rf n'est pas affecte
+                                                    Gf = 0.0f;       // Si opac vaut 1 => R gagne totalement ; si opac vaut 0 => Rf n'est pas affecte
+                                                    Bf = 0.0f;       // Si opac vaut 1 => R gagne totalement ; si opac vaut 0 => Rf n'est pas affecte
                                             }
                                     }
                             }
@@ -262,13 +262,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 
                     // Ecriture du pixel dans la retine
                     // *****************
-                    /*int R = (int)(255.0f * Rf);
-                    int G = (int)(255.0f * Gf);
-                    int B = (int)(255.0f * Bf);*/
-                    //int RGB = 0xFF000000 + (B << 16) + (G << 8) + R  ;  
-                    //imageData.setPixel(x, RetineSX -y-1, RGB );
-                    //System.out.println(""+Rf+","+Gf+","+Bf);
-                    RGB rgb = new RGB(Rf, Gf, Bf);       
+                    RGB rgb = new RGB( (int)(255.0f*Bf), (int)(255.0f*Gf), (int)(255.0f*Rf));       
                     imageData.setPixel(x, y, palette.getPixel(rgb));   
                     
                 }
