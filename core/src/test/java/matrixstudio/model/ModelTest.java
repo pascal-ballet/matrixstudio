@@ -38,16 +38,13 @@ public class ModelTest {
         m1.setName("matrix1");
         model.addMatrixAndOpposite(m1);
 
-        Scheduler scheduler = new Scheduler();
-        model.setSchedulerAndOpposite(scheduler);
-
         Kernel k1 = new Kernel();
         k1.setName("kernel1");
         model.addCodeAndOpposite(k1);
 
         Task t1 = new Task();
         t1.addKernel(k1);
-        scheduler.addTaskAndOpposite(t1);
+        model.getScheduler().addTaskAndOpposite(t1);
 
         return model;
     }

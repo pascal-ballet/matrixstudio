@@ -31,6 +31,7 @@ public class Model implements ModelObject, BoostObject {
 	private Scheduler scheduler;
 
 	public Model() {
+		setSchedulerAndOpposite(new Scheduler());
 	}
 
 	protected Model(MSBoost boost) {

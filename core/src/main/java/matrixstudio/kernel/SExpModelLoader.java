@@ -14,7 +14,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import javax.imageio.ImageIO;
@@ -55,10 +57,13 @@ public class SExpModelLoader {
 	/** Set of resolved path during loading, used to find new files to insert */
 	protected final Set<Path> resolvedPath = new HashSet<>();
 
+	/** Runnables ran after model load (used for matrix load for instance) */
+	protected final List<Runnable> postLoadingRunnables = new ArrayList<>();
+
 	protected final Path root;
 
 	public SExpModelLoader(Path root) {
-		this.root = Files.isDirectory(root) ?
+		this.root = !Files.isRegularFile(root) ?
 			root.resolve(MATRIXSTUDIO_SIMULATION): root;
 	}
 
@@ -87,6 +92,11 @@ public class SExpModelLoader {
 			if (!context.unresolvedReferences().isEmpty()) {
 				throw new IOException("Unresolved references " + context.unresolvedReferences());
 			}
+
+			for (Runnable loader : postLoadingRunnables) {
+				loader.run();
+			}
+
 			return model;
 		}
 	}
@@ -272,22 +282,20 @@ public class SExpModelLoader {
 			current += 1;
 		}
 
-		if (source != null) {
-			BufferedImage image = ImageIO.read(resolve(source).toFile());
-			String previousX = matrix.getSizeX();
-			String previousY = matrix.getSizeY();
+		final String toLoad = source;
+		postLoadingRunnables.add(() -> {
+			if (toLoad != null) {
+				matrix.initBlank(true);
+				try {
+					BufferedImage image = ImageIO.read(resolve(toLoad).toFile());
+					initializer.accept(matrix, image);
+				} catch (IOException e) {
+					// TODO present error
+				}
+			}
+		});
 
-			matrix.setSizeX(Integer.toString(image.getWidth()));
-			matrix.setSizeY(Integer.toString(image.getHeight()));
 
-			matrix.initBlank(true);
-			initializer.accept(matrix, image);
-
-			matrix.setSizeX(previousX);
-			matrix.setSizeY(previousY);
-		} else {
-			matrix.initBlank(true);
-		}
 		context.push(matrix);
 		context.pop(matrix);
 
@@ -469,7 +477,7 @@ public class SExpModelLoader {
 			final SExp currentSexp = sexp.getChild(current);
 			final String type = currentSexp.getConstructor();
 
-			if ( "tasks".equals(type) ) {
+			if ( "task".equals(type) ) {
 				for (int i=1; i<currentSexp.getChildCount(); i++ ) {
 					Task child = create(Task.class, currentSexp.getChild(i));
 					result.addTaskAndOpposite(child);

@@ -5,16 +5,21 @@ import fr.minibilles.basics.sexp.SExp;
 import fr.minibilles.basics.sexp.SList;
 import fr.minibilles.basics.sexp.model.ModelToSExp;
 import fr.minibilles.basics.sexp.model.Referencer;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
+import javax.imageio.ImageIO;
 import matrixstudio.model.Code;
 import matrixstudio.model.Device;
 import matrixstudio.model.Kernel;
 import matrixstudio.model.Matrix;
+import matrixstudio.model.MatrixFloat;
+import matrixstudio.model.MatrixInteger;
+import matrixstudio.model.MatrixULong;
 import matrixstudio.model.Model;
 import matrixstudio.model.Parameter;
 import matrixstudio.model.Scheduler;
@@ -114,11 +119,12 @@ public class SExpModelSaver {
 		return result;
 	}
 
-	protected SExp matrixToSExp(Matrix matrix) {
+	protected SExp matrixToSExp(Matrix matrix) throws IOException {
 		context.push(matrix);
 
 		SList result = new SList();
-		result.addChild(S.satom(matrix.getClass().getSimpleName().toLowerCase()));
+		String type = matrix.getClass().getSimpleName().toLowerCase();
+		result.addChild(S.satom(type));
 		S.addChildIfNotNull(result, S.stringToSExp("name", matrix.getName()));
 		S.addChildIfNotNull(result, S.stringToSExp("x", matrix.getSizeX()));
 		S.addChildIfNotNull(result, S.stringToSExp("y", matrix.getSizeY()));
@@ -140,7 +146,40 @@ public class SExpModelSaver {
 			String source = "matrix/" + matrix.getName() + ".png";
 			S.addChildIfNotNull(result, S.stringToSExp("source", source));
 
-			// TODO save png
+			BufferedImage image = new BufferedImage(matrix.safeGetSizeXValue(), matrix.safeGetSizeYValue(), BufferedImage.TYPE_INT_RGB);
+			int x = image.getWidth();
+			int y = image.getHeight();
+			if (matrix instanceof MatrixInteger) {
+				int[] values = ((MatrixInteger) matrix).getMatrixInit();
+				for (int i = 0; i < x; i++) {
+					for (int j = 0; j < y; j++) {
+						int value = values[i+x*j];
+						/*
+						int R = value & 0x0000FF;
+						int G = (value & 0x00FF00) >> 8;
+						int B = (value & 0xFF0000) >> 16;
+						int val = (R << 16) + (G << 8) + B;
+						*/
+						image.setRGB(i, j, value);
+
+					}
+				}
+			} else if (matrix instanceof MatrixFloat) {
+				float[] values = ((MatrixFloat) matrix).getMatrixInit();
+				for(int i=0; i<x; i++) {
+					for (int j = 0; j < y; j++) {
+						float value = values[i+x*j];
+						image.setRGB(i, j, (int) (value*256));
+					}
+				}
+
+			} else if (matrix instanceof MatrixULong) {
+
+			} else {
+				throw new IOException("Unknown matrix type '" + type + "'");
+			}
+
+			ImageIO.write(image, "png", resolve(source).toFile());
 		}
 
 		context.pop(matrix);
@@ -169,6 +208,7 @@ public class SExpModelSaver {
 		context.push(scheduler);
 
 		SList result = new SList();
+		result.addChild(S.satom("scheduler"));
 
 		if (scheduler.getDevice() != Device.ANY) {
 			S.addChildIfNotNull(result, S.enumToSExp("device", scheduler.getDevice()));
@@ -196,6 +236,8 @@ public class SExpModelSaver {
 		SList result = new SList();
 		result.addChild(S.satom("task"));
 
+		result.addChild(S.floatArrayToSExp("position", task.getPosition()));
+
 		if (!task.getGlobalWorkSizeX().equals("521")) {
 			S.addChildIfNotNull(result, S.stringToSExp("globalworksizex", task.getGlobalWorkSizeX()));
 		}
@@ -216,22 +258,12 @@ public class SExpModelSaver {
 			S.addChildIfNotNull(result, S.booleanToSExp("random", task.isRandom()));
 		}
 
-		S.addChildIfNotNull(result, S.floatArrayToSExp("position", task.getPosition()));
-
 		if (task.getTaskInCount() > 0) {
 			SList ins = S.slist(S.satom("in"));
 			for (Task in : task.getTaskInList()) {
 				ins.addChild(context.createReference(in));
 			}
 			result.addChild(ins);
-		}
-
-		if (task.getTaskOutCount() > 0) {
-			SList outs = S.slist(S.satom("out"));
-			for (Task out : task.getTaskOutList()) {
-				outs.addChild(context.createReference(out));
-			}
-			result.addChild(outs);
 		}
 
 		if (task.getTaskOutCount() > 0) {

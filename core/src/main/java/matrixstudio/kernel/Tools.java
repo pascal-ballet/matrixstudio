@@ -17,7 +17,6 @@ import matrixstudio.model.Kernel;
 import matrixstudio.model.Library;
 import matrixstudio.model.MatrixInteger;
 import matrixstudio.model.Model;
-import matrixstudio.model.Scheduler;
 import matrixstudio.model.Task;
 
 public class Tools {
@@ -56,10 +55,6 @@ public class Tools {
         matrix1.initBlank(false);
 		model.addMatrixAndOpposite(matrix1);
 	
-		// Creation of a basic scheduler
-		final Scheduler scheduler = new Scheduler();
-		model.setSchedulerAndOpposite(scheduler);
-			
 		final Kernel kernel1 = new Kernel();
 		kernel1.setName("Kernel1");
 		kernel1.setContents(INITIAL_KERNEL);
@@ -69,7 +64,7 @@ public class Tools {
 		final Task task1 = new Task();
 		task1.addKernel(kernel1);
 		task1.setPosition(new float[] { 360f, 120f });
-		scheduler.addTaskAndOpposite(task1);    	
+		model.getScheduler().addTaskAndOpposite(task1);
 	
 		// Add libraries
 		Library lib4 = new Library();
