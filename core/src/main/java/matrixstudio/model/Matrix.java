@@ -13,7 +13,7 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
 
 	private Model model;
 
-	private boolean random = false;
+	private boolean random = true;
 
 	private boolean ARGB = false;
 
@@ -21,11 +21,11 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
 
 	private boolean ndRange = false;
 
-	private String sizeX = "10";
+	private String sizeX = "50";
 
-	private String sizeY = "10";
+	private String sizeY = "50";
 
-	private String sizeZ = "1";
+	private String sizeZ = "50";
 
 	private String name;
 

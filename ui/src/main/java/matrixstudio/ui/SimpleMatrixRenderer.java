@@ -121,7 +121,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 	}
         
         @Override
-        public void render3D(GC gc, RendererContext context, Matrix matrix) {
+        public void render3D(GC gc, RendererContext context, Matrix matrix, float angleY, float dRecul, float dFocal) {
             ImageData imageData = null;
             if ( matrix instanceof MatrixInteger ) {
                 MatrixInteger matrixInteger = (MatrixInteger) matrix;
@@ -131,8 +131,8 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
             int SY = matrix.safeGetSizeYValue();
             int SZ = matrix.safeGetSizeZValue();
            
-            int RetineSX = SX;
-            int RetineSY = SY;
+            int RetineSX = 640;//SX;
+            int RetineSY = 320;//SY;
 
             imageData = new ImageData(RetineSX, RetineSY, 32, palette);
 
@@ -162,16 +162,16 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 
                     // Parametres de Camera
                     // ************************
-                    float dFocal = 100.0f ;
-                    float dRecul = SX; // SX est le recul pr defaut : a changer par un attribut;
+                    //float dFocal = 100.0f ;
+                    //float dRecul = SX; // SX est le recul pr defaut : a changer par un attribut;
                     float agrandi = 1.0f ;  // Mise a l'echelle de la Matrice 3D a afficher (non teste !)
-                    float profondeur = 2.0f*dRecul ; // Pour tout voir, doit etre assez grand pour englober dFocal+dRecul+max(SX,SY,SZ)
-                    float grain = 0.5f; // Plus grain est proche de zero, plus le rendu sera precis (mais aussi plus lent de maniere proportionnelle. Si grain = 0.1f l'execution sera 10x plus lent que grain = 1.0f)
+                    float profondeur = dRecul + SX; // Pour tout voir, doit etre assez grand pour englober dFocal+dRecul+max(SX,SY,SZ)
+                    float grain = profondeur / 100.0f; //0.1f; // Plus grain est proche de zero, plus le rendu sera precis (mais aussi plus lent de maniere proportionnelle. Si grain = 0.1f l'execution sera 10x plus lent que grain = 1.0f)
 
                     // Angle de vue
                     // **************
                     int t = (int)(System.currentTimeMillis() % 10000);
-                    float angleY = (t*6.28f/10000.0f-SX/2.0f) / 1.0f  ; //11.0f correcpond a angleY : a changer par un attribut ;
+                    //float angleY = (t*6.28f/10000.0f-SX/2.0f) / 1.0f  ; //11.0f correcpond a angleY : a changer par un attribut ;
 
                     // Centre de la matrice a visualiser
                     // ***********************
@@ -183,7 +183,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
                     // ************************
                     float x0 =  (float)x + SX/2.0f - RetineSX/2.0f ;
                     float y0 =  (float)y + SY/2.0f - RetineSY/2.0f ; 
-                    float z0 =  SZ/2.0f ;
+                    float z0 =  -SZ/2.0f ;
                     // **** FIN translation retine
 
                     // Rotation de P0 avec l'angleY de centre Center et autour de Y
@@ -249,7 +249,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
                                             Gf = Gf * (1.0f - A) + G*A;       // Si A vaut 1 => R gagne totalement ; si opac vaut 0 => Rf n'est pas affecte
                                             Bf = Bf * (1.0f - A) + B*A;       // Si A vaut 1 => R gagne totalement ; si opac vaut 0 => Rf n'est pas affecte
                                     } else {
-                                            if (  (i == -1 && j == -1)   ||  (i == -1 && k == -1)   ||  (j == -1 && k == -1)  ) { // Trace des axes x,y et z
+                                            if (  (i == -1 && j == -1 && k>=0 && k<SZ)   ||  (i == -1 && k == -1 && j>=0 && j<SY)   ||  (j == -1 && k == -1 && i>=0 && i<SX)  ) { // Trace des axes x,y et z
                                                     Rf = 0.0f;       // Si opac vaut 1 => R gagne totalement ; si opac vaut 0 => Rf n'est pas affecte
                                                     Gf = 0.0f;       // Si opac vaut 1 => R gagne totalement ; si opac vaut 0 => Rf n'est pas affecte
                                                     Bf = 0.0f;       // Si opac vaut 1 => R gagne totalement ; si opac vaut 0 => Rf n'est pas affecte
@@ -263,7 +263,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
                     // Ecriture du pixel dans la retine
                     // *****************
                     RGB rgb = new RGB( (int)(255.0f*Bf), (int)(255.0f*Gf), (int)(255.0f*Rf));       
-                    imageData.setPixel(x, y, palette.getPixel(rgb));   
+                    imageData.setPixel(x, RetineSY-y-1, palette.getPixel(rgb));   
                     
                 }
             }
