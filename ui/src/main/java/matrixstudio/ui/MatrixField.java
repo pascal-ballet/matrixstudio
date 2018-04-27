@@ -4,8 +4,12 @@ import fr.minibilles.basics.notification.Notification;
 import fr.minibilles.basics.ui.BasicsUI;
 import fr.minibilles.basics.ui.Resources;
 import fr.minibilles.basics.ui.field.AbstractField;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import matrixstudio.formula.EvaluationException;
 import matrixstudio.kernel.Simulator;
 import matrixstudio.kernel.Simulator.UserInputProvider;
 import matrixstudio.model.Matrix;
@@ -66,6 +70,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 
 	int program;
 
+        float _angleY = 0.0f, _dRecul = 50.0f, _dFocal = 25.0f;
 	private void createCanvas(Composite parent) {
 		canvas = new Canvas(parent, SWT.DOUBLE_BUFFERED);//new Shell();// Canvas(parent, SWT.DOUBLE_BUFFERED);
 
@@ -83,7 +88,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				if (mouseZ < 0) mouseZ = 0;
 				if (renderer != null) {
 					//renderer.render(gc, MatrixField.this, matrix, mouseZ);
-                                        renderer.render3D(gc, MatrixField.this, matrix);
+                                        renderer.render3D(gc, MatrixField.this, matrix, _angleY, _dRecul, _dFocal);
 				}
 
 				// Draw information texts about current simulation (time, execution state and recording state).
@@ -128,6 +133,25 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				mouseY = matrix.safeGetSizeYValue() - (e.y * ySize) / canvas.getSize().y - 1;
 
                                 displayMouseInfo();
+                                
+                                //if(e.button != 0) {
+                                    int SX=1;//, SY=1;
+                                    try {
+                                        SX = matrix.getSizeXValue();
+                                        //SY = matrix.getSizeYValue();
+                                    } catch (EvaluationException ex) {
+                                        Logger.getLogger(MatrixField.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (ParseException ex) {
+                                        Logger.getLogger(MatrixField.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                    
+                                    //_angleY = ( 6.28f*( mouseX - SX/2.0f) / SX );
+                                    _angleY = ( 6.28f*( e.x - canvas.getSize().x/2.0f) / canvas.getSize().x );
+                                    _dRecul = (canvas.getSize().y - e.y)/10.0f ;
+                                    _dFocal = _dRecul;
+                                
+                                    canvas.redraw();
+                                //}
 
 			}
 		});
