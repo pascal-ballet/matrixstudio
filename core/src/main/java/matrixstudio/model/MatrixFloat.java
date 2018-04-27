@@ -109,7 +109,11 @@ public class MatrixFloat extends Matrix implements ModelObject, BoostObject {
         matrix[i+safeGetSizeXValue()*j+safeGetSizeXValue()*safeGetSizeYValue()*k] = v.floatValue();
     }
 
-    public void setInitValueAt(int i, int j, int k, Number v) {
+	public Number getInitValueAt(int i, int j, int k) {
+		return matrixInit[i+safeGetSizeXValue()*j+safeGetSizeXValue()*safeGetSizeYValue()*k];
+	}
+
+	public void setInitValueAt(int i, int j, int k, Number v) {
         matrixInit[i+safeGetSizeXValue()*j+safeGetSizeXValue()*safeGetSizeYValue()*k] = v.floatValue();
     }
 

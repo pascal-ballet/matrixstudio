@@ -255,35 +255,19 @@ public abstract class Matrix implements ModelObject, BoostObject, Named {
 		}
 	}
 
-	public void initBlank(boolean force) {
-		// TODO implement initBlank(...)
-		throw new UnsupportedOperationException();
-	}
+	public abstract void initBlank(boolean force);
 
-	public String getCType() {
-		// TODO implement getCType(...)
-		throw new UnsupportedOperationException();
-	}
+	public abstract String getCType();
 
-	public void setToInitialValues() {
-		// TODO implement setToInitialValues(...)
-		throw new UnsupportedOperationException();
-	}
+	public abstract void setToInitialValues();
 
-	public Number getValueAt(int i, int j, int k) {
-		// TODO implement getValueAt(...)
-		throw new UnsupportedOperationException();
-	}
+	public abstract Number getValueAt(int i, int j, int k);
 
-	public void setValueAt(int i, int j, int k, Number v){
-		// TODO implement setValueAt(...)
-		throw new UnsupportedOperationException();
-	}
+	public abstract void setValueAt(int i, int j, int k, Number v);
 
-	public void setInitValueAt(int i, int j, int k, Number v) {
-		// TODO implement setInitValueAt(...)
-		throw new UnsupportedOperationException();
-	}
+	public abstract Number getInitValueAt(int i, int j, int k);
+
+	public abstract void setInitValueAt(int i, int j, int k, Number v);
 
 	public void writeToBoost(Boost boost) {
 		boost.writeObject(model);
