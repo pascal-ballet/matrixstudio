@@ -70,7 +70,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 
 	int program;
 
-        float _angleY = 0.0f, _dRecul = 50.0f, _dFocal = 25.0f;
+        float _angleY = 0.0f, _dRecul = 50.0f, _dFocal = 300.0f;
 	private void createCanvas(Composite parent) {
 		canvas = new Canvas(parent, SWT.DOUBLE_BUFFERED);//new Shell();// Canvas(parent, SWT.DOUBLE_BUFFERED);
 
@@ -135,23 +135,26 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
                                 displayMouseInfo();
                                 
                                 //if(e.button != 0) {
-                                    int SX=1;//, SY=1;
-                                    try {
+                                    //int SX=1;//, SY=1;
+                                    /*try {
                                         SX = matrix.getSizeXValue();
                                         //SY = matrix.getSizeYValue();
                                     } catch (EvaluationException ex) {
                                         Logger.getLogger(MatrixField.class.getName()).log(Level.SEVERE, null, ex);
                                     } catch (ParseException ex) {
                                         Logger.getLogger(MatrixField.class.getName()).log(Level.SEVERE, null, ex);
+                                    }*/
+                                    if(button != 0) {
+                                        //_angleY = ( 6.28f*( mouseX - SX/2.0f) / SX );
+                                        _angleY -= (_old_mx - e.x)/100.0f; //= ( 6.28f*( e.x - canvas.getSize().x/2.0f) / canvas.getSize().x );
+                                        _dRecul += (_old_my - e.y)/5.0f; //(canvas.getSize().y - e.y)/10.0f ;
+                                        if(_dRecul <= 0) _dRecul = 1.0f;
+                                        _dFocal = 50.0f;//_dRecul;
+                                        _old_mx = e.x;
+                                        _old_my = e.y;
+                                        
+                                        canvas.redraw();
                                     }
-                                    
-                                    //_angleY = ( 6.28f*( mouseX - SX/2.0f) / SX );
-                                    _angleY = ( 6.28f*( e.x - canvas.getSize().x/2.0f) / canvas.getSize().x );
-                                    _dRecul = (canvas.getSize().y - e.y)/10.0f ;
-                                    _dFocal = _dRecul;
-                                
-                                    canvas.redraw();
-                                //}
 
 			}
 		});
@@ -163,6 +166,8 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 			}
 
 			public void mouseDown(MouseEvent e) {
+                            _old_mx = e.x;
+                            _old_my = e.y;
 				button = e.button;
 			}
 
@@ -224,6 +229,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 		canvas.setLayoutData(data);
 	}
 
+        int _old_mx=0, _old_my=0;
         private void displayMouseInfo() {
             String name = matrix.getName();
 
