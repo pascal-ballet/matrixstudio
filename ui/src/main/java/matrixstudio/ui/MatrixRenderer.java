@@ -11,6 +11,6 @@ import org.eclipse.swt.graphics.Image;
 public interface MatrixRenderer {
 
 	void render(GC gc, RendererContext context, Matrix matrix, int mouseZ);
-	void render3D(GC gc, RendererContext context, Matrix matrix, float angleY, float d_recul, float d_focale);
+	void render3D(GC gc, RendererContext context, Matrix matrix, float angleY, float phi, float d_recul, float d_focale);
 	
 }
