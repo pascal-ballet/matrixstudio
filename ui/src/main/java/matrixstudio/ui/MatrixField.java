@@ -70,7 +70,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 
 	int program;
 
-        float _angleY = 0.0f, _dRecul = 50.0f, _dFocal = 300.0f;
+        float _angleY = 0.0f, _phi = 0.0f,_dRecul = 150.0f, _dFocal = 300.0f;
 	private void createCanvas(Composite parent) {
 		canvas = new Canvas(parent, SWT.DOUBLE_BUFFERED);//new Shell();// Canvas(parent, SWT.DOUBLE_BUFFERED);
 
@@ -88,7 +88,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				if (mouseZ < 0) mouseZ = 0;
 				if (renderer != null) {
 					//renderer.render(gc, MatrixField.this, matrix, mouseZ);
-                                        renderer.render3D(gc, MatrixField.this, matrix, _angleY, _dRecul, _dFocal);
+                                        renderer.render3D(gc, MatrixField.this, matrix, _angleY, _phi, _dRecul, _dFocal);
 				}
 
 				// Draw information texts about current simulation (time, execution state and recording state).
@@ -144,18 +144,24 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
                                     } catch (ParseException ex) {
                                         Logger.getLogger(MatrixField.class.getName()).log(Level.SEVERE, null, ex);
                                     }*/
-                                    if(button != 0) {
+                                    if(button == 1) {
                                         //_angleY = ( 6.28f*( mouseX - SX/2.0f) / SX );
                                         _angleY -= (_old_mx - e.x)/100.0f; //= ( 6.28f*( e.x - canvas.getSize().x/2.0f) / canvas.getSize().x );
-                                        _dRecul += (_old_my - e.y)/5.0f; //(canvas.getSize().y - e.y)/10.0f ;
-                                        if(_dRecul <= 0) _dRecul = 1.0f;
+                                        _phi += (_old_my - e.y)/100.0f;
+                                        if(_dRecul <= 1.0f) _dRecul = 1.0f;
                                         _dFocal = 50.0f;//_dRecul;
                                         _old_mx = e.x;
                                         _old_my = e.y;
                                         
                                         canvas.redraw();
                                     }
-
+                                    if(button == 3) {
+                                        _dRecul += (_old_my - e.y)/5.0f; //(canvas.getSize().y - e.y)/10.0f ;
+                                        _old_mx = e.x;
+                                        _old_my = e.y;
+                                        
+                                        canvas.redraw();
+                                    }
 			}
 		});
 
