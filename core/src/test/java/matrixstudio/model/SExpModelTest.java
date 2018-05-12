@@ -7,7 +7,6 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.function.BiFunction;
 import matrixstudio.formula.EvaluationException;
-import matrixstudio.formula.FormulaCache;
 import matrixstudio.kernel.SExpModelLoader;
 import matrixstudio.kernel.SExpModelSaver;
 import org.junit.Assert;
@@ -83,20 +82,46 @@ public class SExpModelTest {
 
 	@Test
 	public void loadAndSaveEmpty() throws Exception {
-		Model model = loadAndSave(new Model());
-
-		Assert.assertEquals(0, model.getParameterCount());
-		Assert.assertEquals(0, model.getCodeCount());
-		Assert.assertEquals(0, model.getMatrixCount());
-		Assert.assertEquals(0, model.getScheduler().getTaskCount());
+		loadAndSave(new Model());
 	}
 
 	@Test
-	public void createLoadAndSaveScheduler() throws Exception {
-
+	public void createLoadAndSaveParameter() throws Exception {
 		Model source = new Model();
 		source.addParameterAndOpposite(createParameter("p1", "42"));
 		source.addParameterAndOpposite(createParameter("p2", "42+42"));
+
+		loadAndSave(source);
+	}
+
+	@Test
+	public void createLoadAndSaveSchedulerAndCode() throws Exception {
+		Model source = new Model();
+		source.addCodeAndOpposite(createLibrary("Library", "// Code here"));
+		source.addCodeAndOpposite(createKernel("Kernel1", "// Kernel 1"));
+		source.addCodeAndOpposite(createKernel("Kernel2", "// Kernel 2"));
+		createScheduler(source);
+
+		loadAndSave(source);
+	}
+
+	@Test
+	public void createLoadAndSaveMatrices() throws Exception {
+		Model source = new Model();
+
+		source.addMatrixAndOpposite(createMatrixInteger("Matrix1", 50, 50, (i,j) -> i%2==0 ? i+j : j%2== 0 ? Integer.MAX_VALUE-1 : Integer.MIN_VALUE+1));
+		source.addMatrixAndOpposite(createMatrixFloat("Matrix2", 50, 50, (i,j) -> (float) Math.sqrt(i+j)));
+		source.addMatrixAndOpposite(createMatrixULong("Matrix3", 50, 50, (i,j) -> i%2==0 ? (long) i+j : j%2== 0 ? Long.MAX_VALUE-1 : Long.MIN_VALUE+1));
+
+		loadAndSave(source);
+	}
+
+	@Test
+	public void createLoadAndSaveAll() throws Exception {
+		Model source = new Model();
+		source.addParameterAndOpposite(createParameter("p1", "42"));
+		source.addParameterAndOpposite(createParameter("p2", "42+42"));
+
 		source.addCodeAndOpposite(createLibrary("Library", "// Code here"));
 		source.addCodeAndOpposite(createKernel("Kernel1", "// Kernel 1"));
 		source.addCodeAndOpposite(createKernel("Kernel2", "// Kernel 2"));
@@ -106,31 +131,7 @@ public class SExpModelTest {
 		source.addMatrixAndOpposite(createMatrixFloat("Matrix2", 50, 50, (i,j) -> (float) Math.sqrt(i+j)));
 		source.addMatrixAndOpposite(createMatrixULong("Matrix3", 50, 50, (i,j) -> i%2==0 ? (long) i+j : j%2== 0 ? Long.MAX_VALUE-1 : Long.MIN_VALUE+1));
 
-		Model loaded = loadAndSave(source);
-
-		Assert.assertEquals(2, loaded.getParameterCount());
-		Assert.assertEquals(42, FormulaCache.SHARED.computeValue(loaded.getParameter(0).getFormula(), loaded));
-		Assert.assertEquals(84, FormulaCache.SHARED.computeValue(loaded.getParameter(1).getFormula(), loaded));
-
-		Assert.assertEquals(3, loaded.getCodeCount());
-		Assert.assertEquals("Library", loaded.getCode(0).getName());
-		Assert.assertEquals("Kernel1", loaded.getCode(1).getName());
-		Assert.assertEquals("Kernel2", loaded.getCode(2).getName());
-		Assert.assertEquals("// Kernel 2", loaded.getCode(2).getContents());
-
-		Assert.assertEquals(source.getMatrixCount(), loaded.getMatrixCount());
-		Assert.assertTrue(loaded.getMatrix(0) instanceof MatrixInteger);
-		Assert.assertArrayEquals(((MatrixInteger) source.getMatrix(0)).getMatrixInit(), ((MatrixInteger) loaded.getMatrix(0)).getMatrixInit());
-		Assert.assertArrayEquals(((MatrixFloat) source.getMatrix(1)).getMatrixInit(), ((MatrixFloat) loaded.getMatrix(1)).getMatrixInit(), 1e-5f);
-		Assert.assertArrayEquals(((MatrixULong) source.getMatrix(2)).getMatrixInit(), ((MatrixULong) loaded.getMatrix(2)).getMatrixInit());
-
-		Assert.assertEquals(4, loaded.getScheduler().getTaskCount());
-		Assert.assertEquals(2, loaded.getScheduler().getTask(0).getTaskOutCount());
-		Assert.assertEquals(2, loaded.getScheduler().getTask(3).getTaskInCount());
-		Assert.assertEquals(1, loaded.getScheduler().getTask(2).getKernelCount());
-		Assert.assertEquals(300f, loaded.getScheduler().getTask(1).getPosition()[0], 1e-5);
-		Assert.assertEquals(100f, loaded.getScheduler().getTask(1).getPosition()[1], 1e-5);
-
+		loadAndSave(source);
 	}
 
 	private Parameter createParameter(String name, String formula) {
