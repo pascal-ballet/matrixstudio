@@ -3,8 +3,10 @@ package matrixstudio.model;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.ParseException;
 import java.util.List;
 import java.util.function.BiFunction;
+import matrixstudio.formula.EvaluationException;
 import matrixstudio.formula.FormulaCache;
 import matrixstudio.kernel.SExpModelLoader;
 import matrixstudio.kernel.SExpModelSaver;
@@ -13,14 +15,70 @@ import org.junit.Test;
 
 public class SExpModelTest {
 
-	protected Model loadAndSave(Model source) throws IOException {
-		Path modelPath = Files.createTempDirectory("loadAndSave");
+	protected Model loadAndSave(Model source) throws IOException, EvaluationException, ParseException {
+		Path modelPath = Files.createTempDirectory("loadAndSave" + source.hashCode());
 
 		SExpModelSaver saver = new SExpModelSaver(source, modelPath);
 		saver.saveModel();
 
 		SExpModelLoader loader = new SExpModelLoader(modelPath);
- 		return loader.readModel();
+		Model loaded = loader.readModel();
+
+		Assert.assertEquals(source.getParameterCount(), loaded.getParameterCount());
+		for (int i = 0; i < loaded.getParameterCount(); i++) {
+			Parameter loadedParameter = loaded.getParameter(i);
+			Parameter sourceParameter = source.getParameter(i);
+			Assert.assertEquals(sourceParameter.getName(), loadedParameter.getName());
+			Assert.assertEquals(sourceParameter.getFormula(), loadedParameter.getFormula());
+		}
+
+		Assert.assertEquals(source.getCodeCount(), loaded.getCodeCount());
+		for (int i = 0; i < loaded.getCodeCount(); i++) {
+			Code loadedCode = loaded.getCode(i);
+			Code sourceCode = source.getCode(i);
+			Assert.assertEquals(sourceCode.getName(), loadedCode.getName());
+			Assert.assertEquals(sourceCode.getContents(), loadedCode.getContents());
+		}
+
+		Assert.assertEquals(source.getMatrixCount(), loaded.getMatrixCount());
+		for (int i = 0; i < loaded.getMatrixCount(); i++) {
+			Matrix loadedMatrix = loaded.getMatrix(i);
+			Matrix sourceMatrix = source.getMatrix(i);
+			Assert.assertEquals(sourceMatrix.getClass(), loadedMatrix.getClass());
+			Assert.assertEquals(sourceMatrix.getName(), loadedMatrix.getName());
+			Assert.assertEquals(sourceMatrix.getSizeX(), loadedMatrix.getSizeX());
+			Assert.assertEquals(sourceMatrix.getSizeY(), loadedMatrix.getSizeY());
+			Assert.assertEquals(sourceMatrix.getSizeZ(), loadedMatrix.getSizeZ());
+
+			if (loadedMatrix instanceof MatrixInteger) {
+				Assert.assertArrayEquals(((MatrixInteger) sourceMatrix).getMatrixInit(), ((MatrixInteger) loadedMatrix).getMatrixInit());
+				//Assert.assertArrayEquals(((MatrixInteger) sourceMatrix).getMatrix(), ((MatrixInteger) loadedMatrix).getMatrix());
+
+			} else if (loadedMatrix instanceof MatrixFloat) {
+				Assert.assertArrayEquals(((MatrixFloat) sourceMatrix).getMatrixInit(), ((MatrixFloat) loadedMatrix).getMatrixInit(), 1e-5f);
+				//Assert.assertArrayEquals(((MatrixFloat) sourceMatrix).getMatrix(), ((MatrixFloat) loadedMatrix).getMatrix(), 1e-5f);
+
+			} else if (loadedMatrix instanceof MatrixULong) {
+				Assert.assertArrayEquals(((MatrixULong) sourceMatrix).getMatrixInit(), ((MatrixULong) loadedMatrix).getMatrixInit());
+				//Assert.assertArrayEquals(((MatrixULong) sourceMatrix).getMatrix(), ((MatrixULong) loadedMatrix).getMatrix());
+			}
+		}
+
+		Scheduler sourceScheduler = source.getScheduler();
+		Scheduler loadedScheduler = loaded.getScheduler();
+
+		Assert.assertEquals(sourceScheduler.getTaskCount(), loadedScheduler.getTaskCount());
+		for (int i = 0; i < loadedScheduler.getTaskCount(); i++) {
+			Task loadedTask = loadedScheduler.getTask(i);
+			Task sourceTask = sourceScheduler.getTask(i);
+
+			Assert.assertEquals(sourceTask.getKernelCount(), loadedTask.getKernelCount());
+			Assert.assertEquals(sourceTask.getTaskInCount(), loadedTask.getTaskInCount());
+			Assert.assertEquals(sourceTask.getTaskOutCount(), loadedTask.getTaskOutCount());
+			Assert.assertArrayEquals(sourceTask.getPosition(), loadedTask.getPosition(), 1e-5f);
+
+		}
+		return loaded;
 	}
 
 	@Test
@@ -34,7 +92,7 @@ public class SExpModelTest {
 	}
 
 	@Test
-	public void createLoadAndSave1() throws Exception {
+	public void createLoadAndSaveScheduler() throws Exception {
 
 		Model source = new Model();
 		source.addParameterAndOpposite(createParameter("p1", "42"));
