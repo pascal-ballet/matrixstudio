@@ -51,15 +51,15 @@ public class SExpModelTest {
 
 			if (loadedMatrix instanceof MatrixInteger) {
 				Assert.assertArrayEquals(((MatrixInteger) sourceMatrix).getMatrixInit(), ((MatrixInteger) loadedMatrix).getMatrixInit());
-				//Assert.assertArrayEquals(((MatrixInteger) sourceMatrix).getMatrix(), ((MatrixInteger) loadedMatrix).getMatrix());
+				Assert.assertArrayEquals(((MatrixInteger) sourceMatrix).getMatrix(), ((MatrixInteger) loadedMatrix).getMatrix());
 
 			} else if (loadedMatrix instanceof MatrixFloat) {
 				Assert.assertArrayEquals(((MatrixFloat) sourceMatrix).getMatrixInit(), ((MatrixFloat) loadedMatrix).getMatrixInit(), 1e-5f);
-				//Assert.assertArrayEquals(((MatrixFloat) sourceMatrix).getMatrix(), ((MatrixFloat) loadedMatrix).getMatrix(), 1e-5f);
+				Assert.assertArrayEquals(((MatrixFloat) sourceMatrix).getMatrix(), ((MatrixFloat) loadedMatrix).getMatrix(), 1e-5f);
 
 			} else if (loadedMatrix instanceof MatrixULong) {
 				Assert.assertArrayEquals(((MatrixULong) sourceMatrix).getMatrixInit(), ((MatrixULong) loadedMatrix).getMatrixInit());
-				//Assert.assertArrayEquals(((MatrixULong) sourceMatrix).getMatrix(), ((MatrixULong) loadedMatrix).getMatrix());
+				Assert.assertArrayEquals(((MatrixULong) sourceMatrix).getMatrix(), ((MatrixULong) loadedMatrix).getMatrix());
 			}
 		}
 
@@ -75,8 +75,8 @@ public class SExpModelTest {
 			Assert.assertEquals(sourceTask.getTaskInCount(), loadedTask.getTaskInCount());
 			Assert.assertEquals(sourceTask.getTaskOutCount(), loadedTask.getTaskOutCount());
 			Assert.assertArrayEquals(sourceTask.getPosition(), loadedTask.getPosition(), 1e-5f);
-
 		}
+
 		return loaded;
 	}
 
@@ -97,7 +97,8 @@ public class SExpModelTest {
 	@Test
 	public void createLoadAndSaveSchedulerAndCode() throws Exception {
 		Model source = new Model();
-		source.addCodeAndOpposite(createLibrary("Library", "// Code here"));
+		source.addCodeAndOpposite(createLibrary("Library1", "// Code here for lib 1"));
+		source.addCodeAndOpposite(createLibrary("Library2", "// Code here for lib 2"));
 		source.addCodeAndOpposite(createKernel("Kernel1", "// Kernel 1"));
 		source.addCodeAndOpposite(createKernel("Kernel2", "// Kernel 2"));
 		createScheduler(source);
@@ -167,6 +168,7 @@ public class SExpModelTest {
 				matrix.setInitValueAt(i, j, 0, filler.apply(i, j));
 			}
 		}
+		matrix.setToInitialValues();
 		return matrix;
 	}
 
@@ -182,6 +184,8 @@ public class SExpModelTest {
 				matrix.setInitValueAt(i, j, 0, filler.apply(i, j));
 			}
 		}
+
+		matrix.setToInitialValues();
 		return matrix;
 	}
 
@@ -197,6 +201,7 @@ public class SExpModelTest {
 				matrix.setInitValueAt(i, j, 0, filler.apply(i, j));
 			}
 		}
+		matrix.setToInitialValues();
 		return matrix;
 	}
 

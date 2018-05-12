@@ -282,26 +282,31 @@ public class SExpModelLoader {
 		}
 
 		final String toLoad = source;
-		postLoadingRunnables.add(() -> {
-			if (toLoad != null) {
-				matrix.initBlank(true);
-				try {
-					ByteBuffer buffer = ByteBuffer.wrap(Files.readAllBytes(resolve(toLoad)));
-					int x = matrix.safeGetSizeXValue();
-					int y = matrix.safeGetSizeYValue();
-					int z = matrix.safeGetSizeZValue();
-					for (int j = 0; j < y; j++) {
-						for (int i = 0; i < x; i++) {
-							for (int k = 0; k < z; k++) {
-								matrix.setInitValueAt(i,j, k, initializer.apply(buffer));
+		if (toLoad != null) {
+			postLoadingRunnables.add(() -> {
+					matrix.initBlank(true);
+					try {
+						ByteBuffer buffer = ByteBuffer.wrap(Files.readAllBytes(resolve(toLoad)));
+						int x = matrix.safeGetSizeXValue();
+						int y = matrix.safeGetSizeYValue();
+						int z = matrix.safeGetSizeZValue();
+						for (int j = 0; j < y; j++) {
+							for (int i = 0; i < x; i++) {
+								for (int k = 0; k < z; k++) {
+									Number number = initializer.apply(buffer);
+									matrix.setInitValueAt(i,j, k, number);
+								}
 							}
 						}
+					} catch (IOException e) {
+						// TODO present error
 					}
-				} catch (IOException e) {
-					// TODO present error
-				}
-			}
-		});
+					matrix.setToInitialValues();
+			});
+		} else {
+			matrix.initBlank(true);
+			matrix.setToInitialValues();
+		}
 
 
 		context.push(matrix);

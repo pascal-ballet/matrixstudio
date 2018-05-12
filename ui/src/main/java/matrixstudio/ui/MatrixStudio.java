@@ -330,8 +330,8 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 	public boolean loadModel(boolean safeRead) {
 		final FileDialog dialog = new FileDialog(shell, SWT.OPEN);
 		dialog.setText("Open a simulation.");
-        dialog.setFilterExtensions(new String[] { SExpModel.MATRIXSTUDIO_SIMULATION, "*.mss", "*.*" });
-        dialog.setFilterNames(new String[] { "Matrix Studio Simulation", "Old Matrix Studio Simulation", "Other files" });
+        dialog.setFilterExtensions(new String[] { "*.mss", SExpModel.MATRIXSTUDIO_SIMULATION, "*.*" });
+        dialog.setFilterNames(new String[] { "Matrix Studio Simulation", "Exploded Matrix Studio Simulation", "Other files" });
         dialog.setFilterPath(currentPath.toString());
         String resultFilename = dialog.open();
         if( resultFilename==null ) return false;
@@ -363,8 +363,8 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 			// selects a file where to file
 			final FileDialog dialog = new FileDialog(shell, SWT.SAVE);
 	        dialog.setText("Save the simulation as...");
-	        dialog.setFilterExtensions(new String[] { SExpModel.MATRIXSTUDIO_SIMULATION, "*.mss", "*.*" });
-			dialog.setFilterNames(new String[] { "Matrix Studio Simulation", "Old Matrix Studio Simulation", "Other files" });
+	        dialog.setFilterExtensions(new String[] { "*.mss", SExpModel.MATRIXSTUDIO_SIMULATION, "*.*" });
+			dialog.setFilterNames(new String[] { "Matrix Studio Simulation", "Exploded Matrix Studio Simulation", "Other files" });
 			dialog.setFilterPath(currentPath.toString());
 	        
 	        String resultFilename = dialog.open();
