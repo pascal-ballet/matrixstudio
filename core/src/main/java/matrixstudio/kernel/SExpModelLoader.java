@@ -7,10 +7,10 @@ import fr.minibilles.basics.sexp.SVariable;
 import fr.minibilles.basics.sexp.VariableResolver;
 import fr.minibilles.basics.sexp.model.Referencer;
 import fr.minibilles.basics.sexp.model.SExpToModel;
-import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,8 +18,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import javax.imageio.ImageIO;
+import java.util.function.Function;
 import matrixstudio.model.Code;
 import matrixstudio.model.Device;
 import matrixstudio.model.Kernel;
@@ -127,7 +126,7 @@ public class SExpModelLoader {
 		if ( "matrixfloat".equals(type) ) {
 			result = createMatrixFloat(sexp);
 		} else
-		if ( "matrixlong".equals(type) ) {
+		if ( "matrixulong".equals(type) ) {
 			result = createMatrixLong(sexp);
 		} else
 		if ( "kernel".equals(type) ) {
@@ -243,7 +242,7 @@ public class SExpModelLoader {
 		return result;
 	}
 
-	protected <T extends Matrix> T readMatrix(SExp sexp, T matrix, BiConsumer<T, BufferedImage> initializer) throws IOException {
+	protected <T extends Matrix> T readMatrix(SExp sexp, T matrix, Function<ByteBuffer, Number> initializer) throws IOException {
 		int current = 1;
 		String source = null;
 		int count = sexp.getChildCount();
@@ -287,8 +286,17 @@ public class SExpModelLoader {
 			if (toLoad != null) {
 				matrix.initBlank(true);
 				try {
-					BufferedImage image = ImageIO.read(resolve(toLoad).toFile());
-					initializer.accept(matrix, image);
+					ByteBuffer buffer = ByteBuffer.wrap(Files.readAllBytes(resolve(toLoad)));
+					int x = matrix.safeGetSizeXValue();
+					int y = matrix.safeGetSizeYValue();
+					int z = matrix.safeGetSizeZValue();
+					for (int j = 0; j < y; j++) {
+						for (int i = 0; i < x; i++) {
+							for (int k = 0; k < z; k++) {
+								matrix.setInitValueAt(i,j, k, initializer.apply(buffer));
+							}
+						}
+					}
 				} catch (IOException e) {
 					// TODO present error
 				}
@@ -303,49 +311,15 @@ public class SExpModelLoader {
 	}
 
 	protected MatrixInteger createMatrixInteger(SExp sexp) throws IOException {
-		return readMatrix(sexp, new MatrixInteger(), (matrix, image) -> {
-			int x = image.getWidth();
-			int y = image.getHeight();
-			for (int i = 0; i < x; i++) {
-				for (int j = 0; j < y; j++) {
-					int value = image.getRGB(i, j);
-					int R = value & 0x0000FF;
-					int G = (value & 0x00FF00) >> 8;
-					int B = (value & 0xFF0000) >> 16;
-					int val = (R << 16) + (G << 8) + B;
-					matrix.setValueAt(i, j, 0, val);
-					matrix.setInitValueAt(i, j, 0, val);
-				}
-			}
-		});
+		return readMatrix(sexp, new MatrixInteger(), ByteBuffer::getInt);
 	}
 
 	protected MatrixFloat createMatrixFloat(SExp sexp) throws IOException {
-		return readMatrix(sexp, new MatrixFloat(), (matrix, image) -> {
-			int x = image.getWidth();
-			int y = image.getHeight();
-			for(int i=0; i<x; i++) {
-				for (int j = 0; j < y; j++) {
-					int value = image.getRGB(i, j);
-					matrix.setValueAt(i, j, 0, value/256f);
-					matrix.setInitValueAt(i, j, 0, value/256f);
-				}
-			}
-		});
+		return readMatrix(sexp, new MatrixFloat(), ByteBuffer::getFloat);
 	}
 
 	protected MatrixULong createMatrixLong(SExp sexp) throws IOException {
-		return readMatrix(sexp, new MatrixULong(), (matrix, image) -> {
-			int x = image.getWidth();
-			int y = image.getHeight();
-			for(int i=0; i<x; i++) {
-				for (int j = 0; j < y; j++) {
-					int value = image.getRGB(i, j);
-					matrix.setValueAt(i, j, 0, value/256f);
-					matrix.setInitValueAt(i, j, 0, value/256f);
-				}
-			}
-		});
+		return readMatrix(sexp, new MatrixULong(), ByteBuffer::getLong);
 	}
 
 	protected String readCode(SExp sexp, Code code) throws IOException {

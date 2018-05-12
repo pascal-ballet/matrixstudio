@@ -14,7 +14,7 @@ import org.junit.Test;
 public class SExpModelTest {
 
 	protected Model loadAndSave(Model source) throws IOException {
-		Path modelPath = Files.createTempDirectory("loadAndSave1");
+		Path modelPath = Files.createTempDirectory("loadAndSave");
 
 		SExpModelSaver saver = new SExpModelSaver(source, modelPath);
 		saver.saveModel();
@@ -44,8 +44,9 @@ public class SExpModelTest {
 		source.addCodeAndOpposite(createKernel("Kernel2", "// Kernel 2"));
 		createScheduler(source);
 
-		source.addMatrixAndOpposite(createMatrixInteger(50, 50, (i,j) -> i+j));
-		source.addMatrixAndOpposite(createMatrixFloat(50, 50, (i,j) -> (float) Math.sqrt(i+j)));
+		source.addMatrixAndOpposite(createMatrixInteger("Matrix1", 50, 50, (i,j) -> i%2==0 ? i+j : j%2== 0 ? Integer.MAX_VALUE-1 : Integer.MIN_VALUE+1));
+		source.addMatrixAndOpposite(createMatrixFloat("Matrix2", 50, 50, (i,j) -> (float) Math.sqrt(i+j)));
+		source.addMatrixAndOpposite(createMatrixULong("Matrix3", 50, 50, (i,j) -> i%2==0 ? (long) i+j : j%2== 0 ? Long.MAX_VALUE-1 : Long.MIN_VALUE+1));
 
 		Model loaded = loadAndSave(source);
 
@@ -59,9 +60,11 @@ public class SExpModelTest {
 		Assert.assertEquals("Kernel2", loaded.getCode(2).getName());
 		Assert.assertEquals("// Kernel 2", loaded.getCode(2).getContents());
 
-		Assert.assertEquals(2, loaded.getMatrixCount());
-		Assert.assertEquals(30, loaded.getMatrix(0).getInitValueAt(10, 20, 0));
-		Assert.assertEquals( Math.sqrt(30), loaded.getMatrix(1).getInitValueAt(10, 20, 0).floatValue(), 1e-5);
+		Assert.assertEquals(source.getMatrixCount(), loaded.getMatrixCount());
+		Assert.assertTrue(loaded.getMatrix(0) instanceof MatrixInteger);
+		Assert.assertArrayEquals(((MatrixInteger) source.getMatrix(0)).getMatrixInit(), ((MatrixInteger) loaded.getMatrix(0)).getMatrixInit());
+		Assert.assertArrayEquals(((MatrixFloat) source.getMatrix(1)).getMatrixInit(), ((MatrixFloat) loaded.getMatrix(1)).getMatrixInit(), 1e-5f);
+		Assert.assertArrayEquals(((MatrixULong) source.getMatrix(2)).getMatrixInit(), ((MatrixULong) loaded.getMatrix(2)).getMatrixInit());
 
 		Assert.assertEquals(4, loaded.getScheduler().getTaskCount());
 		Assert.assertEquals(2, loaded.getScheduler().getTask(0).getTaskOutCount());
@@ -93,8 +96,9 @@ public class SExpModelTest {
 		return library;
 	}
 
-	protected MatrixInteger createMatrixInteger(int x, int y, BiFunction<Integer, Integer, Integer> filler) {
+	protected MatrixInteger createMatrixInteger(String name, int x, int y, BiFunction<Integer, Integer, Integer> filler) {
 		MatrixInteger matrix = new MatrixInteger();
+		matrix.setName(name);
 		matrix.setSizeX(Integer.toString(x));
 		matrix.setSizeY(Integer.toString(y));
 		matrix.setSizeZ(Integer.toString(1));
@@ -107,8 +111,24 @@ public class SExpModelTest {
 		return matrix;
 	}
 
-	protected MatrixFloat createMatrixFloat(int x, int y, BiFunction<Integer, Integer, Float> filler) {
+	protected MatrixFloat createMatrixFloat(String name, int x, int y, BiFunction<Integer, Integer, Float> filler) {
 		MatrixFloat matrix = new MatrixFloat();
+		matrix.setName(name);
+		matrix.setSizeX(Integer.toString(x));
+		matrix.setSizeY(Integer.toString(y));
+		matrix.setSizeZ(Integer.toString(1));
+		matrix.initBlank(true);
+		for (int i = 0; i < x; i++) {
+			for (int j = 0; j < y; j++) {
+				matrix.setInitValueAt(i, j, 0, filler.apply(i, j));
+			}
+		}
+		return matrix;
+	}
+
+	protected MatrixULong createMatrixULong(String name, int x, int y, BiFunction<Integer, Integer, Long> filler) {
+		MatrixULong matrix = new MatrixULong();
+		matrix.setName(name);
 		matrix.setSizeX(Integer.toString(x));
 		matrix.setSizeY(Integer.toString(y));
 		matrix.setSizeZ(Integer.toString(1));

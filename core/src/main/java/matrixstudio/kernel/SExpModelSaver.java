@@ -5,14 +5,13 @@ import fr.minibilles.basics.sexp.SExp;
 import fr.minibilles.basics.sexp.SList;
 import fr.minibilles.basics.sexp.model.ModelToSExp;
 import fr.minibilles.basics.sexp.model.Referencer;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
-import javax.imageio.ImageIO;
 import matrixstudio.model.Code;
 import matrixstudio.model.Device;
 import matrixstudio.model.Kernel;
@@ -143,43 +142,37 @@ public class SExpModelSaver {
 		}
 
 		if (!matrix.isRandom()) {
-			String source = "matrix/" + matrix.getName() + ".png";
+			String source = "matrix/" + matrix.getName() + ".bin";
 			S.addChildIfNotNull(result, S.stringToSExp("source", source));
 
-			BufferedImage image = new BufferedImage(matrix.safeGetSizeXValue(), matrix.safeGetSizeYValue(), BufferedImage.TYPE_INT_RGB);
-			int x = image.getWidth();
-			int y = image.getHeight();
+			ByteBuffer buffer;
 			if (matrix instanceof MatrixInteger) {
 				int[] values = ((MatrixInteger) matrix).getMatrixInit();
-				for (int i = 0; i < x; i++) {
-					for (int j = 0; j < y; j++) {
-						int value = values[i+x*j];
-						/*
-						int R = value & 0x0000FF;
-						int G = (value & 0x00FF00) >> 8;
-						int B = (value & 0xFF0000) >> 16;
-						int val = (R << 16) + (G << 8) + B;
-						*/
-						image.setRGB(i, j, value);
-
-					}
+				buffer = ByteBuffer.allocate(Integer.BYTES * values.length);
+				for (int value : values) {
+					buffer.putInt(value);
 				}
+
 			} else if (matrix instanceof MatrixFloat) {
 				float[] values = ((MatrixFloat) matrix).getMatrixInit();
-				for(int i=0; i<x; i++) {
-					for (int j = 0; j < y; j++) {
-						float value = values[i+x*j];
-						image.setRGB(i, j, (int) (value*256));
-					}
+				buffer = ByteBuffer.allocate(Float.BYTES * values.length);
+				for (float value : values) {
+					buffer.putFloat(value);
 				}
 
 			} else if (matrix instanceof MatrixULong) {
-
+				long[] values = ((MatrixULong) matrix).getMatrixInit();
+				buffer = ByteBuffer.allocate(Long.BYTES * values.length);
+				for (long value : values) {
+					buffer.putLong(value);
+				}
 			} else {
 				throw new IOException("Unknown matrix type '" + type + "'");
 			}
 
-			ImageIO.write(image, "png", resolve(source).toFile());
+			Path output = resolve(source);
+			Files.write(output, buffer.array());
+
 		}
 
 		context.pop(matrix);
