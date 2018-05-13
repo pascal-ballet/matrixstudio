@@ -1,13 +1,12 @@
 package matrixstudio.model;
 
+import java.io.File;
 import matrixstudio.kernel.Tools;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
-
 /**
- * Tests load and save models
+ * Tests loadMssFile and saveMssFile models
  */
 public class ModelTest {
 
@@ -16,9 +15,9 @@ public class ModelTest {
         Model model = createModel();
 
         File file = File.createTempFile("matrixstudio", ".mss");
-        Tools.save(model,file);
+        Tools.saveMssFile(model,file);
 
-        Model loaded = Tools.load(file, false);
+        Model loaded = Tools.loadMssFile(file, false);
 
         Assert.assertEquals(1, loaded.getMatrixCount());
         Assert.assertEquals(1, loaded.getParameterCount());
@@ -39,16 +38,13 @@ public class ModelTest {
         m1.setName("matrix1");
         model.addMatrixAndOpposite(m1);
 
-        Scheduler scheduler = new Scheduler();
-        model.setSchedulerAndOpposite(scheduler);
-
         Kernel k1 = new Kernel();
         k1.setName("kernel1");
         model.addCodeAndOpposite(k1);
 
         Task t1 = new Task();
         t1.addKernel(k1);
-        scheduler.addTaskAndOpposite(t1);
+        model.getScheduler().addTaskAndOpposite(t1);
 
         return model;
     }

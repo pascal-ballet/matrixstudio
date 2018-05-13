@@ -14,12 +14,15 @@ import fr.minibilles.basics.ui.field.CompositeField;
 import fr.minibilles.basics.ui.field.ConsoleField;
 import fr.minibilles.basics.ui.field.MultiTabField;
 import fr.minibilles.basics.ui.field.PropertiesField;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 import matrixstudio.kernel.CLUtil;
+import matrixstudio.kernel.SExpModel;
 import matrixstudio.kernel.Simulator;
 import matrixstudio.kernel.SimulatorContext;
 import matrixstudio.kernel.Tools;
@@ -38,8 +41,8 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 	private String date;
 
 	/** Stores last path to select files. */
-	private String currentPath = new File(".").getAbsolutePath();
-	private File modelFile;
+	private Path currentPath = Paths.get(".");
+	private Path modelPath;
 	private Model model;
 	
 	private Display display;
@@ -287,8 +290,8 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 		}
 	}
 
-	public File getModelFile() {
-		return modelFile;
+	public Path getModelPath() {
+		return modelPath;
 	}
 	
 	public Model getModel() {
@@ -321,92 +324,75 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 	
 	public void resetModel() {
 		model = Tools.createEmptyModel();
-		modelFile = null;
+		modelPath = null;
 	}
 
 	public boolean loadModel(boolean safeRead) {
 		final FileDialog dialog = new FileDialog(shell, SWT.OPEN);
 		dialog.setText("Open a simulation.");
-        dialog.setFilterExtensions(new String[] { "*.mss", "*.*" });
-        dialog.setFilterNames(new String[] { "Matrix Studio Simulation", "Other files" });
-        dialog.setFilterPath(currentPath);
+        dialog.setFilterExtensions(new String[] { "*.mss", SExpModel.MATRIXSTUDIO_SIMULATION, "*.*" });
+        dialog.setFilterNames(new String[] { "Matrix Studio Simulation", "Exploded Matrix Studio Simulation", "Other files" });
+        dialog.setFilterPath(currentPath.toString());
         String resultFilename = dialog.open();
         if( resultFilename==null ) return false;
-        
-		File file = new File(resultFilename);
-		if( !file.exists() ) return false;
-	
-		currentPath = file.getParent();
+
+		Path path = Paths.get(resultFilename);
+		if( !Files.exists(path) ) return false;
+
+		currentPath = path.getParent();
 		stopAllExports();
 
 		try {
 			// loads model
-			model = Tools.load(file, safeRead);
-			modelFile = file;
+			model = Tools.load(path);
+			modelPath = path;
 		} catch (IOException e) {
-			error("Cannot load simulation from file '"+ file +"': " + e.getMessage());
+			error("Cannot file simulation from file '"+ path +"': " + e.getMessage());
 			return false;
 		}
-		log("Simulation successfully loaded from file '"+ file +"'.");
+		log("Simulation successfully loaded from file '"+ path +"'.");
 		return true;
 	}
 
-	public String loadModel(String resultFilename) {
-		File file = new File(resultFilename);
-		if( !file.exists() ) {
-			return "Le fichier n'existe PAS.";
-			//return false;
-		}
-
-		currentPath = file.getParent();
-		stopAllExports();
-
-		try {
-			// loads model
-			model = Tools.load(file, false);
-			modelFile = file;
-		} catch (IOException e) {
-			error("Cannot load simulation from file '"+ file +"': " + e.getMessage());
-			return "EXCEPTION in LoadModel:" + e.getMessage();
-		}
-		log("Simulation successfully loaded from file '"+ file +"'.");
-		return "Model loaded";
-	}
-	
 	@Override
     public boolean saveModel(boolean forceDialog) {
 		if ( model == null ) return false;
 
-		
-		File file = modelFile;
-		if (forceDialog || modelFile == null ) {
-			// selects a file where to save
+		Path path = modelPath;
+		if (forceDialog || modelPath == null ) {
+			// selects a file where to file
 			final FileDialog dialog = new FileDialog(shell, SWT.SAVE);
 	        dialog.setText("Save the simulation as...");
-	        dialog.setFilterExtensions(new String[] { "*.mss", "*.*" });
-	        dialog.setFilterNames(new String[] { "Matrix Studio Simulation", "Other files" });
-	        dialog.setFilterPath(currentPath);
+	        dialog.setFilterExtensions(new String[] { "*.mss", SExpModel.MATRIXSTUDIO_SIMULATION, "*.*" });
+			dialog.setFilterNames(new String[] { "Matrix Studio Simulation", "Exploded Matrix Studio Simulation", "Other files" });
+			dialog.setFilterPath(currentPath.toString());
 	        
 	        String resultFilename = dialog.open();
 	        if ( resultFilename == null ) return false;
-	        
-	        if( !resultFilename.endsWith(".mss") ) {
-	        	resultFilename = resultFilename.concat(".mss");
+
+	        path = Paths.get(resultFilename);
+	        if (dialog.getFilterIndex() == 0) {
+				if (Files.isDirectory(path)) {
+					path = path.resolve(SExpModel.MATRIXSTUDIO_SIMULATION);
+				} else {
+					path = path.getParent().resolve(SExpModel.MATRIXSTUDIO_SIMULATION);
+				}
+			} else if( dialog.getFilterIndex() == 1 && !resultFilename.endsWith(".mss") ) {
+	        	path = path.getParent().resolve(path.getFileName().toString() + ".mss");
 	        }
-	        
-	        file = new File(resultFilename);
-	        currentPath = file.getParent();
+
+	        currentPath = path.getParent();
 		}
 		
 		try {
 			// saves model
-			Tools.save(model, file);
-			modelFile = file;
+			Tools.save(model, path);
+			modelPath = path;
 		} catch (IOException e) {
-			error("Cannot save simulation to file '"+ file +"': " + e.getMessage());
+			error("Cannot save simulation to file '"+ path +"': " + e.getMessage());
 			return false;
 		}
-		log("Simulation successfully saved to file '"+ file + "'.");
+		log("Simulation successfully saved to file '"+ path + "'.");
 		return true;	
 	}
 	
