@@ -54,10 +54,15 @@ public class Simulator implements Runnable {
 	}
 	
 	private final UserInputProvider emptyProvider = new UserInputProvider() {
+                @Override
 		public int getButton() { return 0; }
+                @Override
 		public int getMouseX() { return -1; }
+                @Override
 		public int getMouseY() { return -1; }
+                @Override
 		public int getMouseZ() { return 0; }
+                @Override
 		public int getKey() { return 0; }
 	};
 	
