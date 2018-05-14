@@ -247,8 +247,8 @@ public class MatrixTabController extends Controller<Model>{
 
 			@Override
 			public int run(ActionMonitor monitor) {
-				// TODO : iconify or deiconify Shell3D (see MatrixField)
-				return Action.STATUS_OK;
+                            matrixController.getMatrixField().set3DMode(! matrixController.getMatrixField().get3DMode());
+                            return Action.STATUS_OK;
 			}
 		});
 		matricesListField.addListener(new NotificationListener() {

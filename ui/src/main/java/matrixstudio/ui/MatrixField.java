@@ -39,7 +39,8 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 
 	private Simulator simulator;
 	private Matrix matrix;
-
+        private boolean _is3DMode = false;
+        
 	private int mouseX = -1;
 	private int mouseY = -1;
 	private int mouseZ = 0;
@@ -87,7 +88,9 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				if (mouseZ >= sz) mouseZ = sz - 1;
 				if (mouseZ < 0) mouseZ = 0;
 				if (renderer != null) {
-					//renderer.render(gc, MatrixField.this, matrix, mouseZ);
+                                    if(get3DMode() == false)
+					renderer.render(gc, MatrixField.this, matrix, mouseZ);
+                                    else
                                         renderer.render3D(gc, MatrixField.this, matrix, _angleY, _phi, _dRecul, _dFocal);
 				}
 
@@ -315,5 +318,13 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
         public int getKey() {
 		return key;
 	}
+        
+        public boolean get3DMode() {
+            return _is3DMode;
+        }
+
+        public void set3DMode(boolean is3DMode) {
+            _is3DMode = is3DMode;
+        }
         
 }	

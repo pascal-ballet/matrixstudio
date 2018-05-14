@@ -35,4 +35,8 @@ public class MatrixController extends Controller<Matrix> {
 		super.setSubject(subject);
 		matrixField.setValue(subject);
 	}
+
+    public MatrixField getMatrixField() {
+        return matrixField;
+    }
 }

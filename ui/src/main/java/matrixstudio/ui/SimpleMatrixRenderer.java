@@ -131,8 +131,8 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
             int SY = matrix.safeGetSizeYValue();
             int SZ = matrix.safeGetSizeZValue();
            
-            int RetineSX = 512;
-            int RetineSY = 256;
+            int RetineSX = 256;
+            int RetineSY = 128;
 
             imageData = new ImageData(RetineSX, RetineSY, 32, palette);
 
