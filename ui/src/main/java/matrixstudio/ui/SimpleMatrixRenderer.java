@@ -131,8 +131,8 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
             int SY = matrix.safeGetSizeYValue();
             int SZ = matrix.safeGetSizeZValue();
            
-            int RetineSX = 256;
-            int RetineSY = 128;
+            int RetineSX = 512;
+            int RetineSY = 256;
 
             imageData = new ImageData(RetineSX, RetineSY, 32, palette);
 
@@ -140,6 +140,39 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
             // ************************
             float profondeur = 1.0f*(dRecul + Math.max(Math.max(SX,SY), SZ)); // Pour tout voir, doit etre assez grand pour englober dFocal+dRecul+max(SX,SY,SZ)
 
+            // Centre de la matrice a visualiser
+            // ***********************
+            float xCenter = SX/2.0f;
+            float yCenter = SY/2.0f;
+            float zCenter = SZ/2.0f;
+
+            // Matrice de Rotation de l'ensemble selon l'axe X DE LA RETINE et d'un angle phi
+            // (a,b,c) = axe de rotation.
+            // L'axe de rotation passe par 0 (voir formule plus bas)
+            // voir pdf : http://www.les-mathematiques.net/phorum/file.php?2,file=1716,filename=matricerotation.pdf
+            // *******************
+            float a = (float)Math.cos(angleY);
+            float b = 0.0f;
+            float c = (float)Math.sin(angleY);
+
+            // Precalcul pratique (et rapide)
+            float cosPhi = (float)Math.cos(phi);
+            float sinPhi = (float)Math.sin(phi);            
+            float cosY = (float)Math.cos(angleY);
+            float sinY = (float)Math.sin(angleY);
+
+            // Vecteur de translation pour la Retine et le Focus
+            float ux = (float)Math.cos(angleY+Math.PI/2.0)*cosPhi;
+            float uy = sinPhi;
+            float uz = (float)Math.sin(angleY+Math.PI/2.0)*cosPhi;
+
+            // Placement du Point de focus (derriere la retine => z encore plus "positif" que la retine)
+            // ***************
+            float xFocus = xCenter + (dRecul + dFocal) * ux; //((float)Math.cos(angleY + Math.PI/2.0f));
+            float yFocus = yCenter + (dRecul + dFocal) * uy; 
+            float zFocus = zCenter + (dRecul + dFocal) * uz; //((float)Math.sin(angleY + Math.PI/2.0f));
+            // **** FIN Point de Focus
+            
             for(int x = 0; x<RetineSX; x++) {
                 for(int y = 0; y<RetineSY; y++) {
 
@@ -153,67 +186,66 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
                     //
                     //                   010011220001           // Matrice 3D a visualiser dans la retine
                     //                   112200X10012           // X est le centre de la Matrice 3D a visualiser
-                    //                   001001222511                    ^
+                    //                   001001222511                    v
                     //                                                   |
                     //						      dRecul
                     //                                                   v
                     //                   ***********            // Retine : Points d'arrivee du ray-cast
-                    //                                                   ^
+                    //                                                   v
                     //                                                dFocal
                     //                                                   v
                     //                        *                 // Point de focus
 
-                    // Centre de la matrice a visualiser
-                    // ***********************
-                    float xCenter = SX/2.0f;
-                    float yCenter = SY/2.0f;
-                    float zCenter = SZ/2.0f;
-
-                    // Translation de la retine au centre de la matrice 3D a visualiser
+                    // Translation de la retine au centre de l'Univers
                     // ************************
-                    float x0 =  (float)x + xCenter - RetineSX/2.0f ;
-                    float y0 =  (float)y + yCenter - RetineSY/2.0f ; 
-                    float z0 =  zCenter ;
+                    float x0 =  (float)x - RetineSX/2.0f ;
+                    float y0 =  (float)y - RetineSY/2.0f ; 
+                    float z0 =  0.0f ;
                     // **** FIN translation retine
 
                     // Rotation de P0 avec l'angleY de centre Center et autour de Y
                     // ****************
-                    float xx0  = (x0-xCenter)*((float)Math.cos(angleY)) - (z0-zCenter)*((float)Math.sin(angleY)) + xCenter;
+                    float xx0  = (x0-0.0f)*((float)Math.cos(angleY)) - (z0-0.0f)*((float)Math.sin(angleY)) + 0.0f;
                     float yy0  =  y0;
-                    float zz0  = (x0-xCenter)*((float)Math.sin(angleY)) + (z0-zCenter)*((float)Math.cos(angleY)) + zCenter;
-                    // "Recul" (z positifs) de P selon le vecteur unitaire d'angleY
-                    x0 = xx0 + dRecul * ((float)Math.cos(angleY + Math.PI/2.0f));
-                    // Restera y0 a changer selon mouseY
-                    z0 = zz0 + dRecul * ((float)Math.sin(angleY + Math.PI/2.0f )) ;
-                    // **** FIN rotation P0 autour Y
+                    float zz0  = (x0-0.0f)*((float)Math.sin(angleY)) + (z0-0.0f)*((float)Math.cos(angleY)) + 0.0f;
+
+                    // Rotation PHI de P0
+                    sinPhi = -sinPhi;
+                    x0 = xx0*(a*a+(1-a*a)*cosPhi)      + yy0*(a*b*(1-cosPhi)-c*sinPhi)   + zz0*(a*c*(1-cosPhi)+b*sinPhi);
+                    y0 = xx0*(a*b*(1-cosPhi)+c*sinPhi) + yy0*(b*b+(1-b*b)*cosPhi)        + zz0*(b*c*(1-cosPhi)-a*sinPhi);
+                    z0 = xx0*(a*c*(1-cosPhi)-b*sinPhi) + yy0*(b*c*(1-cosPhi)+a*sinPhi)   + zz0*(c*c+(1-c*c)*cosPhi);
+                    sinPhi = -sinPhi;
+                    //x0 = xx0;
+                    //y0 = yy0;
+                    //z0 = zz0;
+                    // Rotation PHI du point de Focus
+                    //xx0 = xFocus*(a*a+(1-a*a)*cosPhi)      + yFocus*(a*b*(1-cosPhi)-c*sinPhi)   + zFocus*(a*c*(1-cosPhi+b*sinPhi));
+                    //yy0 = xFocus*(a*b*(1-cosPhi)+c*sinPhi) + yFocus*(b*b+(1-b*b)*cosPhi)        + zFocus*(b*c*(1-cosPhi)-a*sinPhi);
+                    //zz0 = xFocus*(a*c*(1-cosPhi)-b*sinPhi) + yFocus*(b*c*(1-cosPhi)+a*sinPhi)   + zFocus*(c*c+(1-c*c)*cosPhi);
+                    //xFocus = xx0;
+                    //yFocus = yy0;
+                    //zFocus = zz0;
                     
-                    // Point de focus (derriere la retine => z encore plus "positif" que la retine)
+                    
+                    
+                    
+                    
+                    
+                    
+                    // "Recul" (z positifs) de P selon le vecteur unitaire d'angleY
+                    //x0 = xx0 + dRecul * ((float)Math.cos(angleY + Math.PI/2.0f));
+                    // Restera y0 a changer selon mouseY
+                    //z0 = zz0 + dRecul * ((float)Math.sin(angleY + Math.PI/2.0f )) ;
+                    // **** FIN rotation P0 autour Y
+                    // Placement du Point de focus (derriere la retine => z encore plus "positif" que la retine)
                     // ***************
-                    float xFocus = xCenter + (dRecul + dFocal) * ((float)Math.cos(angleY + Math.PI/2.0f));
-                    float yFocus = yCenter ; 
-                    float zFocus = zCenter + (dRecul + dFocal) * ((float)Math.sin(angleY + Math.PI/2.0f));
+                    x0 += xCenter + (dRecul) * ux; //((float)Math.cos(angleY + Math.PI/2.0f));
+                    y0 += yCenter + (dRecul) * uy; 
+                    z0 += zCenter + (dRecul) * uz; //((float)Math.sin(angleY + Math.PI/2.0f));
                     // **** FIN Point de Focus
 
-                    // Rotation de l'ensemble selon l'axe X DE LA RETINE et d'un angle phi
-                    float a = (float)Math.cos(angleY);
-                    float b = 0.0f;
-                    float c = (float)Math.sin(angleY);
-                    float cosPhi = (float)Math.cos(phi);
-                    float sinPhi = (float)Math.sin(phi);
-                    // Rotation de P
-                    xx0 = x0*(a*a+(1-a*a)*cosPhi)      + y0*(a*b*(1-cosPhi)-c*sinPhi)   + z0*(a*c*(1-cosPhi+b*sinPhi));
-                    yy0 = x0*(a*b*(1-cosPhi)+c*sinPhi) + y0*(b*b+(1-b*b)*cosPhi)        + z0*(b*c*(1-cosPhi)-a*sinPhi);
-                    zz0 = x0*(a*c*(1-cosPhi)-b*sinPhi) + y0*(b*c*(1-cosPhi)+a*sinPhi)   + z0*(c*c+(1-c*c)*cosPhi);
-                    x0 = xx0;
-                    y0 = yy0;
-                    z0 = zz0;
-                    // Rotation du point de Focus
-                    xx0 = xFocus*(a*a+(1-a*a)*cosPhi)      + yFocus*(a*b*(1-cosPhi)-c*sinPhi)   + zFocus*(a*c*(1-cosPhi+b*sinPhi));
-                    yy0 = xFocus*(a*b*(1-cosPhi)+c*sinPhi) + yFocus*(b*b+(1-b*b)*cosPhi)        + zFocus*(b*c*(1-cosPhi)-a*sinPhi);
-                    zz0 = xFocus*(a*c*(1-cosPhi)-b*sinPhi) + yFocus*(b*c*(1-cosPhi)+a*sinPhi)   + zFocus*(c*c+(1-c*c)*cosPhi);
-                    xFocus = xx0;
-                    yFocus = yy0;
-                    zFocus = zz0;
+
+
 
 
                     

@@ -147,9 +147,9 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
                                     if(button == 1) {
                                         //_angleY = ( 6.28f*( mouseX - SX/2.0f) / SX );
                                         _angleY -= (_old_mx - e.x)/100.0f; //= ( 6.28f*( e.x - canvas.getSize().x/2.0f) / canvas.getSize().x );
-                                        _phi += (_old_my - e.y)/100.0f;
+                                        _phi -= (_old_my - e.y)/100.0f;
                                         if(_dRecul <= 1.0f) _dRecul = 1.0f;
-                                        _dFocal = 50.0f;//_dRecul;
+                                        //_dFocal = 50.0f;//_dRecul;
                                         _old_mx = e.x;
                                         _old_my = e.y;
                                         
