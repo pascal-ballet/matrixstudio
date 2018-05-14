@@ -158,6 +158,7 @@ public class SExpModelTest {
 
 	protected MatrixInteger createMatrixInteger(String name, int x, int y, BiFunction<Integer, Integer, Integer> filler) {
 		MatrixInteger matrix = new MatrixInteger();
+		matrix.setRandom(false);
 		matrix.setName(name);
 		matrix.setSizeX(Integer.toString(x));
 		matrix.setSizeY(Integer.toString(y));
@@ -174,6 +175,7 @@ public class SExpModelTest {
 
 	protected MatrixFloat createMatrixFloat(String name, int x, int y, BiFunction<Integer, Integer, Float> filler) {
 		MatrixFloat matrix = new MatrixFloat();
+		matrix.setRandom(false);
 		matrix.setName(name);
 		matrix.setSizeX(Integer.toString(x));
 		matrix.setSizeY(Integer.toString(y));
@@ -191,6 +193,7 @@ public class SExpModelTest {
 
 	protected MatrixULong createMatrixULong(String name, int x, int y, BiFunction<Integer, Integer, Long> filler) {
 		MatrixULong matrix = new MatrixULong();
+		matrix.setRandom(false);
 		matrix.setName(name);
 		matrix.setSizeX(Integer.toString(x));
 		matrix.setSizeY(Integer.toString(y));
