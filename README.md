@@ -14,9 +14,10 @@ Downloads for Windows 64:
 - [MatrixStudio.bat](https://www.amazon.fr/clouddrive/share/e9EccQx5WuLkYFjKXZXolQOJgawnk5kmAJzsOIz3FZY)
 
 Download daily builds (3D):
-- [Macos version](https://bintray.com/jeancharles-roger/generic/download_file?file_path=matrixstudio%2Fdaily%2FMatrixStudio-daily-mac-1.0.0.tar.gz)
-- [Windows version](https://bintray.com/jeancharles-roger/generic/download_file?file_path=matrixstudio%2Fdaily%2FMatrixStudio-daily-windows-1.0.0.zip)
-- [Linux version](https://bintray.com/jeancharles-roger/generic/download_file?file_path=matrixstudio%2Fdaily%2FMatrixStudio-daily-linux-1.0.0.tar.gz)
+- [Macos version](https://bintray.com/jeancharles-roger/generic/download_file?file_path=matrixstudio%2Fdaily%2FMatrixStudio-daily-mac64-1.0.0.tar.gz)
+- [Windows 64 version](https://bintray.com/jeancharles-roger/generic/download_file?file_path=matrixstudio%2Fdaily%2FMatrixStudio-daily-windows64-1.0.0.zip)
+- [Windows 32 version](https://bintray.com/jeancharles-roger/generic/download_file?file_path=matrixstudio%2Fdaily%2FMatrixStudio-daily-windows32-1.0.0.zip)
+- [Linux version](https://bintray.com/jeancharles-roger/generic/download_file?file_path=matrixstudio%2Fdaily%2FMatrixStudio-daily-linux64-1.0.0.tar.gz)
 
 ## Getting started
 
