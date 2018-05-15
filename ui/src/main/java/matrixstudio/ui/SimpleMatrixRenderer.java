@@ -198,10 +198,16 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
 
                     // Translation de la retine au centre de l'Univers
                     // ************************
-                    float x0 =  (float)x - RetineSX/2.0f ;
-                    float y0 =  (float)y - RetineSY/2.0f ; 
+                    float x0 = (float)x - RetineSX/2.0f ;
+                    float y0 = (float)y - RetineSY/2.0f ; 
                     float z0 =  0.0f ;
                     // **** FIN translation retine
+                    
+                    // Reduction de la retine
+                    float agrandi = 1.0f;
+                    x0 *= agrandi;
+                    y0 *= agrandi;
+                    z0 *= agrandi;
 
                     // Rotation de P0 avec l'angleY de centre Center et autour de Y
                     // ****************
