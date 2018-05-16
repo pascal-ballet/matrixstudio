@@ -203,7 +203,7 @@ public class SimpleMatrixRenderer implements MatrixRenderer {
                     float z0 =  0.0f ;
                     // **** FIN translation retine
                     
-                    // Reduction de la retine
+                    // Agrandissement (Reduction) de la retine
                     float agrandi = 1.0f;
                     x0 *= agrandi;
                     y0 *= agrandi;

@@ -371,7 +371,7 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 	        if ( resultFilename == null ) return false;
 
 	        path = Paths.get(resultFilename);
-	        if (dialog.getFilterIndex() == 0) {
+	        if (dialog.getFilterIndex() == 1) {
 				if (Files.isDirectory(path)) {
 					path = path.resolve(SExpModel.MATRIXSTUDIO_SIMULATION);
 				} else {
