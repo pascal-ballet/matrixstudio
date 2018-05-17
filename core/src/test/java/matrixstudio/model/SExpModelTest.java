@@ -45,21 +45,27 @@ public class SExpModelTest {
 			Matrix sourceMatrix = source.getMatrix(i);
 			Assert.assertEquals(sourceMatrix.getClass(), loadedMatrix.getClass());
 			Assert.assertEquals(sourceMatrix.getName(), loadedMatrix.getName());
+			Assert.assertEquals(sourceMatrix.isRandom(), loadedMatrix.isRandom());
 			Assert.assertEquals(sourceMatrix.getSizeX(), loadedMatrix.getSizeX());
 			Assert.assertEquals(sourceMatrix.getSizeY(), loadedMatrix.getSizeY());
 			Assert.assertEquals(sourceMatrix.getSizeZ(), loadedMatrix.getSizeZ());
 
-			if (loadedMatrix instanceof MatrixInteger) {
-				Assert.assertArrayEquals(((MatrixInteger) sourceMatrix).getMatrixInit(), ((MatrixInteger) loadedMatrix).getMatrixInit());
-				Assert.assertArrayEquals(((MatrixInteger) sourceMatrix).getMatrix(), ((MatrixInteger) loadedMatrix).getMatrix());
+			if (!loadedMatrix.isRandom()) {
+				if (loadedMatrix instanceof MatrixInteger) {
+					Assert.assertArrayEquals(((MatrixInteger) sourceMatrix).getMatrixInit(), ((MatrixInteger) loadedMatrix).getMatrixInit());
+					Assert.assertArrayEquals(((MatrixInteger) sourceMatrix).getMatrix(), ((MatrixInteger) loadedMatrix).getMatrix());
 
-			} else if (loadedMatrix instanceof MatrixFloat) {
-				Assert.assertArrayEquals(((MatrixFloat) sourceMatrix).getMatrixInit(), ((MatrixFloat) loadedMatrix).getMatrixInit(), 1e-5f);
-				Assert.assertArrayEquals(((MatrixFloat) sourceMatrix).getMatrix(), ((MatrixFloat) loadedMatrix).getMatrix(), 1e-5f);
+				}
+				else if (loadedMatrix instanceof MatrixFloat) {
+					Assert.assertArrayEquals(((MatrixFloat) sourceMatrix).getMatrixInit(), ((MatrixFloat) loadedMatrix).getMatrixInit(),
+							1e-5f);
+					Assert.assertArrayEquals(((MatrixFloat) sourceMatrix).getMatrix(), ((MatrixFloat) loadedMatrix).getMatrix(), 1e-5f);
 
-			} else if (loadedMatrix instanceof MatrixULong) {
-				Assert.assertArrayEquals(((MatrixULong) sourceMatrix).getMatrixInit(), ((MatrixULong) loadedMatrix).getMatrixInit());
-				Assert.assertArrayEquals(((MatrixULong) sourceMatrix).getMatrix(), ((MatrixULong) loadedMatrix).getMatrix());
+				}
+				else if (loadedMatrix instanceof MatrixULong) {
+					Assert.assertArrayEquals(((MatrixULong) sourceMatrix).getMatrixInit(), ((MatrixULong) loadedMatrix).getMatrixInit());
+					Assert.assertArrayEquals(((MatrixULong) sourceMatrix).getMatrix(), ((MatrixULong) loadedMatrix).getMatrix());
+				}
 			}
 		}
 
@@ -113,6 +119,22 @@ public class SExpModelTest {
 		source.addMatrixAndOpposite(createMatrixInteger("Matrix1", 50, 50, (i,j) -> i%2==0 ? i+j : j%2== 0 ? Integer.MAX_VALUE-1 : Integer.MIN_VALUE+1));
 		source.addMatrixAndOpposite(createMatrixFloat("Matrix2", 50, 50, (i,j) -> (float) Math.sqrt(i+j)));
 		source.addMatrixAndOpposite(createMatrixULong("Matrix3", 50, 50, (i,j) -> i%2==0 ? (long) i+j : j%2== 0 ? Long.MAX_VALUE-1 : Long.MIN_VALUE+1));
+
+		loadAndSave(source);
+	}
+
+	@Test
+	public void createLoadAndSaveMatricesWithParameters() throws Exception {
+		Model source = new Model();
+		source.addParameterAndOpposite(createParameter("SX", "30"));
+		source.addParameterAndOpposite(createParameter("SY", "30"));
+
+		MatrixInteger matrix1 = new MatrixInteger();
+		matrix1.setSizeX("SX");
+		matrix1.setSizeY("SY");
+		matrix1.setSizeZ("0");
+		matrix1.setRandom(true);
+		source.addMatrixAndOpposite(matrix1);
 
 		loadAndSave(source);
 	}

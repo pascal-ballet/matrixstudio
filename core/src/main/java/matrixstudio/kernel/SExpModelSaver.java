@@ -129,7 +129,7 @@ public class SExpModelSaver {
 		S.addChildIfNotNull(result, S.stringToSExp("y", matrix.getSizeY()));
 		S.addChildIfNotNull(result, S.stringToSExp("z", matrix.getSizeZ()));
 
-		if (matrix.isRandom()) {
+		if (!matrix.isRandom()) {
 			S.addChildIfNotNull(result, S.booleanToSExp("random", matrix.isRandom()));
 		}
 
