@@ -94,12 +94,12 @@ public class MatrixFloat extends Matrix implements ModelObject, BoostObject {
 	}
 
     public Float getValueAt(int i, int j, int k) {
-        int x = safeGetSizeXValue();
-        int y = safeGetSizeYValue();
-        int z = safeGetSizeZValue();
+        int sx = safeGetSizeXValue();
+        int sy = safeGetSizeYValue();
+        int sz = safeGetSizeZValue();
 
-        if(i>=0 && j>=0 && k>=0 && i< x && j< y && k< z) {
-            return matrix[i+x*j+y*y*k];
+        if(i>=0 && j>=0 && k>=0 && i< sx && j< sy && k< sz) {
+            return matrix[i+sx*j+sx*sy*k];
         } else {
             return 0f;
         }
