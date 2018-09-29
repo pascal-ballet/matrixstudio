@@ -175,7 +175,7 @@ public class Simulator implements Runnable {
         }
         
         // then appends kernels
-        for (Code code : model.getCodeList() ) { 
+        for (Code code : model.getCodeList() ) {
         	if ( code instanceof Kernel ) {
         		final String contents = code.getWholeContents();
         		if ( contents != null ) prg.append(contents);
@@ -708,7 +708,6 @@ public class Simulator implements Runnable {
     public boolean canCompile() {
     	return CLUtil.isClPresent() && isStarted() == false;
     }
-    
     
     public boolean canRun() {
     	return CLUtil.isClPresent() && isStarted() == false;
