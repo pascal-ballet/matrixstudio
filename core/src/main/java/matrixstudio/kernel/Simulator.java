@@ -457,29 +457,36 @@ public class Simulator implements Runnable {
     
     private void releaseCL() {
 		// Release kernel, program, and memory objects
+        System.out.println("[INFO] clReleaseMemObject:");
         if(memObjects != null) {
             for(int c=0; c<memObjects.length; c++) {
                 CL.clReleaseMemObject(memObjects[c]);
             }
             memObjects = null;
         }
+        System.out.println("[INFO] clReleaseKernel:");
         if(kernels != null) {
         	for(int k=0;k<kernels.length;k++) 
         		CL.clReleaseKernel(kernels[k]);
         }
         kernels = null;
+        System.out.println("[INFO] clReleaseProgram:");
         if(program != null) {
         	CL.clReleaseProgram(program);
         	program = null;
         }
+        System.out.println("[INFO] clReleaseCommandQueue:");
         if(commandQueue != null) {
         	CL.clReleaseCommandQueue(commandQueue); 
         	commandQueue = null;
         }
+        System.out.println("[INFO] clReleaseContext:");
         if(context != null) {
         	CL.clReleaseContext(context);           
         	context = null;
         }
+        System.out.println("[INFO] clRelease OK");
+
     }
     
     public void reset() {

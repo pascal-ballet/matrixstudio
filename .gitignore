@@ -19,3 +19,4 @@ out
 
 ## Crash log
 *.log
+/.nb-gradle/
