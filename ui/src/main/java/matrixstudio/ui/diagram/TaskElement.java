@@ -110,7 +110,7 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
 		
 		// draws kernel name
         if (getModel().getKernelCount() > 0) {
-            GcUtils.drawStringAligned(gc, getName(), point[0], point[1] - 8f, Geometry.CENTER);
+            GcUtils.drawStringAligned(gc, getName() + " ["+getDurations()+"ns]", point[0], point[1] - 8f, Geometry.CENTER);
         } else {
             //GcUtils.drawImageAligned(gc, context.getResources().getImage("error_tsk.gif"), point[0] - 40f, point[1] - 14f, Geometry.NORTH_WEST);
             GcUtils.drawStringAligned(gc, "[empty]", point[0], point[1] - 8f, Geometry.CENTER);
@@ -145,6 +145,7 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
             info.append(",");
             info.append(gz);
             info.append(")");
+            
             GcUtils.drawStringAligned(gc, info.toString(), point[0], point[1]+12f, Geometry.CENTER);
 
             gc.setFont(oldFont);
@@ -167,6 +168,15 @@ public class TaskElement extends Element.Stub implements Element, RectangleEleme
         return name.toString();
     }
 
+    private String getDurations() {
+        StringBuilder durations = new StringBuilder();
+        for (Kernel kernel : task.getKernelList()) {
+            if (durations.length() > 0) durations.append(",");
+            durations.append(kernel.getDuration());
+        }
+        return durations.toString();
+    }
+    
     @Override
 	public void hitTesting(List<Element> result, float[] detectionPoint, float[] detectionRectangle, int type, DiagramContext context) {
 		if ( type == DiagramContext.HIT_SELECTION ) {

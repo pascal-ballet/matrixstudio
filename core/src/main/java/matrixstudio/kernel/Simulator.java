@@ -672,7 +672,7 @@ public class Simulator implements Runnable {
                 final cl_event[] dependencies = dependenciesByTask.get(task);
                 final int num_events_in_wait_list = dependencies == null ? 0 : dependencies.length;
 
-                long time_before_exe = System.currentTimeMillis();
+                long time_before_exe = System.nanoTime();
                 
                     final int error = clEnqueueNDRangeKernel(
                             commandQueue, kernel,
@@ -683,7 +683,7 @@ public class Simulator implements Runnable {
                     );
                     CL.clFinish(commandQueue);
                     
-                long time_after_exe = System.currentTimeMillis();
+                long time_after_exe = System.nanoTime();
                 ker.setDuration(time_after_exe - time_before_exe);
                     if (error != 0) {
                         throw new CLException("Error in launchTask:" + error + ".", error);
