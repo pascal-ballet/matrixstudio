@@ -653,6 +653,7 @@ public class Simulator implements Runnable {
                 }
             }
             // Execute the kernel(s)
+            // Kernels time duration
             for (int ki = 0; ki < task.getKernelCount(); ki++) {
                 // If required, select at random an index of kernel to execute
                 int kerIndex = ki;
@@ -661,7 +662,8 @@ public class Simulator implements Runnable {
                     kerIndex = listIndexes.get(p).intValue();
                     listIndexes.remove(p);
                 }
-                final cl_kernel kernel = clKernelsByName.get(task.getKernel(kerIndex).getName());
+                Kernel ker = task.getKernel(kerIndex);
+                final cl_kernel kernel = clKernelsByName.get(ker.getName());
 
                 final long[] global_work_size = globalSizeByTask.get(task);
                 final int dimension = global_work_size.length;
@@ -670,6 +672,8 @@ public class Simulator implements Runnable {
                 final cl_event[] dependencies = dependenciesByTask.get(task);
                 final int num_events_in_wait_list = dependencies == null ? 0 : dependencies.length;
 
+                long time_before_exe = System.currentTimeMillis();
+                
                     final int error = clEnqueueNDRangeKernel(
                             commandQueue, kernel,
                             dimension, null, global_work_size, null,
@@ -678,12 +682,15 @@ public class Simulator implements Runnable {
                             //num_events_in_wait_list, dependencies, event
                     );
                     CL.clFinish(commandQueue);
-
+                    
+                long time_after_exe = System.currentTimeMillis();
+                ker.setDuration(time_after_exe - time_before_exe);
                     if (error != 0) {
                         throw new CLException("Error in launchTask:" + error + ".", error);
                     }
             }
         }
+        // Put the durations of all executed tasks
     }
       
     public String GetResultCL(List<Matrix> lst_mat) {

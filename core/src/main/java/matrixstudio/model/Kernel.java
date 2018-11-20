@@ -9,7 +9,8 @@ import fr.minibilles.basics.serializer.BoostObject;
 public class Kernel extends Code implements ModelObject, BoostObject {
 
 	private String contents = "";
-
+        private long duration = 0;
+        
 	public Kernel() {
 	}
 
@@ -35,6 +36,21 @@ public class Kernel extends Code implements ModelObject, BoostObject {
 		}
 	}
 
+	/**
+	 * <p>Gets duration of the task having executed this kernel (in millis). Made for profiling purpose.</p>
+	 */
+	public long getDuration() {
+		return duration;
+	}
+
+	/**
+	 * <p>Sets duration of the task having executed this kernel (in millis). Made for profiling purpose.</p>
+	 */
+	public void setDuration(long newValue) {
+            this.duration= newValue;
+	}
+        
+        
 	/**
 	 * <p><b>createKernelProrotype</b>: Create kernel function's prototype.
 	 * @return a {@link String} with the prototype.</p>
