@@ -653,7 +653,6 @@ public class Simulator implements Runnable {
                 }
             }
             // Execute the kernel(s)
-            // Kernels time duration
             for (int ki = 0; ki < task.getKernelCount(); ki++) {
                 // If required, select at random an index of kernel to execute
                 int kerIndex = ki;
@@ -672,6 +671,7 @@ public class Simulator implements Runnable {
                 final cl_event[] dependencies = dependenciesByTask.get(task);
                 final int num_events_in_wait_list = dependencies == null ? 0 : dependencies.length;
 
+                // Kernel execution and time duration
                 long time_before_exe = System.nanoTime();
                 
                     final int error = clEnqueueNDRangeKernel(
@@ -684,13 +684,14 @@ public class Simulator implements Runnable {
                     CL.clFinish(commandQueue);
                     
                 long time_after_exe = System.nanoTime();
-                ker.setDuration(time_after_exe - time_before_exe);
+                long prev_duration = ker.getDuration();
+                long somme_val = prev_duration*this.getNbSteps();
+                ker.setDuration( ( somme_val  +   (time_after_exe - time_before_exe) ) /  (this.getNbSteps()+1) );
                     if (error != 0) {
                         throw new CLException("Error in launchTask:" + error + ".", error);
                     }
             }
         }
-        // Put the durations of all executed tasks
     }
       
     public String GetResultCL(List<Matrix> lst_mat) {
