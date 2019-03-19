@@ -20,22 +20,26 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import matrixstudio.kernel.CLUtil;
 import matrixstudio.kernel.SExpModel;
 import matrixstudio.kernel.Simulator;
 import matrixstudio.kernel.SimulatorContext;
 import matrixstudio.kernel.Tools;
+import matrixstudio.model.Matrix;
 import matrixstudio.model.Model;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
 
 public class MatrixStudio implements SimulatorContext, StudioContext {
-
-
 
 	private String version;
 	private String date;
@@ -47,6 +51,10 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 	
 	private Display display;
 	private Shell shell;
+
+	private SimpleMatrixRenderer matrixRenderer = new SimpleMatrixRenderer();
+	private Map<Matrix, Shell> matrixShells = new HashMap<>();
+
 	private FieldShellToolkit toolkit;
 	private Actions actions;
 	
@@ -86,7 +94,7 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 			if ( transactional && status == Action.STATUS_CANCEL ) {
 				model.getChangeRecorder().undo();
 			}
-			if ( shell.isDisposed() == false ) refreshFields();
+			if (!shell.isDisposed()) refreshFields();
 		}
 	};
 
@@ -208,7 +216,9 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 			mainField.setEnable(false);
 		} else {
 			mainField.setEnable(true);
-			
+
+			refreshMatrixShells();
+
 			// refresh field depending on selected tab.
 			// Careful is tab order changes.
 			int selected = centerField.getSelected();
@@ -258,6 +268,36 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
         modelController.refreshFields();
     }
 
+    public void redrawMatrixShells() {
+		for (Shell shell : matrixShells.values()) {
+			if (!shell.isDisposed()) shell.redraw();
+		}
+	}
+
+    public void refreshMatrixShells() {
+		List<Matrix> toClose = new ArrayList<>();
+		for (Map.Entry<Matrix, Shell> entry : matrixShells.entrySet()) {
+			Matrix matrix = entry.getKey();
+			if (model.getMatrixList().contains(matrix)) {
+				Shell shell = entry.getValue();
+				if (!matrix.getName().equals(shell.getText())) {
+					shell.setText(matrix.getName());
+				}
+				Point size = shell.getSize();
+				if (size.x != matrix.safeGetSizeXValue() || size.y != matrix.safeGetSizeYValue()) {
+					shell.setSize(matrix.safeGetSizeXValue(), matrix.safeGetSizeYValue());
+				}
+				shell.redraw();
+			} else {
+				toClose.add(matrix);
+			}
+		}
+
+		for (Matrix matrix : toClose) {
+			closeShellForMatrix(matrix);
+		}
+	}
+
     @Override
     public void asynchronousRun(int milliseconds, Runnable runnable) {
         if ( display.isDisposed() ) return;
@@ -269,7 +309,12 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
         }
     }
 
-    public Display getDisplay() {
+	@Override
+	public void simulationRefresh() {
+		refreshMatrixShells();
+	}
+
+	public Display getDisplay() {
 		return display;
 	}
 
@@ -409,13 +454,11 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 	}
 	
 	public void log(final String message) {
-		display.asyncExec(new Runnable() {
-			public void run() {
-				int index = southEastField.getSelected();
-				if (index != consoleIndex) southEastField.setSelected(consoleIndex);
-				consoleField.log(message + "\n");
-				consoleField.scrollToTheEnd();
-			}
+		display.asyncExec(() -> {
+			int index = southEastField.getSelected();
+			if (index != consoleIndex) southEastField.setSelected(consoleIndex);
+			consoleField.log(message + "\n");
+			consoleField.scrollToTheEnd();
 		});
 	}
 	
@@ -516,6 +559,34 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 				dispose();
 			}
 		}
+	}
+
+
+	public Boolean isShellOpenForMatrix(Matrix matrix) {
+		Shell shell = matrixShells.get(matrix);
+		return shell != null && !shell.isDisposed();
+	}
+
+	public void openShellForMatrix(Matrix matrix) {
+		Shell shell = matrixShells.get(matrix);
+		if (shell == null || shell.isDisposed()) {
+			shell = new Shell(display, SWT.CLOSE | SWT.TITLE);
+			shell.setText(matrix.getName());
+			shell.setSize(matrix.safeGetSizeXValue(), matrix.safeGetSizeYValue());
+			shell.addPaintListener(e -> {
+				matrixRenderer.render(e.gc, this, matrix, 0);
+			});
+			shell.open();
+			matrixShells.put(matrix, shell);
+		}
+	}
+
+	public void closeShellForMatrix(Matrix matrix) {
+		Shell shell = matrixShells.get(matrix);
+		if (shell != null && !shell.isDisposed()) {
+			shell.dispose();
+		}
+		matrixShells.remove(matrix);
 	}
 
 	/**

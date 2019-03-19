@@ -4,12 +4,8 @@ import fr.minibilles.basics.notification.Notification;
 import fr.minibilles.basics.ui.BasicsUI;
 import fr.minibilles.basics.ui.Resources;
 import fr.minibilles.basics.ui.field.AbstractField;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import matrixstudio.formula.EvaluationException;
 import matrixstudio.kernel.Simulator;
 import matrixstudio.kernel.Simulator.UserInputProvider;
 import matrixstudio.model.Matrix;
@@ -40,7 +36,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 	private Simulator simulator;
 	private Matrix matrix;
         private boolean _is3DMode = false;
-        
+
 	private int mouseX = -1;
 	private int mouseY = -1;
 	private int mouseZ = 0;
@@ -88,10 +84,11 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				if (mouseZ >= sz) mouseZ = sz - 1;
 				if (mouseZ < 0) mouseZ = 0;
 				if (renderer != null) {
-                                    if(get3DMode() == false)
-					renderer.render(gc, MatrixField.this, matrix, mouseZ);
-                                    else
-                                        renderer.render3D(gc, MatrixField.this, matrix, _angleY, _phi, _dRecul, _dFocal);
+					if (get3DMode() == false) {
+						renderer.render(gc, MatrixField.this, matrix, mouseZ);
+					} else {
+						renderer.render3D(gc, MatrixField.this, matrix, _angleY, _phi, _dRecul, _dFocal);
+					}
 				}
 
 				// Draw information texts about current simulation (time, execution state and recording state).
@@ -136,7 +133,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 				mouseY = matrix.safeGetSizeYValue() - (e.y * ySize) / canvas.getSize().y - 1;
 
                                 displayMouseInfo();
-                                
+
                                 //if(e.button != 0) {
                                     //int SX=1;//, SY=1;
                                     /*try {
@@ -155,14 +152,14 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
                                         //_dFocal = 50.0f;//_dRecul;
                                         _old_mx = e.x;
                                         _old_my = e.y;
-                                        
+
                                         canvas.redraw();
                                     }
                                     if(button == 3) {
                                         _dRecul += (_old_my - e.y)/5.0f; //(canvas.getSize().y - e.y)/10.0f ;
                                         _old_mx = e.x;
                                         _old_my = e.y;
-                                        
+
                                         canvas.redraw();
                                     }
 			}
@@ -187,14 +184,14 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 
 		canvas.addMouseWheelListener(new MouseWheelListener() {
 			@Override
-			public void mouseScrolled(MouseEvent mouseEvent) {                       
+			public void mouseScrolled(MouseEvent mouseEvent) {
 				if (matrix == null || canvas == null)
 					return;
 				int dz = mouseEvent.count;
                                 if(dz > 0) dz = 1;
                                 if(dz < 0) dz = -1;
 				mouseZ += dz;
-                                
+
 				int sz = matrix.safeGetSizeZValue();
 				if (mouseZ >= sz)   mouseZ = sz - 1;
 				if (mouseZ < 0)     mouseZ = 0;
@@ -214,7 +211,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
                         key = 0;
                     }
                 });
-                
+
 		canvas.addListener(SWT.MouseExit, new Listener() {
 
 			public void handleEvent(Event event) {
@@ -260,7 +257,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
 
             tooltip = builder.toString();
         }
-        
+
 	public boolean grabExcessVerticalSpace() {
 		return true;
 	}
@@ -318,7 +315,7 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
         public int getKey() {
 		return key;
 	}
-        
+
         public boolean get3DMode() {
             return _is3DMode;
         }
@@ -326,5 +323,5 @@ public class MatrixField extends AbstractField implements RendererContext, UserI
         public void set3DMode(boolean is3DMode) {
             _is3DMode = is3DMode;
         }
-        
+
 }	

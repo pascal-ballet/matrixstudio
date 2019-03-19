@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Shell;
 /**
  * Created by charlie on 12/01/2014.
  */
-public interface StudioContext extends SimulatorContext {
+public interface StudioContext extends SimulatorContext, RendererContext {
 
     Simulator getSimulator();
 
@@ -43,5 +43,7 @@ public interface StudioContext extends SimulatorContext {
     MSResources getResources();
 
     void asynchronousRun(int milliseconds, Runnable runnable);
+
+    void simulationRefresh();
 
 }

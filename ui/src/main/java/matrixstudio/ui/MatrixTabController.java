@@ -42,6 +42,7 @@ public class MatrixTabController extends Controller<Model>{
 			if ( simulator.isStarted() == true ) {
 				if ( simulator.isRunning() ) {
 					matrixController.refreshFields();
+					studioContext.simulationRefresh();
 					if(recordingMPEG == true) recordMPEG();
 				}
 				studioContext.asynchronousRun(60, this);
