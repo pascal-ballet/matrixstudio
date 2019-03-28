@@ -295,7 +295,7 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 				if (size.x != matrix.safeGetSizeXValue() || size.y != matrix.safeGetSizeYValue()) {
 					shell.setSize(matrix.safeGetSizeXValue(), matrix.safeGetSizeYValue());
 				}
-				shell.redraw();
+				shell.getChildren()[0].redraw();
 			}
 			else {
 				toClose.add(matrix);
