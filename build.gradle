@@ -6,7 +6,7 @@ allprojects {
     apply plugin: 'java'
 
     ext.daily = true
-    ext.basics_version = "1.0.4"
+    ext.basics_version = "1.0.5"
 
     group 'org.matrixstudio'
     version = '1.0.0'
