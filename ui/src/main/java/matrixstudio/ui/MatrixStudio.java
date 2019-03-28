@@ -286,8 +286,8 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 		List<Matrix> toClose = new ArrayList<>();
 		for (Map.Entry<Matrix, Shell> entry : matrixShells.entrySet()) {
 			Matrix matrix = entry.getKey();
+			Shell shell = entry.getValue();
 			if (model.getMatrixList().contains(matrix) && shell != null && !shell.isDisposed()) {
-				Shell shell = entry.getValue();
 				if (!matrix.getName().equals(shell.getText())) {
 					shell.setText(matrix.getName());
 				}
