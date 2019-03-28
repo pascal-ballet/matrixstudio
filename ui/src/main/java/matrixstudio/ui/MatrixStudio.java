@@ -570,7 +570,7 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 	public void openShellForMatrix(Matrix matrix) {
 		Shell shell = matrixShells.get(matrix);
 		if (shell == null || shell.isDisposed()) {
-			shell = new Shell(display, SWT.CLOSE | SWT.TITLE);
+			shell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.DOUBLE_BUFFERED);
 			shell.setText(matrix.getName());
 			shell.setSize(matrix.safeGetSizeXValue(), matrix.safeGetSizeYValue());
 			shell.addPaintListener(e -> {
