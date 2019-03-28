@@ -165,6 +165,7 @@ public class KernelTabController extends Controller<Model> {
 			kernelListField.setValue(getSubject().getKernelList());
 			kernelListField.refresh();
 			kernelField.setCode(kernelListField.getSingleSelection());
+			kernelField.scrollToCodeStart();
 			studioContext.setSelection(kernelListField.getSingleSelection());
 		}
 
@@ -174,6 +175,7 @@ public class KernelTabController extends Controller<Model> {
 	public boolean updateSubject(Field field) {
 		if ( field == kernelListField ) {
 			kernelField.setCode(kernelListField.getSingleSelection());
+			kernelField.scrollToCodeStart();
 			studioContext.setSelection(kernelListField.getSingleSelection());
 			return false;
 		}

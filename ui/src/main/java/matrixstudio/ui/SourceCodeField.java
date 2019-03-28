@@ -423,4 +423,9 @@ public class SourceCodeField extends AbstractField implements RendererContext {
 		}
 	}
 
+	public void scrollToCodeStart() {
+		int line = code instanceof Kernel ? styledText.getLineAtOffset(((Kernel) code).getOpeningBracketIndex() - 1) : 0;
+		styledText.setTopIndex(line);
+	}
+
 }
