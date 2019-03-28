@@ -34,6 +34,8 @@ import matrixstudio.model.Matrix;
 import matrixstudio.model.Model;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -590,12 +592,13 @@ public class MatrixStudio implements SimulatorContext, StudioContext {
 	public void openShellForMatrix(Matrix matrix) {
 		Shell shell = matrixShells.get(matrix);
 		if (shell == null || shell.isDisposed()) {
-			shell = new Shell(display, SWT.CLOSE | SWT.TITLE | SWT.DOUBLE_BUFFERED);
+			shell = new Shell(display, SWT.CLOSE | SWT.TITLE);
 			shell.setText(matrix.getName());
 			shell.setSize(matrix.safeGetSizeXValue(), matrix.safeGetSizeYValue());
-			shell.addPaintListener(e -> {
-				matrixRenderer.render(e.gc, this, matrix, 0);
-			});
+			shell.setLayout(new FillLayout());
+			Canvas canvas = new Canvas(shell, SWT.NO_BACKGROUND | SWT.DOUBLE_BUFFERED);
+			canvas.addPaintListener(e -> matrixRenderer.render(e.gc, this, matrix, 0));
+
 			shell.open();
 			matrixShells.put(matrix, shell);
 		}
