@@ -21,8 +21,6 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.VerifyEvent;
 import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Color;
@@ -216,7 +214,7 @@ public class SourceCodeField extends AbstractField implements RendererContext {
 			}
 		});
 		
-		installBracketsHightlight();
+		installBracketsHighlight();
 		installReadonlyLines();
 		
 		completionHandler.installCompletion(styledText);
@@ -241,7 +239,7 @@ public class SourceCodeField extends AbstractField implements RendererContext {
 		}
 	}
 
-	private void installBracketsHightlight() {
+	private void installBracketsHighlight() {
 		styledText.addCaretListener(new CaretListener() {
 			public void caretMoved(CaretEvent event) {
 				int caretOffset = event.caretOffset;
@@ -293,15 +291,13 @@ public class SourceCodeField extends AbstractField implements RendererContext {
 		});
 		
 		
-		styledText.addPaintListener(new PaintListener() {
-			public void paintControl(PaintEvent e) {
-				if ( closingIndex >= 0 ) {
-					GC gc = e.gc;
-					gc.setLineWidth(0);
-					gc.setForeground(getResources().getSystemColor(SWT.COLOR_GRAY));
-					Point point = styledText.getLocationAtOffset(closingIndex);
-					gc.drawRectangle(point.x-1, point.y+1, 6, 15);
-				}
+		styledText.addPaintListener(e -> {
+			if ( closingIndex >= 0 ) {
+				GC gc = e.gc;
+				gc.setLineWidth(0);
+				gc.setForeground(getResources().getSystemColor(SWT.COLOR_GRAY));
+				Point point = styledText.getLocationAtOffset(closingIndex);
+				gc.drawRectangle(point.x-1, point.y+1, 6, 15);
 			}
 		});
 

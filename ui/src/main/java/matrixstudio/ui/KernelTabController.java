@@ -85,7 +85,6 @@ public class KernelTabController extends Controller<Model> {
 		
 		
 		kernelListField.addAction(new Action.Stub(null, resources.getImage("bouton_up.png"), Action.STYLE_BUTTON) {
-			
 			@Override
 			public String getTooltip() {
 				return "Move kernel up.";
