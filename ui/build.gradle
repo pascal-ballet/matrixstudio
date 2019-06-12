@@ -158,7 +158,7 @@ apply plugin: 'com.jfrog.bintray'
 
 bintrayUpload.dependsOn distribution
 
-String versionName = project.ext.daily ? 'daily' : version
+String versionName = project.ext.daily ? 'daily2' : version
 bintray {
     user = System.getenv("BINTRAY_USER")
     key = System.getenv("BINTRAY_KEY")
