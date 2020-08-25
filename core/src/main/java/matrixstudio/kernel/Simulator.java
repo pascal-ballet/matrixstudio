@@ -558,6 +558,10 @@ public class Simulator implements Runnable {
 	int[] pt_WSY;
 	int[] pt_WSZ;
 
+	// Execution mode for 1 step
+    private int _currentTaskToExecute = 0;
+    private int _executionMode = 0; // 0 = ALL TASKS, 1 = TASK by TASK
+
     public boolean executeStep(int mouseX, int mouseY, int mouseZ, int mouseBtn, int key) {
 		int rand = 0xFF;
 		if(pt_init == false) {
@@ -573,8 +577,9 @@ public class Simulator implements Runnable {
 			pt_WSY = new int[1];
 			pt_WSZ = new int[1];
 		}
-
-        CL.clFlush(commandQueue);
+        if(_currentTaskToExecute == 0) {
+            CL.clFlush(commandQueue);
+        }
         Scheduler schedule = getModel().getScheduler();
 
         try {
@@ -583,8 +588,7 @@ public class Simulator implements Runnable {
             for (int tt = 0; tt < schedule.getTaskCount(); tt++) {
                 Task task = schedule.getTask(tt);
                 int repetition = evaluateFormula(task.getRepetition());
-                if (repetition < 0) repetition = 0;
-
+                if (repetition < 0) repetition = 0; // Protection
 
 
                 for (int i = 0; i < repetition; i++) {
@@ -621,9 +625,12 @@ public class Simulator implements Runnable {
                 }
             }
             // Enqueue of all the tasks (schedule must be respected)
-            executeAllTasks();
+            if(_executionMode == 0) {
+                executeAllTasks();
+            } else {
+                executeOneTask();
+            }
 
-            nbSteps++;
 
         } catch (ParseException | EvaluationException e) {
             log.error(DiagnosticUtil.createMessage(e));
@@ -637,8 +644,19 @@ public class Simulator implements Runnable {
     	for ( Task task : orderedTasks ) {
     		enqueueTask(task);
     	}
+        nbSteps++;
     }
-    
+
+    private void executeOneTask() throws EvaluationException, ParseException {
+        Task task = orderedTasks.get(_currentTaskToExecute);
+        enqueueTask(task);
+        _currentTaskToExecute++;
+        if(_currentTaskToExecute == orderedTasks.size()) {
+            _currentTaskToExecute = 0;
+            nbSteps++;
+        }
+    }
+
     private void enqueueTask(final Task task) throws EvaluationException, ParseException, CLException {
         int repetition = evaluateFormula(task.getRepetition());
         if (repetition <= 0) repetition = 1;
