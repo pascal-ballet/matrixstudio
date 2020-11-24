@@ -84,7 +84,7 @@ public class Simulator implements Runnable {
     private cl_device_id device = null;
     private cl_context context = null;
     private cl_command_queue commandQueue   = null;
-    private cl_mem memObjects[]             = null;
+    private cl_mem[] memObjects             = null;
     private Pointer[] matricesPointer       = null;
     private cl_program program              = null;
     private cl_kernel[] kernels             = null;
@@ -565,17 +565,17 @@ public class Simulator implements Runnable {
     public boolean executeStep(int mouseX, int mouseY, int mouseZ, int mouseBtn, int key) {
 		int rand = 0xFF;
 		if(pt_init == false) {
-			pt_init = true;
-			pt_rand = new int[1];
-			pt_steps = new int[1];
-			pt_mouseX = new int[1];
-			pt_mouseY = new int[1];
-			pt_mouseZ = new int[1];
+			pt_init     = true;
+			pt_rand     = new int[1];
+			pt_steps    = new int[1];
+			pt_mouseX   = new int[1];
+			pt_mouseY   = new int[1];
+			pt_mouseZ   = new int[1];
 			pt_mouseBtn = new int[1];
-			pt_key = new int[1];
-			pt_WSX = new int[1];
-			pt_WSY = new int[1];
-			pt_WSZ = new int[1];
+			pt_key      = new int[1];
+			pt_WSX      = new int[1];
+			pt_WSY      = new int[1];
+			pt_WSZ      = new int[1];
 		}
         if(_currentTaskToExecute == 0) {
             CL.clFlush(commandQueue);
