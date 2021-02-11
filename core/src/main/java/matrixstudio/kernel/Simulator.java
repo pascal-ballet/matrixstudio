@@ -456,6 +456,14 @@ public class Simulator implements Runnable {
     }
     
     private void releaseCL() {
+        // **** Object to Release in OpenCL ****
+        // Memory objects OK
+        // Contexts OK
+        // Command Queues OK
+        // Programs OK
+        // Kernels OK
+        // Events
+
 		// Release kernel, program, and memory objects
         System.out.println("[INFO] clReleaseMemObject:");
         if(memObjects != null) {
@@ -485,12 +493,15 @@ public class Simulator implements Runnable {
         	CL.clReleaseContext(context);           
         	context = null;
         }
+        System.out.println("[INFO] clReleaseEvent:");
+        if(allEvents != null) {
+            for(int e=0;e<allEvents.length;e++)
+                CL.clReleaseEvent(allEvents[e]);
+        }
         System.out.println("[INFO] clRelease OK");
-
     }
     
     public void reset() {
-    	
     	// Re-init the current matrix to the initial values
 		for(final Matrix matrix : getModel().getMatrixList() ) {
 			matrix.setToInitialValues();
@@ -686,9 +697,9 @@ public class Simulator implements Runnable {
                 final long[] global_work_size = globalSizeByTask.get(task);
                 final int dimension = global_work_size.length;
 
-                final cl_event event = eventsByTask.get(task);
-                final cl_event[] dependencies = dependenciesByTask.get(task);
-                final int num_events_in_wait_list = dependencies == null ? 0 : dependencies.length;
+                ///final cl_event event = eventsByTask.get(task);
+                ///final cl_event[] dependencies = dependenciesByTask.get(task);
+                ///final int num_events_in_wait_list = dependencies == null ? 0 : dependencies.length;
 
                 long time_before_exe = System.currentTimeMillis();
                 
@@ -706,6 +717,8 @@ public class Simulator implements Runnable {
                     if (error != 0) {
                         throw new CLException("Error in launchTask:" + error + ".", error);
                     }
+
+                //clReleaseEvent(event);
             }
         }
         // Put the durations of all executed tasks
