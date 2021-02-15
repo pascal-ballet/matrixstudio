@@ -495,8 +495,9 @@ public class Simulator implements Runnable {
         }
         System.out.println("[INFO] clReleaseEvent:");
         if(allEvents != null) {
-            for(int e=0;e<allEvents.length;e++)
-                CL.clReleaseEvent(allEvents[e]);
+            //for(int e=0;e<allEvents.length;e++)
+                //CL.clReleaseEvent(allEvents[e]);
+            allEvents = null;
         }
         System.out.println("[INFO] clRelease OK");
     }
