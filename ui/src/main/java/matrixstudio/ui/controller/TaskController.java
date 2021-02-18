@@ -161,7 +161,7 @@ public class TaskController extends Controller<Task> {
         positionField = new TextField("Position", BasicsUI.READ_ONLY);
 		
 		//compositeField = new CompositeField("Task", BasicsUI.GROUP, repetitionField, kernelListField, addKernelField, isRandomField, globalWorkSizeXField, globalWorkSizeYField, globalWorkSizeZField);
-        compositeField = new CompositeField("Task", BasicsUI.GROUP, kernelListField, kernelChoiceField, repetitionField, isRandomField, globalWorkSizeXField, globalWorkSizeYField, globalWorkSizeZField);
+        compositeField = new CompositeField("Super Task", BasicsUI.GROUP, kernelListField, kernelChoiceField, repetitionField, isRandomField, globalWorkSizeXField, globalWorkSizeYField, globalWorkSizeZField);
 		return compositeField;
 		
 	}
