@@ -284,7 +284,7 @@ public class SExpModelLoader {
 		final String toLoad = source;
 		postLoadingRunnables.add(() -> {
 			matrix.initBlank(true);
-			if (toLoad != null) {
+			/*if (toLoad != null) {
 				try {
 					ByteBuffer buffer = ByteBuffer.wrap(Files.readAllBytes(resolve(toLoad)));
 					int x = matrix.safeGetSizeXValue();
@@ -301,7 +301,7 @@ public class SExpModelLoader {
 				} catch (IOException e) {
 					// TODO present error
 				}
-			}
+			}*/
 			matrix.setToInitialValues();
 		});
 
