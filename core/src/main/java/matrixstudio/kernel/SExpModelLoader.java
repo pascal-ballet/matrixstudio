@@ -284,6 +284,7 @@ public class SExpModelLoader {
 		final String toLoad = source;
 		postLoadingRunnables.add(() -> {
 			matrix.initBlank(true);
+			// TODO Remove following code after verification
 			/*if (toLoad != null) {
 				try {
 					ByteBuffer buffer = ByteBuffer.wrap(Files.readAllBytes(resolve(toLoad)));
