@@ -1,7 +1,12 @@
 package matrixstudio.model;
 
 import java.io.File;
+import java.util.List;
+
+import matrixstudio.kernel.CLUtil;
 import matrixstudio.kernel.Tools;
+
+import org.jocl.cl_platform_id;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,6 +29,22 @@ public class ModelTest {
         Assert.assertEquals(1, loaded.getCodeCount());
         Assert.assertEquals(1, loaded.getScheduler().getTaskCount());
 
+    }
+    
+    @Test
+    public void testTaillePlatform() {
+    	List<cl_platform_id> listPlatform = CLUtil.getListPlatform();
+    	
+    	Assert.assertEquals(1, listPlatform.size());
+    }
+    
+    @Test
+    public void testInstanceof() {
+    	List<cl_platform_id> listPlatform = CLUtil.getListPlatform();
+
+    	for(int i = 0; i < listPlatform.size(); i++) {
+    		Assert.assertTrue(listPlatform.get(i) instanceof cl_platform_id);
+    	}
     }
 
     private Model createModel() {

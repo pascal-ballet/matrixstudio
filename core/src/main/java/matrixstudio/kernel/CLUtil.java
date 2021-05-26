@@ -1,6 +1,8 @@
 package matrixstudio.kernel;
 
 import matrixstudio.model.Device;
+import matrixstudio.model.Platform;
+
 import org.jocl.CL;
 import org.jocl.Pointer;
 import org.jocl.cl_device_id;
@@ -155,8 +157,37 @@ public abstract class CLUtil {
     	}
     }
     
+    public static List<cl_platform_id> getListPlatform(){
+    	List<cl_platform_id> listPlatform = new ArrayList<>();
+    	
+    	int numPlatforms[] = new int[1];
+        clGetPlatformIDs(0, null, numPlatforms);
+        
+        // Obtain the platform IDs
+        cl_platform_id platforms[] = new cl_platform_id[numPlatforms[0]];
+        clGetPlatformIDs(platforms.length, platforms, null);
+        
+        listPlatform.addAll(Arrays.asList(platforms));
+        
+    	return listPlatform;
+    	
+    }
+    
+    public static Platform getPlatform(cl_platform_id platformId) {
+    	
+    	Platform res = new Platform(platformId);
+    	
+    	return res;
+    }
+    
     public static void main(String[] args) {
 		cl_device_id id = selectHardware(Device.CPU).get(0);
 		System.out.println(getLong(id, CL.CL_DEVICE_MAX_WORK_GROUP_SIZE));
+		
+		List<cl_platform_id> list = getListPlatform();
+		
+		for(int i = 0; i < list.size(); i++) {
+			System.out.println(list.get(i));
+		}
 	}
 }
