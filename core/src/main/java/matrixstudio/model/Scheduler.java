@@ -230,20 +230,31 @@ public class Scheduler implements ModelObject, BoostObject {
 	}
 
 	
-	//platformId
+	/**
+	 * set platform
+	 * @param platform
+	 */
 	
 	public void setPlatform(Platform platform) {
 		this.platform = platform;
 	}
 	
+	/**
+	 * set platform with index
+	 * @param index
+	 */
 	public void setPlatform(int index) {
 		this.platform.setPlatformId(index);
 	}
 	
+	/**
+	 * get platform attribut
+	 * @return platform
+	 */
 	public Platform getPlatform() {
 		return this.platform;
 	}
-
+	
 	public void writeToBoost(Boost boost) {
 		boost.writeObject(model);
 		BoostUtil.writeObjectCollection(boost, taskList);

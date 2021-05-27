@@ -53,16 +53,16 @@ public class Platform {
 	}
 	
 	/**
-	 * 
-	 * @return Getter de l'attribut platformId
+	 * get platform id's
+	 * @return
 	 */
 	public cl_platform_id getPlatformId() {
 		return this.platformId;
 	}
 	
 	/**
-	 * 
-	 * @param platformId mofifier la valeur de platformID à partir du paramètre 
+	 * set platform Id
+	 * @param platformId
 	 */
 	
 	public void setPlatformId(cl_platform_id platformId) {
@@ -70,8 +70,8 @@ public class Platform {
 	}
 
 	/**
-	 * 
-	 * @param index modifier platformId à partir d'un index 
+	 * set platformId with Index
+	 * @param index 
 	 */
 	
 	public void setPlatformId(int index) {

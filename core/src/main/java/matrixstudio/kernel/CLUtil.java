@@ -157,6 +157,11 @@ public abstract class CLUtil {
     	}
     }
     
+    /**
+     * get list of platform
+     * @return
+     */
+    
     public static List<cl_platform_id> getListPlatform(){
     	List<cl_platform_id> listPlatform = new ArrayList<>();
     	
@@ -172,6 +177,12 @@ public abstract class CLUtil {
     	return listPlatform;
     	
     }
+    
+    /**
+     * get platform by platformId
+     * @param platformId
+     * @return
+     */
     
     public static Platform getPlatform(cl_platform_id platformId) {
     	
