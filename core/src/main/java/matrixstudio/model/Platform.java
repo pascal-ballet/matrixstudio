@@ -9,7 +9,7 @@ import matrixstudio.kernel.CLUtil;
 
 /**
  * <b>Classe Platform<b>
- * <p>La classe Platform permet de récupérer l'id de la platform
+ * <p>The Platform class is used to retrieve the platform id<p>
  * 
  * @author lesech
  */
@@ -21,7 +21,7 @@ import matrixstudio.kernel.CLUtil;
 public class Platform {
 	
 	/**
-	 * Id de platform
+	 * platform id
 	 * 
 	 * @see Platform#getPlatformId()
 	 * @see Platform#setPlatformId(cl_platform_id)
@@ -29,26 +29,20 @@ public class Platform {
 	 */
 	private cl_platform_id platformId;
 	
-	//List<cl_platform_id> listPlatform;
-	
 	/**
-	 * 
-	 * @param platformId constructeur de la classe Platform avec en paramètre une variable de type cl_platform
+	 * Constructor of the Platform class with a variable of type cl_platform as parameter
+	 * @param platformId 
 	 */
 
 	public Platform(cl_platform_id platformId) {
-		//this.listPlatform = new ArrayList<>();
-		//listPlatform.add(platformId);
 		this.platformId = platformId;
 	}
 	
 	/**
-	 * Constructeur par défaut de la classe platform
 	 * 
-	 * <p>Constructeur par défaut de la classe platforme<p>
+	 * <p>Default constructor of the platform class<p>
 	 */
 	public Platform() {
-		//this.listPlatform = new ArrayList<>();
 		this.platformId = null;
 	}
 	

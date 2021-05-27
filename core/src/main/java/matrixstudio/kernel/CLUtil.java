@@ -158,7 +158,7 @@ public abstract class CLUtil {
     }
     
     /**
-     * get list of platform
+     * Get list of platform
      * @return
      */
     
@@ -179,7 +179,7 @@ public abstract class CLUtil {
     }
     
     /**
-     * get platform by platformId
+     * Get platform by platformId
      * @param platformId
      * @return
      */

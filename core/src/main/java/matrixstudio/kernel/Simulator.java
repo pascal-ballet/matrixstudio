@@ -263,6 +263,7 @@ public class Simulator implements Runnable {
         log.log("Obtaining platform...");
         cl_platform_id platforms[];
         
+        //Condition if platform IDs is null or not
         if(scheduler.getPlatform().getPlatformId() != null) {
             platforms = new cl_platform_id[1];
             platforms[0] = scheduler.getPlatform().getPlatformId();
