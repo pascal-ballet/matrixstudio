@@ -254,12 +254,28 @@ public class Simulator implements Runnable {
 	}
 
 	private void initCL() throws EvaluationException, ParseException {
+		final Model model = getModel();
+		final Scheduler scheduler = model.getScheduler();
+		
          long numBytes[] = new long[1];
-
+         
         // Creation of an OpenCL context on GPU
         log.log("Obtaining platform...");
-        cl_platform_id platforms[] = new cl_platform_id[1];
-        clGetPlatformIDs(platforms.length, platforms, null);
+        cl_platform_id platforms[];
+        
+        //Condition if platform IDs is null or not
+        if(scheduler.getPlatform().getPlatformId() != null) {
+            platforms = new cl_platform_id[1];
+            platforms[0] = scheduler.getPlatform().getPlatformId();
+            
+        }else {
+        
+        	platforms = new cl_platform_id[1];
+        	clGetPlatformIDs(platforms.length, platforms, null);
+        }
+        
+        
+        
         if(platforms[0]==null) {
         	throw new CLException("No OpenCL plateform found. Impossible to compile the code.");
     	} else {
@@ -272,8 +288,6 @@ public class Simulator implements Runnable {
         // Enable exceptions and subsequently get error checks
         CL.setExceptionsEnabled(true);
         
-        final Model model = getModel();
-		final Scheduler scheduler = model.getScheduler();
 
         // checks if device exist
         final List<cl_device_id> hardwareList = CLUtil.selectHardware(scheduler.getDevice());

@@ -21,6 +21,8 @@ public class Scheduler implements ModelObject, BoostObject {
 	private final List<Task> taskList = new ArrayList<Task>();
 
 	private Device device = Device.ANY;
+	
+	private PlatformCL platform = new PlatformCL();
 
 	private int deviceOrder = 1;
 
@@ -208,6 +210,7 @@ public class Scheduler implements ModelObject, BoostObject {
 			this.device= newValue;
 		}
 	}
+	
 
 	/**
 	 * <p>Gets deviceOrder.</p>
@@ -226,6 +229,32 @@ public class Scheduler implements ModelObject, BoostObject {
 		}
 	}
 
+	
+	/**
+	 * set platform
+	 * @param platform
+	 */
+	
+	public void setPlatform(PlatformCL platform) {
+		this.platform = platform;
+	}
+	
+	/**
+	 * set platform with index
+	 * @param index
+	 */
+	public void setPlatform(int index) {
+		this.platform.setPlatformId(index);
+	}
+	
+	/**
+	 * get platform attribut
+	 * @return platform
+	 */
+	public PlatformCL getPlatform() {
+		return this.platform;
+	}
+	
 	public void writeToBoost(Boost boost) {
 		boost.writeObject(model);
 		BoostUtil.writeObjectCollection(boost, taskList);
