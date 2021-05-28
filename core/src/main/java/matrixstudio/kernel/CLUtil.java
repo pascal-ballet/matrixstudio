@@ -1,7 +1,7 @@
 package matrixstudio.kernel;
 
 import matrixstudio.model.Device;
-import matrixstudio.model.Platform;
+import matrixstudio.model.PlatformCL;
 
 import org.jocl.CL;
 import org.jocl.Pointer;
@@ -184,9 +184,9 @@ public abstract class CLUtil {
      * @return
      */
     
-    public static Platform getPlatform(cl_platform_id platformId) {
+    public static PlatformCL getPlatform(cl_platform_id platformId) {
     	
-    	Platform res = new Platform(platformId);
+    	PlatformCL res = new PlatformCL(platformId);
     	
     	return res;
     }

@@ -18,14 +18,14 @@ import matrixstudio.kernel.CLUtil;
  * 
  */
 
-public class Platform {
+public class PlatformCL {
 	
 	/**
 	 * platform id
 	 * 
-	 * @see Platform#getPlatformId()
-	 * @see Platform#setPlatformId(cl_platform_id)
-	 * @see Platform#setPlatformId(int)
+	 * @see PlatformCL#getPlatformId()
+	 * @see PlatformCL#setPlatformId(cl_platform_id)
+	 * @see PlatformCL#setPlatformId(int)
 	 */
 	private cl_platform_id platformId;
 	
@@ -34,7 +34,7 @@ public class Platform {
 	 * @param platformId 
 	 */
 
-	public Platform(cl_platform_id platformId) {
+	public PlatformCL(cl_platform_id platformId) {
 		this.platformId = platformId;
 	}
 	
@@ -42,7 +42,7 @@ public class Platform {
 	 * 
 	 * <p>Default constructor of the platform class<p>
 	 */
-	public Platform() {
+	public PlatformCL() {
 		this.platformId = null;
 	}
 	

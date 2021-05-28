@@ -22,7 +22,7 @@ public class Scheduler implements ModelObject, BoostObject {
 
 	private Device device = Device.ANY;
 	
-	private Platform platform = new Platform();
+	private PlatformCL platform = new PlatformCL();
 
 	private int deviceOrder = 1;
 
@@ -235,7 +235,7 @@ public class Scheduler implements ModelObject, BoostObject {
 	 * @param platform
 	 */
 	
-	public void setPlatform(Platform platform) {
+	public void setPlatform(PlatformCL platform) {
 		this.platform = platform;
 	}
 	
@@ -251,7 +251,7 @@ public class Scheduler implements ModelObject, BoostObject {
 	 * get platform attribut
 	 * @return platform
 	 */
-	public Platform getPlatform() {
+	public PlatformCL getPlatform() {
 		return this.platform;
 	}
 	
